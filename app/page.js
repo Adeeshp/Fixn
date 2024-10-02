@@ -97,8 +97,5 @@ export default function Home() {
         </a>
       </footer>
     </div>
-    <div>
-      <h2>sadasd</h2>
-    </div>
   );
 }
