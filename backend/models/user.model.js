@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import AutoIncrement from 'mongoose-sequence';
+import AutoIncrementFactory from 'mongoose-sequence';
 
-
+// Initialize AutoIncrement with mongoose
 const AutoIncrement = AutoIncrementFactory(mongoose);
 
 const userSchema = new mongoose.Schema({
@@ -85,12 +85,12 @@ const userSchema = new mongoose.Schema({
         maxlength: 10
     }
 }, {
-    timestamps: true // Automatically add createdAt and updatedAt fields
+    timestamps: true // Automatically adds createdAt and updatedAt fields
 });
 
-// Model
-
+// Apply AutoIncrement plugin to userId
 userSchema.plugin(AutoIncrement, { inc_field: 'userId' });
 
+// Model
 const User = mongoose.model('User', userSchema);
 export default User;
