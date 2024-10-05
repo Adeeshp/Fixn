@@ -12,40 +12,32 @@ const userSchema = new mongoose.Schema({
     },
     firstname: {
         type: String,
-        required: true,
-        maxlength: 200
+        required: true
     },
     lastname: {
         type: String,
-        required: true,
-        maxlength: 200
+        required: true
     },
     phoneNo: {
         type: Number,
-        required: true,
-        maxlength: 10
+        required: true
     },
     email: {
         type: String,
-        required: true,
-        maxlength: 200
+        required: true
     },
     password: {
         type: String,
-        required: true,
-        maxlength: 200
+        required: true
     },
     address: {
-        type: String,
-        maxlength: 1000
+        type: String
     },
     zipcode: {
-        type: String,
-        maxlength: 20 
+        type: String
     },
     imageURL: {
-        type: String,
-        maxlength: 1000
+        type: String
     },
     gender: {
         type: String,
@@ -69,8 +61,7 @@ const userSchema = new mongoose.Schema({
         enum: ['hourly', 'fixed']
     },
     wage: {
-        type: Number,
-        maxlength: 10
+        type: Number
     },
     createdDate: {
         type: Date,
@@ -81,8 +72,10 @@ const userSchema = new mongoose.Schema({
         default: Date.now 
     },
     documentId: {
-        type: Number,
-        maxlength: 10
+        type: Number
+    },
+    accessToken: {
+        type: String
     }
 }, {
     timestamps: true // Automatically adds createdAt and updatedAt fields
