@@ -7,21 +7,17 @@ const AutoIncrement = AutoIncrementFactory(mongoose.connection);
 const userSchema = new mongoose.Schema({
     userId: {
         type: Number,
-        // required: true,
+        required: true,
         unique: true
     },
-    // firstname: {
-    //     type: String,
-    //     required: true
-    // },
-    name: {
+    firstname: {
         type: String,
         required: true
     },
-    // lastname: {
-    //     type: String,
-    //     required: true
-    // },
+    lastname: {
+        type: String,
+        required: true
+    },
     phoneNo: {
         type: Number,
         required: true
@@ -30,10 +26,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    // password: {
-    //     type: String,
-    //     required: true
-    // },
+    password: {
+        type: String,
+        required: true
+    },
     address: {
         type: String
     },
@@ -43,15 +39,15 @@ const userSchema = new mongoose.Schema({
     imageURL: {
         type: String
     },
-    // gender: {
-    //     type: String,
-    //     enum: ['Male', 'Female', 'Other'], 
-    //     required: true
-    // },
-    // categoryId: {
-    //     type: Number,
-    //     required: true
-    // },
+    gender: {
+        type: String,
+        enum: ['Male', 'Female', 'Other'], 
+        required: true
+    },
+    categoryId: {
+        type: Number,
+        required: true
+    },
     subCategoryId: {
         type: Number
     },
