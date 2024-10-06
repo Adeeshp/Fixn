@@ -4,7 +4,7 @@ import { connectDB } from './config/db.js';
 import userRoutes from "./routes/user.route.js";
 import categoryRoutes from "./routes/category.route.js";
 import subCategoryRoutes from "./routes/subCategory.route.js";
-// import bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 
 dotenv.config();
 
@@ -13,8 +13,8 @@ app.use(express.json());
 
 
 app.use("/api", userRoutes);
-app.use('/api/category', categoryRoutes);
-app.use('/api/subcategory', subCategoryRoutes); 
+app.use('/api', categoryRoutes);
+app.use('/api', subCategoryRoutes); 
 
 
 const PORT = process.env.PORT || 3001;
