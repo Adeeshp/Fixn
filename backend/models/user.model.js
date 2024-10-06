@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import AutoIncrementFactory from 'mongoose-sequence';
+// import AutoIncrementFactory from 'mongoose-sequence';
 
-// Initialize AutoIncrement with mongoose
-const AutoIncrement = AutoIncrementFactory(mongoose.connection);
+// // Initialize AutoIncrement with mongoose
+// const AutoIncrement = AutoIncrementFactory(mongoose.connection);
 
 const userSchema = new mongoose.Schema({
     userId: {
@@ -71,7 +71,7 @@ const userSchema = new mongoose.Schema({
 });
 
 // Apply AutoIncrement plugin to auto-increment userId field
-userSchema.plugin(AutoIncrement, { inc_field: 'userId' });
+// userSchema.plugin(AutoIncrement, { inc_field: 'userId' });
 
 // Export the User model
 const User = mongoose.model('User', userSchema);

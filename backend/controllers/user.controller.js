@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
 import User from "../models/user.model.js";
+import bcrypt from 'bcryptjs';
 
-export const authenticateUser = async (req, res) => {
+
+export const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -21,21 +23,16 @@ export const authenticateUser = async (req, res) => {
         res.status(200).json({
             success: true,
             message: "Login successful",
-            userId: user.userId,
-            name: user.name,
-            email: user.email,
-            role: user.role
+            userId: user
         });
     } catch (error) {
         res.status(500).json({ success: false, message: "Server error", error });
     }
 };
 
-export const registerNewUser = async (req, res) => {
+export const registerUser = async (req, res) => {
     try {
-        const { name, email, phoneNo, 
-            // password,
-             role } = req.body;
+        const { firstname, lastname, email, phoneNo, password, role } = req.body;
 
         // Check if email already exists
         let user = await User.findOne({ email });
@@ -44,23 +41,23 @@ export const registerNewUser = async (req, res) => {
         }
 
         // Hash the password before saving
-        // const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create new user (userId will be auto-incremented)
+        // Create new user (userId will be auto-incremented by plugin)
         user = new User({
-            // userId: 1,
-            name,
+            firstname,
+            lastname,
             email,
             phoneNo,
-            // password: hashedPassword,
+            password: hashedPassword,
             role
         });
 
         // Save the user
         await user.save();
 
-        res.status(201).json({ success: true, message: "User registered successfully", userId: user.userId });
+        res.status(201).json({ success: true, message: "User registered successfully", user: user });
     } catch (error) {
-        res.status(500).json({ success: false, message: "Server error", error });
+         res.status(500).json({ success: false, message: "Server error", error });
     }
 };

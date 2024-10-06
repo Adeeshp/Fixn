@@ -11,7 +11,8 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-app.use("/api/user", userRoutes);
+
+app.use("/api", userRoutes);
 app.use('/api/category', categoryRoutes);
 app.use('/api/subcategory', subCategoryRoutes); 
 
