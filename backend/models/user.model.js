@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import AutoIncrementFactory from 'mongoose-sequence';
 
 // Initialize AutoIncrement with mongoose
-const AutoIncrement = AutoIncrementFactory(mongoose);
+const AutoIncrement = AutoIncrementFactory(mongoose.connection);
 
 const userSchema = new mongoose.Schema({
     userId: {
