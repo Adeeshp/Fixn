@@ -10,6 +10,8 @@ const app = express();
 app.use(express.json());
 
 app.use("/api/user", userRoutes);
+app.use('/api/category', categoryRoutes);
+app.use('/api/', subcategoryRoutes); 
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
