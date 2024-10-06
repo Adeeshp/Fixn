@@ -15,6 +15,7 @@ app.use("/api/user", userRoutes);
 app.use('/api/category', categoryRoutes);
 app.use('/api/subcategory', subCategoryRoutes); 
 
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   connectDB();

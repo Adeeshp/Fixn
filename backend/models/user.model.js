@@ -7,7 +7,6 @@ const AutoIncrement = AutoIncrementFactory(mongoose.connection);
 const userSchema = new mongoose.Schema({
     userId: {
         type: Number,
-        required: true,
         unique: true
     },
     firstname: {
@@ -41,12 +40,10 @@ const userSchema = new mongoose.Schema({
     },
     gender: {
         type: String,
-        enum: ['Male', 'Female', 'Other'], 
-        required: true
+        enum: ['Male', 'Female', 'Other']
     },
     categoryId: {
-        type: Number,
-        required: true
+        type: Number
     },
     subCategoryId: {
         type: Number
@@ -63,14 +60,6 @@ const userSchema = new mongoose.Schema({
     wage: {
         type: Number
     },
-    createdDate: {
-        type: Date,
-        default: Date.now
-    },
-    updatedDate: {
-        type: Date,
-        default: Date.now 
-    },
     documentId: {
         type: Number
     },
@@ -81,9 +70,10 @@ const userSchema = new mongoose.Schema({
     timestamps: true // Automatically adds createdAt and updatedAt fields
 });
 
-// Apply AutoIncrement plugin to userId
+// Apply AutoIncrement plugin to auto-increment userId field
 userSchema.plugin(AutoIncrement, { inc_field: 'userId' });
 
-// Model
+// Export the User model
 const User = mongoose.model('User', userSchema);
 export default User;
+
