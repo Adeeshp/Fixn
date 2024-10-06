@@ -3,7 +3,7 @@ const router = express.Router();
 import {authenticateUser, registerNewUser} from '../controllers/user.controller.js';
 
 // Login API
-router.post("/login", );
+router.post("/login", authenticateUser);
 
 // Registration API
 router.post("/register", registerNewUser);
