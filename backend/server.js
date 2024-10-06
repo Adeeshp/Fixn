@@ -4,7 +4,7 @@ import { connectDB } from './config/db.js';
 import userRoutes from "./routes/user.route.js";
 import categoryRoutes from "./routes/category.route.js";
 import subCategoryRoutes from "./routes/subCategory.route.js";
-// import bcrypt from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 
 
 dotenv.config();

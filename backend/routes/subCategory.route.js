@@ -7,9 +7,11 @@ const router = express.Router();
 router.get('/subcategory/:categoryId', getSubcategoriesByCategory);
 
 // Create a new subcategory
+// same
 router.post('/category/:categoryId/subcategory', createSubcategory);
 
 // Delete a subcategory by its ID
+// /api/subcategory/:subCategoryId
 router.delete('/subcategory/:subCategoryId', deleteSubcategory);
 
 export default router;
