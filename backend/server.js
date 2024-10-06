@@ -13,7 +13,6 @@ app.use(express.json());
 
 app.use("/api/user", userRoutes);
 app.use('/api/category', categoryRoutes);
-app.use('/api/', subcategoryRoutes); 
 app.use('/api/', subCategoryRoutes); 
 
 const PORT = process.env.PORT || 3001;
