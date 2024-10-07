@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
 // import AutoIncrementFactory from 'mongoose-sequence';
 
-// // Initialize AutoIncrement with mongoose
+// // // Initialize AutoIncrement with mongoose
 // const AutoIncrement = AutoIncrementFactory(mongoose.connection);
 
 const userSchema = new mongoose.Schema({
-    userId: {
-        type: Number,
-        unique: true
-    },
+    // userId: {
+    //     type: Number,
+    //     unique: true
+    // },
     firstname: {
         type: String,
         required: true
@@ -62,9 +62,6 @@ const userSchema = new mongoose.Schema({
     },
     documentId: {
         type: Number
-    },
-    accessToken: {
-        type: String
     }
 }, {
     timestamps: true // Automatically adds createdAt and updatedAt fields
