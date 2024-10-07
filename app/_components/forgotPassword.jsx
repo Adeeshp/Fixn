@@ -1,3 +1,4 @@
+  "use client";
   import { Button } from "@/components/ui/button";
   import { FaRegEnvelope } from 'react-icons/fa';
   import React, { useState } from 'react';
