@@ -1,8 +1,6 @@
 import localFont from "next/font/local";
 import "./globals.css";
-import Header from './_components/Header'
-import Login  from './_components/Login'
-import SignUp from "./_components/SignUp";
+import Header from './_components/Header';
 
 
 const geistSans = localFont({
