@@ -8,6 +8,14 @@ import nodemailer from 'nodemailer';
 const JWT_SECRET = process.env.JWT_SECRET || "mySuperSecretKey123!"
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000'; // Your frontend URL (e.g., )
 
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'fixnyourway@gmail.com', // your Gmail address
+        pass: 'guyziz@1', // your Gmail App Password or actual password (for less secure apps)
+    },
+});
+
 export const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
