@@ -1,5 +1,8 @@
 import {Outfit} from "next/font/google";
 import "./globals.css";
+import Login  from "./_components/Login";
+import ForgotPassword from "./_components/forgotPassword";
+import SignUp from "./_components/SignUp";
 import Header from './_components/Header';
 import Footer from "./_components/Footer";
 import { UserProvider } from "./contexts/UserContext";
