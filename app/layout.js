@@ -1,6 +1,9 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import Header from './_components/Header'
+import ForgotPassword from './_components/forgotPassword'
+import Link from "next/link";
+import ResetPassword from "./_components/resetPassword";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

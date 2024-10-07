@@ -2,8 +2,17 @@ import mongoose from "mongoose";
 import User from "../models/user.model.js";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
 
 const JWT_SECRET = process.env.JWT_SECRET || "mySuperSecretKey123!"
+
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'fixnyourway@gmail.com', // your Gmail address
+        pass: 'guyziz@1', // your Gmail App Password or actual password (for less secure apps)
+    },
+});
 
 export const loginUser = async (req, res) => {
     try {
@@ -128,5 +137,58 @@ export const getUserProfile = async (req, res) => {
     } catch (error) {
         console.error("Error retrieving profile:", error);
         res.status(500).json({ success: false, message: "Server error", error: error.message });
+    }
+};
+
+// Forgot Password API
+export const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        // Check if user exists
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ success: false, message: "User not found" });
+        }
+
+        // Generate a password reset token
+        const resetToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '15m' });
+
+        // Set up email options
+        const mailOptions = {
+            from: 'fixnyourway@gmail.com', // sender address
+            to: email, // recipient email
+            subject: 'Reset Password', // Subject line
+            html: `<p>Please click on the link to reset your password: <a href="http://localhost:3000/reset-password/${resetToken}">Reset Password</a></p>`, // HTML body
+        };
+
+        // Send the email
+        await transporter.sendMail(mailOptions);
+        res.status(200).json({ success: true, message: "Reset password email sent" });
+    } catch (error) {
+        console.error('Error during forgot password:', error);
+        res.status(500).json({ success: false, message: "Server error", error });
+    }
+};
+
+// Reset Password API
+export const resetPassword = async (req, res) => {
+    const { token, newPassword } = req.body;
+
+    try {
+        // Verify the token
+        const decoded = jwt.verify(token, JWT_SECRET);
+        const userId = decoded.userId;
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update the user's password
+        await User.findByIdAndUpdate(userId, { password: hashedPassword });
+
+        res.status(200).json({ success: true, message: "Password reset successfully" });
+    } catch (error) {
+        console.error('Error during password reset:', error);
+        res.status(500).json({ success: false, message: "Server error", error });
     }
 };
