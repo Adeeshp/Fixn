@@ -1,14 +1,15 @@
 import mongoose from 'mongoose';
 import AutoIncrementFactory from 'mongoose-sequence';
+import ObjectId from 'mongodb';
 
 // Initialize AutoIncrement with mongoose
-const AutoIncrement = AutoIncrementFactory(mongoose);
+// const AutoIncrement = AutoIncrementFactory(mongoose);
 
 const categorySchema = new mongoose.Schema({
     categoryId: {
-        type: Number,
-        required: true,
-        unique: true
+        type: mongoose.Schema.Types.ObjectId, // Mongoose's ObjectId
+        auto: true,
+       
     },
     categoryName: {
         type: String,
@@ -30,7 +31,7 @@ const categorySchema = new mongoose.Schema({
 });
 
 // Apply AutoIncrement plugin to categoryId
-categorySchema.plugin(AutoIncrement, { inc_field: 'categoryId' });
+// categorySchema.plugin(AutoIncrement, { inc_field: 'categoryId' });
 
 // Model
 const Category = mongoose.model('Category', categorySchema);

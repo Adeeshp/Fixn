@@ -5,11 +5,11 @@ const router = express.Router();
 
 // Get all subcategories for a specific category
 // /api/subcategory/:categoryId
-router.get('/category/:categoryId', getSubcategoriesByCategory);
+router.get('/subCategory/:categoryId', getSubcategoriesByCategory);
 
 // Create a new subcategory
 // same
-router.post('/category/:categoryId', createSubcategory);
+router.post('/subCategory/:categoryId', createSubcategory);
 
 // Delete a subcategory by its ID
 // /api/subcategory/:subCategoryId
