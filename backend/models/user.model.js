@@ -5,6 +5,10 @@ import mongoose from "mongoose";
 // const AutoIncrement = AutoIncrementFactory(mongoose.connection);
 
 const userSchema = new mongoose.Schema({
+    // userId: {
+    //     type: Number,
+    //     unique: true
+    // },
     firstname: {
         type: String,
         required: true
