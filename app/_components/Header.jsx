@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import React from "react";
-import Link from "next/link";  // Import Link component
 
 function Header() {
   return (
@@ -13,7 +12,7 @@ function Header() {
           <h2 className='hover:scale-105 hover:text-primary cursor-pointer'>Services</h2>
           <h2 className='hover:scale-105 hover:text-primary cursor-pointer'>About Us</h2>
         </div>
-        <Button >Get Started</Button>
+        <Button>Get Started</Button>
       </div>
     </div>
   );
