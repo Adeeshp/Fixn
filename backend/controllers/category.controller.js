@@ -4,6 +4,8 @@ import Category from '../models/category.model.js';
 export const getAllCategories = async (req, res) => {
     try {
         const categories = await Category.find();
+        
+        // console.log('Categories:', categories); // Log categories in the backend 
 
         if (!categories || categories.length === 0) {
             return res.status(404).json({ success: false, message: "No categories found" });
