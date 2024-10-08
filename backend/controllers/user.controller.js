@@ -2,8 +2,11 @@ import mongoose from "mongoose";
 import User from "../models/user.model.js";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
 
+// const nodemailer = require('nodemailer');
 const JWT_SECRET = process.env.JWT_SECRET || "mySuperSecretKey123!"
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3001'; // Your frontend URL (e.g., )
 
 export const loginUser = async (req, res) => {
     try {
@@ -128,5 +131,101 @@ export const getUserProfile = async (req, res) => {
     } catch (error) {
         console.error("Error retrieving profile:", error);
         res.status(500).json({ success: false, message: "Server error", error: error.message });
+    }
+};
+
+//Forgot Password
+export const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        // Check if user exists
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        // Generate reset token
+        const resetToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
+
+        // Generate reset link
+        const resetLink = `${BASE_URL}/reset_password?token=${resetToken}`;
+        console.log(`Generated Reset Link: ${resetLink}`);
+
+        // Send email with reset link
+        const emailSent = await sendResetEmail(user.email, resetLink);
+        if (emailSent) {
+            res.status(200).json({
+                success: true,
+                message: "Password reset link has been sent to your email.",
+            });
+        } else {
+            res.status(500).json({ success: false, message: "Failed to send email" });
+        }
+    } catch (error) {
+        console.error("Error sending password reset email:", error);
+        res.status(500).json({ success: false, message: "Server error", error });
+    }
+};
+
+// Function to send reset email using nodemailer
+const sendResetEmail = async (email, link) => {
+    console.log('Email User:', process.env.EMAIL_USER);
+    console.log('Email Pass (hidden for security):', !!process.env.EMAIL_PASS); // True if password is defined
+
+    const transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: process.env.EMAIL_USER || 'fixnfixn00@gmail.com', // Your email address
+            pass: process.env.EMAIL_PASS || 'xbtjevpxkphljbkd', // Your email password or app-specific password
+        },
+    });
+    
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Password Reset',
+        html: `<p>To reset your password, click the link below:</p>
+               <a href="${link}">Reset Password</a>`,
+    };
+    console.log(mailOptions);
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully:', info.response);
+        return true;
+    } catch (error) {
+        console.error('Error sending email:', error.message || error);
+        return false;
+    }
+};
+
+// Reset Password Function
+export const resetPassword = async (req, res) => {
+    const { token, newPassword } = req.body;
+
+    try {
+        // Verify the token
+        const decoded = jwt.verify(token, JWT_SECRET);
+
+        // Find the user by the ID in the token
+        const user = await User.findById(decoded.userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update the user's password
+        user.password = hashedPassword;
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Password updated successfully.",
+        });
+    } catch (error) {
+        console.error("Error resetting password:", error);
+        res.status(500).json({ success: false, message: "Server error", error });
     }
 };
