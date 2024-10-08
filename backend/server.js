@@ -13,8 +13,8 @@ app.use(express.json());
 
 
 app.use("/api", userRoutes);
-app.use('/api/category', categoryRoutes);
-app.use('/api/subcategory', subCategoryRoutes); 
+app.use('/api', categoryRoutes);
+app.use('/api', subCategoryRoutes); 
 
 
 const PORT = process.env.PORT || 3001;

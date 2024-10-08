@@ -4,7 +4,7 @@ import { getSubcategoriesByCategory, createSubcategory, deleteSubcategory } from
 const router = express.Router();
 
 // Get all subcategories for a specific category
-router.get('/category/:categoryId/subcategory', getSubcategoriesByCategory);
+router.get('/subcategory/:categoryId', getSubcategoriesByCategory);
 
 // Create a new subcategory
 router.post('/category/:categoryId/subcategory', createSubcategory);

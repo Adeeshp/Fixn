@@ -2,20 +2,19 @@ import mongoose from 'mongoose';
 import AutoIncrementFactory from 'mongoose-sequence';
 
 // Initialize AutoIncrement with mongoose
-const AutoIncrement = AutoIncrementFactory(mongoose);
+// const AutoIncrement = AutoIncrementFactory(mongoose);
 
 const subCategorySchema = new mongoose.Schema({
     subCategoryId: {
-        type: Number,
-        required: true,
-        unique: true
+      type: mongoose.Schema.Types.ObjectId,
+      auto: true,
     },
     subCategoryName: {
         type: String,
         required: true
     },
     categoryId: {
-        type: mongoose.Schema.Types.Number,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
         required: true
     },
@@ -33,7 +32,7 @@ const subCategorySchema = new mongoose.Schema({
 
 
 // Apply AutoIncrement plugin to subCategoryId
-subCategorySchema.plugin(AutoIncrement, { inc_field: 'subCategoryId' });
+// subCategorySchema.plugin(AutoIncrement, { inc_field: 'subCategoryId' });
 
 // Model
 const SubCategory = mongoose.model('SubCategory', subCategorySchema);
