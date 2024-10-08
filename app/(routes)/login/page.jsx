@@ -1,14 +1,17 @@
 "use client";
 import Link from 'next/link';
 import React, { useState } from 'react';
+// import { useRouter } from 'next/router';
+import Home from './page';
 
 const Login = () => {
+  // const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Reset error state
@@ -33,26 +36,39 @@ const Login = () => {
     setIsProcessing(true); // Start processing
 
     // Simulate a login API call
-    fakeApiCall(username, password)
-      .then(() => {
-        console.log('Login successful');
-        // Handle successful login here
-      })
-      .catch((err) => {
-        setError('Invalid username or password');
-      })
-      .finally(() => {
-        setIsProcessing(false); // End processing
+    try {
+      const response = await fetch('/api/user/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: username, password }),
       });
-  };
 
-  const fakeApiCall = (username, password) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Simulate a successful response after 2 seconds
-        resolve(true);
-      }, 2000);
-    });
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('Login successful:', data);
+
+        // Store the token in localStorage (or sessionStorage)
+        // if (typeof window !== 'undefined') { // Ensure this runs on the client side
+        localStorage.setItem('token', data.accessToken);
+        // }
+
+        // Redirect to the dashboard page
+        // router.push('/page.js');
+        // <Link href="/register"></Link>
+        // <Route path="/" exact component={Home} />
+        
+      } else {
+        setError(data.message || 'Invalid username or password');
+      }
+    } catch (error) {
+      console.error('Error logging in:', error);
+      setError('Server error. Please try again later.');
+    } finally {
+      setIsProcessing(false); // End processing
+    }
   };
 
   return (
