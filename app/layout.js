@@ -1,6 +1,10 @@
 import localFont from "next/font/local";
 import "./globals.css";
+import Login  from "./_components/Login";
+import ForgotPassword from "./_components/forgotPassword";
+import SignUp from "./_components/SignUp";
 import Header from './_components/Header';
+
 
 
 const geistSans = localFont({
@@ -27,6 +31,7 @@ export default function RootLayout({ children }) {
           <Header />
           <Login/>
           <SignUp/>
+          {/* <ForgotPassword/> */}
           {children}
         </div>
       </body>
