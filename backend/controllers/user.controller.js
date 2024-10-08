@@ -4,7 +4,9 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 
+// const nodemailer = require('nodemailer');
 const JWT_SECRET = process.env.JWT_SECRET || "mySuperSecretKey123!"
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3001'; // Your frontend URL (e.g., )
 
 let transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -140,7 +142,7 @@ export const getUserProfile = async (req, res) => {
     }
 };
 
-// Forgot Password API
+//Forgot Password
 export const forgotPassword = async (req, res) => {
     const { email } = req.body;
 
@@ -148,47 +150,90 @@ export const forgotPassword = async (req, res) => {
         // Check if user exists
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ success: false, message: "User not found" });
+            return res.status(404).json({ success: false, message: "User not found" });
         }
 
-        // Generate a password reset token
-        const resetToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '15m' });
+        // Generate reset token
+        const resetToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
 
-        // Set up email options
-        const mailOptions = {
-            from: 'fixnyourway@gmail.com', // sender address
-            to: email, // recipient email
-            subject: 'Reset Password', // Subject line
-            html: `<p>Please click on the link to reset your password: <a href="http://localhost:3000/reset-password/${resetToken}">Reset Password</a></p>`, // HTML body
-        };
+        // Generate reset link
+        const resetLink = `${BASE_URL}/reset_password?token=${resetToken}`;
+        console.log(`Generated Reset Link: ${resetLink}`);
 
-        // Send the email
-        await transporter.sendMail(mailOptions);
-        res.status(200).json({ success: true, message: "Reset password email sent" });
+        // Send email with reset link
+        const emailSent = await sendResetEmail(user.email, resetLink);
+        if (emailSent) {
+            res.status(200).json({
+                success: true,
+                message: "Password reset link has been sent to your email.",
+            });
+        } else {
+            res.status(500).json({ success: false, message: "Failed to send email" });
+        }
     } catch (error) {
-        console.error('Error during forgot password:', error);
+        console.error("Error sending password reset email:", error);
         res.status(500).json({ success: false, message: "Server error", error });
     }
 };
 
-// Reset Password API
+// Function to send reset email using nodemailer
+const sendResetEmail = async (email, link) => {
+    console.log('Email User:', process.env.EMAIL_USER);
+    console.log('Email Pass (hidden for security):', !!process.env.EMAIL_PASS); // True if password is defined
+
+    const transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: process.env.EMAIL_USER || 'fixnfixn00@gmail.com', // Your email address
+            pass: process.env.EMAIL_PASS || 'xbtjevpxkphljbkd', // Your email password or app-specific password
+        },
+    });
+    
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Password Reset',
+        html: `<p>To reset your password, click the link below:</p>
+               <a href="${link}">Reset Password</a>`,
+    };
+    console.log(mailOptions);
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully:', info.response);
+        return true;
+    } catch (error) {
+        console.error('Error sending email:', error.message || error);
+        return false;
+    }
+};
+
+// Reset Password Function
 export const resetPassword = async (req, res) => {
     const { token, newPassword } = req.body;
 
     try {
         // Verify the token
         const decoded = jwt.verify(token, JWT_SECRET);
-        const userId = decoded.userId;
+
+        // Find the user by the ID in the token
+        const user = await User.findById(decoded.userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
 
         // Hash the new password
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
         // Update the user's password
-        await User.findByIdAndUpdate(userId, { password: hashedPassword });
+        user.password = hashedPassword;
+        await user.save();
 
-        res.status(200).json({ success: true, message: "Password reset successfully" });
+        res.status(200).json({
+            success: true,
+            message: "Password updated successfully.",
+        });
     } catch (error) {
-        console.error('Error during password reset:', error);
+        console.error("Error resetting password:", error);
         res.status(500).json({ success: false, message: "Server error", error });
     }
 };
