@@ -1,8 +1,3 @@
-// /** @type {import('next').NextConfig} */
-// const nextConfig = {};
-
-// export default nextConfig;
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     async rewrites() {
@@ -14,19 +9,9 @@ const nextConfig = {
       ];
     },
     images: {
-      remotePatterns: [
-        {
-          protocol: 'https',
-          hostname: 'cdn-icons-png.flaticon.com',
-          pathname: '/**',
-        },
-        {
-          protocol: 'https',
-          hostname: 'www.clker.com',
-          pathname: '/**',
-        },
-      ],
-    },
+        unoptimized:true,
+        domains:['fonts.googleapis.com','www.clker.com']
+    }
   };
   
   export default nextConfig;

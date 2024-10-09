@@ -8,24 +8,20 @@ function CategoryList({ categoryList }) {
       {categoryList.length > 0 ? categoryList.map((category, index) => (
         <Link href={'/search/' + category.categoryName} key={index} className={`flex flex-col items-center
              justify-center gap-2
-             bg-purple-50 p-5 rounded-lg
-             cursor-pointer hover:scale-110 transition-all ease-in-out
+             bg-blue-50 p-5 rounded-lg
+             cursor-pointer hover:bg-blue-100 hover:scale-110 transition-all ease-in-out
              `}>
           <Image
-            src={category.imageURL || '/default-image.png'}
+            src={category.icon || '/default-image.png'}
             alt={category.categoryName}
             width={35}
             height={35}
           />
-          <h2 className='text-primary'>{category.categoryName}</h2>
+          <h2 className='text-secondary'>{category.categoryName}</h2>
         </Link>
       )) : 
         [1,2,3,4,5,6].map((item,index)=>(
-            <div key={index} className='h-[120px]
-            w-full bg-slate-200 animate-pulse
-            rounded-lg'>
-
-            </div>
+            <div key={index} className='h-[120px] w-full bg-slate-200 animate-pulse rounded-lg'></div>
         ))
       }
     </div>

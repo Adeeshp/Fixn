@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Hero from "./_components/Hero";
 import CategoryList from "./_components/CategoryList";
+import OurServices from "./_components/OurServices";
 
 export default function Home() {
   const [categoryList, setCategoryList] = useState([]);
@@ -44,6 +45,7 @@ export default function Home() {
     <div>
       <Hero />
       <CategoryList categoryList={categoryList} />
+      <OurServices categoryList={categoryList} />
     </div>
   );
 }
