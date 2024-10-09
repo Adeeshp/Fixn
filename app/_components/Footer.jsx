@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const Footer = () => {
   return (
-    <footer class="bg-zinc-50 text-center text-surface/75 lg:text-left">
+    <footer class="bg-primary/10 text-gray-700 text-center text-surface/75 lg:text-left">
       <div class="mx-6 py-10 text-center md:text-left ">
         <div class="grid-1 grid gap-16 md:grid-cols-3 lg:grid-cols-3 ">
           <div class="lg:ml-16">
@@ -14,8 +14,8 @@ const Footer = () => {
               </Link>
             </h6>
             <p>
-              "Fixn - Your Trusted Experts for Quick, Reliable, and Quality
-              Repairs, Wherever You Need Them."
+              Your Trusted Experts for Quick, Reliable, and Quality
+              Repairs, Wherever You Need Them.
             </p>
           </div>
 
@@ -24,16 +24,16 @@ const Footer = () => {
               Quick Links
             </h6>
             <p class="mb-4">
-              <a href="#!">Home</a>
+              <Link href="/">&gt;&gt; Home</Link>
             </p>
             <p class="mb-4">
-              <a href="#!">Services</a>
+              <Link href="/services">Services</Link>
             </p>
             <p class="mb-4">
-              <a href="#!">About Us</a>
+              <Link href="/">About Us</Link>
             </p>
             <p>
-              <a href="#!">Privacy Policy</a>
+              <Link href="/">Privacy Policy</Link>
             </p>
           </div>
 
@@ -87,11 +87,11 @@ const Footer = () => {
         </div>
       </div>
 
-      <div class="bg-black/5 p-6 text-center">
+      <div class="bg-primary text-white p-2 text-center">
         <span>© 2024 Copyright - </span>
-        <a class="font-semibold" href="#">
+        <Link class="font-semibold" href="/">
           Fixn
-        </a>
+        </Link>
       </div>
     </footer>
   );

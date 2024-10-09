@@ -36,14 +36,14 @@ function Header() {
   };
 
   return (
-    <div className="fixed w-full z-90 shadow-sm bg-white">
+    <div className="fixed w-full z-10 shadow-sm bg-white">
       <div className="mx-6 md:mx-20 py-5 flex justify-between">
         <div className="flex items-center gap-8">
           <Link href="/">
             <Image src="/fixn.svg" alt="logo" width={100} height={100} />
           </Link>
           <Link href="/register">
-          <Button className="bg-xanthous text-white hover:bg-white hover:scale-105 hover:border-xanthous hover:text-xanthous border-2 border-transparent cursor-pointer">
+          <Button className="bg-secondary text-white hover:bg-white hover:scale-105 hover:border-secondary hover:text-secondary border-2 border-transparent cursor-pointer">
             Become a Fixer
           </Button>
           </Link>

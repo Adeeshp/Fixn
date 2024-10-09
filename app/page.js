@@ -20,9 +20,6 @@ export default function Home() {
     try {
       const response = await fetch("/api/category");
       
-      // Log the entire response object
-      console.log("API Response:", response);
-      
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }

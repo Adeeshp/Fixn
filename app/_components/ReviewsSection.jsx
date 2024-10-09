@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
+import Image from 'next/image';
 
 const reviews = [
   {
@@ -96,13 +97,13 @@ function ReviewsSection() {
 
 
   return (
-    <div className="mb-10">
+    <div className="p-20 mb-10">
       <motion.div
         initial="hidden"
         animate="visible"
         variants={containerVariants}
       >
-        <h2 className="text-center font-bold text-4xl mt-20">
+        <h2 className="text-center font-bold text-4xl mt-10">
           Here’s what satisfied customers are saying about Fixn!
         </h2>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mt-10">
@@ -110,13 +111,15 @@ function ReviewsSection() {
             <motion.div
               key={index}
               className="p-5 shadow-lg rounded-lg flex flex-col items-start"
-              variants={cardVariants}  // Apply animation on each card
+              variants={cardVariants}  
             >
               <div className="flex items-center mb-2">
-                <img 
+                <Image 
                   src={review.image} 
                   alt={review.name} 
-                  className="w-10 h-10 rounded-full mr-3" // Adjust the size and shape as needed
+                  className="w-10 h-10 rounded-full mr-3"
+                  width={30}
+                  height={30} 
                 />
                 <h3 className="font-bold">{review.name}</h3>
               </div>
