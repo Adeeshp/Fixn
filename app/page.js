@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Hero from "./_components/Hero";
 import CategoryList from "./_components/CategoryList";
+import HowItWorks from "./_components/HowItWorks";
 import ReviewsSection from "./_components/ReviewsSection";
 
 export default function Home() {
@@ -45,6 +46,7 @@ export default function Home() {
     <div>
       <Hero />
       <CategoryList categoryList={categoryList} />
+      <HowItWorks />
       <ReviewsSection />
     </div>
   );
