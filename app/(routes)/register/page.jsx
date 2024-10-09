@@ -1,19 +1,21 @@
 "use client";
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const SignUp = () => {
+  const router = useRouter(); 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
-  const [postalCode, setPostalCode] = useState('');
+  const [role, setRole] = useState('normal'); // Default role
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [error, setError] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -37,24 +39,46 @@ const SignUp = () => {
       return;
     }
 
-    // Postal Code validation (simple pattern for demo purposes)
-    const postalCodePattern = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
-    if (!postalCodePattern.test(postalCode)) {
-      setError('Please enter a valid postal code');
-      return;
-    }
-
     if (!termsAccepted) {
       setError('You must accept the terms and conditions');
       return;
     }
 
-    // Form submission simulation
     setIsProcessing(true);
-    setTimeout(() => {
-      alert('Account created successfully!');
+
+    // Register API call
+    try {
+      const response = await fetch('/api/user/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstname: firstName,
+          lastname: lastName,
+          email,
+          phoneNo: phoneNumber,
+          password,
+          role // Include the role in the request body
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Store token in localStorage
+        localStorage.setItem('token', data.accessToken);
+        router.push('/');
+        alert('Account created successfully!');
+      } else {
+        setError(data.message || 'Registration failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error during registration:', error);
+      setError('Server error. Please try again later.');
+    } finally {
       setIsProcessing(false);
-    }, 2000);
+    }
   };
 
   return (
@@ -120,6 +144,21 @@ const SignUp = () => {
           </div>
 
           <div className="mb-4">
+            <label htmlFor="role" className="block text-gray-600 text-sm font-medium mb-1">Role</label>
+            <select
+              id="role"
+              name="role"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="w-full border border-gray-300 rounded-md bg-transparent py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent h-12"
+              required
+            >
+              <option value="normal">Normal User</option>
+              <option value="serviceProvider">Service Provider</option>
+            </select>
+          </div>
+
+          <div className="mb-4">
             <label htmlFor="password" className="block text-gray-600 text-sm font-medium mb-1">Password</label>
             <input
               type="password"
@@ -149,8 +188,11 @@ const SignUp = () => {
 
           {/* Error Message */}
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
-          <button type="submit" className="bg-primary hover:bg-white  hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer text-white font-semibold rounded-md py-2 px-3 w-full transition duration-200 ease-in-out" disabled={isProcessing}>
+          
+          <button type="submit" className={`bg-primary hover:bg-white hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer text-white font-semibold rounded-md py-3 px-4 w-full transition duration-200 ease-in-out ${
+              isProcessing ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+            disabled={isProcessing}>
             {isProcessing ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>

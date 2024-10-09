@@ -1,11 +1,10 @@
 "use client";
 import Link from 'next/link';
 import React, { useState } from 'react';
-// import { useRouter } from 'next/router';
-import Home from './page';
+import { useRouter } from 'next/navigation';
 
 const Login = () => {
-  // const router = useRouter();
+  const router = useRouter(); 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -20,6 +19,12 @@ const Login = () => {
     // Validate input fields
     if (username.trim() === '') {
       setError('Username is required');
+      return;
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(username)) {
+      setError('Please enter a valid email address');
       return;
     }
 
@@ -51,15 +56,8 @@ const Login = () => {
         console.log('Login successful:', data);
 
         // Store the token in localStorage (or sessionStorage)
-        // if (typeof window !== 'undefined') { // Ensure this runs on the client side
         localStorage.setItem('token', data.accessToken);
-        // }
-
-        // Redirect to the dashboard page
-        // router.push('/page.js');
-        // <Link href="/register"></Link>
-        // <Route path="/" exact component={Home} />
-        
+        router.push('/');
       } else {
         setError(data.message || 'Invalid username or password');
       }
@@ -78,7 +76,7 @@ const Login = () => {
         <form onSubmit={handleSubmit}>
           <div className="mb-5">
             <label htmlFor="username" className="block text-gray-700 text-sm font-medium mb-2">
-              Username
+              Email Address
             </label>
             <input
               type="text"
