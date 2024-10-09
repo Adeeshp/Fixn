@@ -47,9 +47,9 @@ export default function Home() {
     <div>
       <Hero />
       <CategoryList categoryList={categoryList} />
+      <OurServices categoryList={categoryList} />
       <HowItWorks />
       <ReviewsSection />
-      <OurServices categoryList={categoryList} />
     </div>
   );
 }
