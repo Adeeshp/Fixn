@@ -1,14 +1,16 @@
 "use client";
 import Link from 'next/link';
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 const Login = () => {
+  const router = useRouter(); 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Reset error state
@@ -17,6 +19,12 @@ const Login = () => {
     // Validate input fields
     if (username.trim() === '') {
       setError('Username is required');
+      return;
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(username)) {
+      setError('Please enter a valid email address');
       return;
     }
 
@@ -33,26 +41,32 @@ const Login = () => {
     setIsProcessing(true); // Start processing
 
     // Simulate a login API call
-    fakeApiCall(username, password)
-      .then(() => {
-        console.log('Login successful');
-        // Handle successful login here
-      })
-      .catch((err) => {
-        setError('Invalid username or password');
-      })
-      .finally(() => {
-        setIsProcessing(false); // End processing
+    try {
+      const response = await fetch('/api/user/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: username, password }),
       });
-  };
 
-  const fakeApiCall = (username, password) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Simulate a successful response after 2 seconds
-        resolve(true);
-      }, 2000);
-    });
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('Login successful:', data);
+
+        // Store the token in localStorage (or sessionStorage)
+        localStorage.setItem('token', data.accessToken);
+        router.push('/');
+      } else {
+        setError(data.message || 'Invalid username or password');
+      }
+    } catch (error) {
+      console.error('Error logging in:', error);
+      setError('Server error. Please try again later.');
+    } finally {
+      setIsProcessing(false); // End processing
+    }
   };
 
   return (
@@ -62,7 +76,7 @@ const Login = () => {
         <form onSubmit={handleSubmit}>
           <div className="mb-5">
             <label htmlFor="username" className="block text-gray-700 text-sm font-medium mb-2">
-              Username
+              Email Address
             </label>
             <input
               type="text"
