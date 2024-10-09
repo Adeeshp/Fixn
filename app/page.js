@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Hero from "./_components/Hero";
-import CategoryList from "./_components/CategoryList";
-import HowItWorks from "./_components/HowItWorks";
+// import CategoryList from "./_components/CategoryList";
 import ReviewsSection from "./_components/ReviewsSection";
 import HowItWorks from "./_components/HowItWorks";
 
@@ -46,10 +45,9 @@ export default function Home() {
   return (
     <div>
       <Hero />
-      <CategoryList categoryList={categoryList} />
+      {/* <CategoryList categoryList={categoryList} /> */}
       <HowItWorks />
       <ReviewsSection />
-      <HowItWorks />
     </div>
   );
 }
