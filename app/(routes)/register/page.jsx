@@ -2,9 +2,11 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const SignUp = () => {
-  const router = useRouter(); 
+  const router = useRouter();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -14,11 +16,22 @@ const SignUp = () => {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [error, setError] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
+    // Empty first name validation
+    if (firstName.length == "") {
+      setError('Please enter First Name');
+      return;
+    }
+    // Empty last name validation
+    if (lastName.length == "") {
+      setError('Please enter Last Name');
+      return;
+    }
     // Email validation
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
@@ -26,16 +39,17 @@ const SignUp = () => {
       return;
     }
 
-    // Password validation (minimum 6 characters)
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long');
-      return;
-    }
-
     // Phone number validation (ensure it's numeric and at least 10 digits)
     const phonePattern = /^[0-9]{10}$/;
     if (!phonePattern.test(phoneNumber)) {
       setError('Please enter a valid 10-digit phone number');
+      return;
+    }
+
+
+    // Password validation (minimum 6 characters)
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long');
       return;
     }
 
@@ -71,7 +85,6 @@ const SignUp = () => {
         localStorage.setItem('user', JSON.stringify(data.user));
         window.dispatchEvent(new Event('storage'));
         router.push('/');
-        alert('Account created successfully!');
       } else {
         setError(data.message || 'Registration failed. Please try again.');
       }
@@ -97,7 +110,6 @@ const SignUp = () => {
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              required
             />
           </div>
 
@@ -110,7 +122,6 @@ const SignUp = () => {
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              required
             />
           </div>
 
@@ -123,7 +134,6 @@ const SignUp = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              required
             />
           </div>
 
@@ -140,7 +150,6 @@ const SignUp = () => {
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                required
               />
             </div>
           </div>
@@ -153,7 +162,6 @@ const SignUp = () => {
               value={role}
               onChange={(e) => setRole(e.target.value)}
               className="w-full border border-gray-300 rounded-md bg-transparent py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent h-12"
-              required
             >
               <option value="normal">Normal User</option>
               <option value="serviceProvider">Service Provider</option>
@@ -162,15 +170,23 @@ const SignUp = () => {
 
           <div className="mb-4">
             <label htmlFor="password" className="block text-gray-600 text-sm font-medium mb-1">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'} // Toggle password visibility
+                id="password"
+                name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)} // Toggle showPassword state
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+              >
+                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} size="sm"/>
+              </button>
+            </div>
           </div>
 
           <div className="mb-4">
@@ -182,7 +198,6 @@ const SignUp = () => {
                 checked={termsAccepted}
                 onChange={(e) => setTermsAccepted(e.target.checked)}
                 className="mr-2 "
-                required
               />
               I agree to the <Link href="#" className="text-primary hover:underline">Terms and Conditions</Link> and have reviewed the <Link href="#" className="text-primary hover:underline">Privacy Policy</Link>.
             </label>
@@ -190,7 +205,7 @@ const SignUp = () => {
 
           {/* Error Message */}
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-          
+
           <button type="submit" className={`bg-primary hover:bg-white hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer text-white font-semibold rounded-md py-3 px-4 w-full transition duration-200 ease-in-out ${
               isProcessing ? 'opacity-50 cursor-not-allowed' : ''
             }`}

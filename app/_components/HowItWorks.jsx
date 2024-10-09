@@ -3,7 +3,7 @@ import { FaUserCheck, FaCalendarAlt, FaCommentsDollar } from 'react-icons/fa'; /
 
 const HowItWorks = () => {
   return (
-    <section className="my-10 bg-blue-50 p-20">
+    <section id='how-it-works' className="my-10 bg-blue-50 p-20">
       <div className="container mx-auto px-6">
         <h2 className="text-4xl font-semibold text-center mb-8 text-gray-800">How It Works</h2>
         

@@ -12,24 +12,26 @@ function OurServices({ categoryList }) {
     if (expandedIndex === index) {
       // Collapse the card if it's already expanded
       setExpandedIndex(null);
-      setSubcategories([]);
+      setSubcategories([]); // Clear subcategories when collapsing
     } else {
-      setExpandedIndex(index);
+      setExpandedIndex(index); // Set the clicked card to expand
       setLoading(true);  // Start loading
+
       try {
-        const response = await fetch(`/api/subcategory/${categoryId}`); // Using the proxy URL
+        const response = await fetch(`/api/subcategory/${categoryId}`); // Fetch subcategories using proxy
         const data = await response.json();
         
         if (data.success) {
           setSubcategories(data.data);  // Set subcategories for the selected card
         } else {
           console.error("Error fetching subcategories:", data.message);
-          setSubcategories([]);
+          setSubcategories([]); // Clear in case of error
         }
       } catch (error) {
         console.error("Fetch error:", error);
-        setSubcategories([]);
+        setSubcategories([]); // Clear on fetch error
       }
+
       setLoading(false);  // End loading
     }
   };
@@ -37,14 +39,14 @@ function OurServices({ categoryList }) {
   return (
     <div className="mt-5 p-20">
       <h2 className="font-bold text-[32px] text-primary">Popular Services</h2>
-      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-6 mt-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-5">
         {categoryList.length > 0
           ? categoryList.map((category, index) => (
               index < 4 ? (
                 <div
                   key={index}
                   className={`shadow-md rounded-lg bg-gray-50 hover:shadow-lg transition-all ease-in-out cursor-pointer ${
-                    expandedIndex === index ? "expanded-card" : ""
+                    expandedIndex === index ? "expanded-card h-full" : "lg:h-[310px]"
                   }`}
                 >
                   <Image
@@ -58,7 +60,7 @@ function OurServices({ categoryList }) {
                     <h2 className="font-bold text-lg">{category.categoryName}</h2>
                     <Button
                       className="w-full border-2 border-primary bg-white text-primary hover:text-white rounded-lg mt-3"
-                      onClick={() => toggleExpand(index, category._id)}
+                      onClick={() => toggleExpand(index, category._id)} // Use index and category ID to expand only one
                     >
                       {expandedIndex === index ? "Show Less" : "Know More"}
                     </Button>
@@ -66,15 +68,15 @@ function OurServices({ categoryList }) {
 
                   {/* Display subcategories if this card is expanded */}
                   {expandedIndex === index && (
-                    <div className="mt-4 p-4 w-full bg-gray-100 rounded-b-lg">
-                      <div className="flex flex-wrap justify-center">
+                    <div className="border-t-2 border-gray-300 mt-2 p-2 w-full rounded-b-lg">
+                      <div className="flex flex-wrap justify-start">
                         {loading ? (
                           <div>Loading...</div>
                         ) : (
                           subcategories.map((subcat, subIndex) => (
                             <div
                               key={subIndex}
-                              className="w-fit m-2 text-center text-secondary border-secondary bg-blue-50 text-[12px] border-2 p-2 rounded-full px-4"
+                              className="m-[4px] text-center text-white bg-primary/90 shadow-md text-[14px] p-1 rounded-lg px-2"
                             >
                               {subcat.subCategoryName}
                             </div>
@@ -88,7 +90,7 @@ function OurServices({ categoryList }) {
                 <div key={index}></div>
               )
             ))
-          : [1, 2, 3, 4, 5, 6].map((item, index) => (
+          : [1, 2, 3, 4].map((item, index) => (
               <div
                 key={index}
                 className="w-full h-[300px] bg-slate-200 rounded-lg animate-pulse"
