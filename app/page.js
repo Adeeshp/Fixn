@@ -4,6 +4,7 @@ import Hero from "./_components/Hero";
 import CategoryList from "./_components/CategoryList";
 import ReviewsSection from "./_components/ReviewsSection";
 import HowItWorks from "./_components/HowItWorks";
+import OurServices from "./_components/OurServices";
 
 export default function Home() {
   const [categoryList, setCategoryList] = useState([]);
@@ -48,6 +49,7 @@ export default function Home() {
       <CategoryList categoryList={categoryList} />
       <HowItWorks />
       <ReviewsSection />
+      <OurServices categoryList={categoryList} />
     </div>
   );
 }

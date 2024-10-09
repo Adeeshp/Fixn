@@ -28,7 +28,7 @@ module.exports =  {
 				foreground: 'hsl(var(--xanthous-foreground))'
 			},
   			secondary: {
-  				DEFAULT: 'hsl(var(--secondary))',
+  				DEFAULT: '#3D348B',
   				foreground: 'hsl(var(--secondary-foreground))'
   			},
   			muted: {
