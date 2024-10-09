@@ -96,36 +96,38 @@ function ReviewsSection() {
 
 
   return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-    >
-      <h2 className="text-center font-bold text-4xl mt-20">
-        Here’s what satisfied customers are saying about Fixn!
-      </h2>
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mt-10">
-        {reviews.map((review, index) => (
-          <motion.div
-            key={index}
-            className="p-5 shadow-lg rounded-lg flex flex-col items-start"
-            variants={cardVariants}  // Apply animation on each card
-          >
-            <div className="flex items-center mb-2">
-              <img 
-                src={review.image} 
-                alt={review.name} 
-                className="w-10 h-10 rounded-full mr-3" // Adjust the size and shape as needed
-              />
-              <h3 className="font-bold">{review.name}</h3>
-            </div>
-            <p>{review.review}</p>
-            <p className="text-sm text-gray-500">{review.category}</p>
-            <RatingStars rating={review.rating} />
-          </motion.div>
-        ))}
-      </div>
-    </motion.div>
+    <div className="mb-10">
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+      >
+        <h2 className="text-center font-bold text-4xl mt-20">
+          Here’s what satisfied customers are saying about Fixn!
+        </h2>
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mt-10">
+          {reviews.map((review, index) => (
+            <motion.div
+              key={index}
+              className="p-5 shadow-lg rounded-lg flex flex-col items-start"
+              variants={cardVariants}  // Apply animation on each card
+            >
+              <div className="flex items-center mb-2">
+                <img 
+                  src={review.image} 
+                  alt={review.name} 
+                  className="w-10 h-10 rounded-full mr-3" // Adjust the size and shape as needed
+                />
+                <h3 className="font-bold">{review.name}</h3>
+              </div>
+              <p>{review.review}</p>
+              <p className="text-sm text-gray-500">{review.category}</p>
+              <RatingStars rating={review.rating} />
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+    </div>
   );
 }
 
