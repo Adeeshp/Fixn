@@ -1,60 +1,81 @@
 "use client";
 import Link from 'next/link';
 import React, { useState } from 'react';
-
+import { useRouter } from 'next/navigation';
+ 
 const Login = () => {
+  const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
-
-  const handleSubmit = (e) => {
+ 
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+ 
     // Reset error state
     setError('');
-
+ 
     // Validate input fields
     if (username.trim() === '') {
       setError('Username is required');
       return;
     }
-
+ 
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(username)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+ 
     if (password.trim() === '') {
       setError('Password is required');
       return;
     }
-
+ 
     if (password.length < 6) {
       setError('Password must be at least 6 characters');
       return;
     }
-
+ 
     setIsProcessing(true); // Start processing
-
+ 
     // Simulate a login API call
-    fakeApiCall(username, password)
-      .then(() => {
-        console.log('Login successful');
-        // Handle successful login here
-      })
-      .catch((err) => {
-        setError('Invalid username or password');
-      })
-      .finally(() => {
-        setIsProcessing(false); // End processing
+    try {
+      const response = await fetch('/api/user/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: username, password }),
       });
+ 
+      const data = await response.json();
+ 
+      if (response.ok) {
+        console.log('Login successful:', data);
+     
+        // Store the user info in localStorage (or sessionStorage)
+        localStorage.setItem('token', data.accessToken);
+        localStorage.setItem('user', JSON.stringify(data.user)); // Store user object
+     
+        // Trigger a custom event to inform other components
+        window.dispatchEvent(new Event('storage'));
+     
+        // Redirect to home page
+        router.push('/');
+        
+      } else {
+        setError(data.message || 'Invalid username or password');
+      }
+    } catch (error) {
+      console.error('Error logging in:', error);
+      setError('Server error. Please try again later.');
+    } finally {
+      setIsProcessing(false); // End processing
+    }
   };
-
-  const fakeApiCall = (username, password) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Simulate a successful response after 2 seconds
-        resolve(true);
-      }, 2000);
-    });
-  };
-
+ 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50 px-4">
       <div className="lg:w-2/6 md:w-1/2 w-full bg-white rounded-lg shadow-lg p-8">
@@ -62,7 +83,7 @@ const Login = () => {
         <form onSubmit={handleSubmit}>
           <div className="mb-5">
             <label htmlFor="username" className="block text-gray-700 text-sm font-medium mb-2">
-              Username
+              Email Address
             </label>
             <input
               type="text"
@@ -72,7 +93,7 @@ const Login = () => {
               onChange={(e) => setUsername(e.target.value)}
               className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition duration-200 ease-in-out"
               autoComplete="off"
-              
+             
             />
           </div>
           <div className="mb-5">
@@ -87,7 +108,7 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition duration-200 ease-in-out"
               autoComplete="off"
-              
+             
             />
           </div>
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
@@ -115,5 +136,5 @@ const Login = () => {
     </div>
   );
 };
-
+ 
 export default Login;
