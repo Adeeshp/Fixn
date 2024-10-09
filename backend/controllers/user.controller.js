@@ -6,7 +6,7 @@ import nodemailer from 'nodemailer';
 
 // const nodemailer = require('nodemailer');
 const JWT_SECRET = process.env.JWT_SECRET || "mySuperSecretKey123!"
-const BASE_URL = process.env.BASE_URL || 'http://localhost:3001'; // Your frontend URL (e.g., )
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3000'; // Your frontend URL (e.g., )
 
 export const loginUser = async (req, res) => {
     try {
@@ -28,14 +28,14 @@ export const loginUser = async (req, res) => {
             return res.status(400).json({ success: false, message: "Invalid credentials" });
         }
 
-        const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
         console.log('Token generated:', token);
 
         // Send success response
         res.status(200).json({
             success: true,
             message: "Login successful",
-            userId: user,
+            user: user,
             accessToken: token
         });
     } catch (error) {
@@ -72,7 +72,7 @@ export const registerUser = async (req, res) => {
         await user.save();
 
         // Generate token after user is saved
-        const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
 
         // Send success response with the token
         res.status(201).json({
@@ -93,6 +93,7 @@ export const registerUser = async (req, res) => {
         res.status(500).json({ success: false, message: "Server error", error });
     }
 };
+
 
 
 export const authenticateToken = (req, res, next) => {
@@ -116,10 +117,10 @@ export const authenticateToken = (req, res, next) => {
 export const getUserProfile = async (req, res) => {
     try {
         // Find user by ID from the token
-        const user = await User.findById(req.user.userId).select('-password'); // Exclude the password field
+        const user = await User.findById(req.user._id).select('-password'); // Exclude the password field
 
         if (!user) {
-            console.log('User not found:', req.user.userId);
+            console.log('User not found:', req.user._id);
             return res.status(404).json({ success: false, message: "User not found" });
         }
 
@@ -146,10 +147,10 @@ export const forgotPassword = async (req, res) => {
         }
 
         // Generate reset token
-        const resetToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
+        const resetToken = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
 
         // Generate reset link
-        const resetLink = `${BASE_URL}/reset_password?token=${resetToken}`;
+        const resetLink = `${BASE_URL}/reset-password?token=${resetToken}`;
         console.log(`Generated Reset Link: ${resetLink}`);
 
         // Send email with reset link
@@ -208,7 +209,10 @@ export const resetPassword = async (req, res) => {
         const decoded = jwt.verify(token, JWT_SECRET);
 
         // Find the user by the ID in the token
-        const user = await User.findById(decoded.userId);
+        const user = await User.findById(decoded.id); // Use decoded.id instead of decoded._id
+        console.log(`Decoded Token: ${JSON.stringify(decoded)}`);
+        console.log(`User: ${user}`);
+
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found" });
         }

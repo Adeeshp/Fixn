@@ -26,23 +26,27 @@ const ForgotPassword = () => {
         setIsProcessing(true); // Start processing
 
         try {
-            // Simulate sending request to API for password reset
-            await fakeApiCall(email);
-            setMessage('Password reset link has been sent to your email');
+            // Call the actual API for password reset
+            const response = await fetch('/api/user/forgot_password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setMessage(data.message);
+            } else {
+                setError(data.message || 'Error sending password reset link');
+            }
         } catch (err) {
             setError('Error sending password reset link');
         } finally {
             setIsProcessing(false); // End processing
         }
-    };
-
-    const fakeApiCall = (email) => {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                // Simulate successful response after 2 seconds
-                resolve(true);
-            }, 2000);
-        });
     };
 
     return (
@@ -52,7 +56,7 @@ const ForgotPassword = () => {
                 <form onSubmit={handleSubmit} className="flex flex-col items-center m-3">
                     {/* Email input field */}
                     <div className="w-full flex items-center">
-                        {/* <FaRegEnvelope width={20} className="text-gray-400 m-2 f-10" /> */}
+                        <FaRegEnvelope width={20} className="text-gray-400 m-2 f-10" />
                         <input
                             type="email"
                             name="email"
@@ -60,7 +64,6 @@ const ForgotPassword = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition duration-200 ease-in-out"
-                            
                         />
                     </div>
                     {/* Error Message */}
