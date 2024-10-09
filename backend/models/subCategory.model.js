@@ -18,14 +18,7 @@ const subCategorySchema = new mongoose.Schema({
         ref: 'Category',
         required: true
     },
-    createdDate: {
-        type: Date,
-        default: Date.now
-    },
-    updatedDate: {
-        type: Date,
-        default: Date.now
-    }
+   
 }, {
     timestamps: true // Automatically adds createdAt and updatedAt fields
 });
