@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 const Login = () => {
-  const router = useRouter(); 
+  const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -55,8 +55,10 @@ const Login = () => {
       if (response.ok) {
         console.log('Login successful:', data);
 
-        // Store the token in localStorage (or sessionStorage)
+        // Store the user info in localStorage (or sessionStorage)
         localStorage.setItem('token', data.accessToken);
+        localStorage.setItem('user', JSON.stringify(data.user)); // Store user object
+
         router.push('/');
       } else {
         setError(data.message || 'Invalid username or password');
