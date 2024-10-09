@@ -69,6 +69,7 @@ const SignUp = () => {
         // Store token in localStorage
         localStorage.setItem('token', data.accessToken);
         localStorage.setItem('user', JSON.stringify(data.user));
+        window.dispatchEvent(new Event('storage'));
         router.push('/');
         alert('Account created successfully!');
       } else {
