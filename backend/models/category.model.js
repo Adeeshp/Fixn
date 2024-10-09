@@ -1,8 +1,5 @@
 import mongoose from 'mongoose';
-import AutoIncrementFactory from 'mongoose-sequence';
 
-// Initialize AutoIncrement with mongoose
-// const AutoIncrement = AutoIncrementFactory(mongoose);
 
 const categorySchema = new mongoose.Schema({
     categoryId: {
@@ -16,20 +13,12 @@ const categorySchema = new mongoose.Schema({
     imageURL: {
         type: String
     },
-    createdDate: {
-        type: Date,
-        default: Date.now
-    },
-    updatedDate: {
-        type: Date,
-        default: Date.now
+    icon: {
+        type: String
     }
 }, {
     timestamps: true 
 });
-
-// Apply AutoIncrement plugin to categoryId
-// categorySchema.plugin(AutoIncrement, { inc_field: 'categoryId' });
 
 // Model
 const Category = mongoose.model('Category', categorySchema);
