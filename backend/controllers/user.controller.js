@@ -74,10 +74,20 @@ export const registerUser = async (req, res) => {
         // Generate token after user is saved
         const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
 
-        // Send success response with the token
+        // Attempt to send the confirmation email
+        const emailSent = await sendEmail(true, user.email, "");
+        let emailMessage = "";
+
+        if (emailSent) {
+            emailMessage = "Email confirmation sent to your email.";
+        } else {
+            emailMessage = "Failed to send email confirmation.";
+        }
+
+        // Send success response including the email status
         res.status(201).json({
             success: true,
-            message: "User registered successfully",
+            message: "User registered successfully. " + emailMessage,
             user: {
                 id: user._id,
                 firstname: user.firstname,
@@ -88,12 +98,12 @@ export const registerUser = async (req, res) => {
             },
             token // Include the token in the response
         });
+
     } catch (error) {
         console.error('Error during registration:', error);
         res.status(500).json({ success: false, message: "Server error", error });
     }
 };
-
 
 
 export const authenticateToken = (req, res, next) => {
@@ -154,7 +164,7 @@ export const forgotPassword = async (req, res) => {
         console.log(`Generated Reset Link: ${resetLink}`);
 
         // Send email with reset link
-        const emailSent = await sendResetEmail(user.email, resetLink);
+        const emailSent = await sendEmail(false, user.email, resetLink);
         if (emailSent) {
             res.status(200).json({
                 success: true,
@@ -170,7 +180,7 @@ export const forgotPassword = async (req, res) => {
 };
 
 // Function to send reset email using nodemailer
-const sendResetEmail = async (email, link) => {
+const sendEmail = async (isRegistration, email, link) => {
     console.log('Email User:', process.env.EMAIL_USER);
     console.log('Email Pass (hidden for security):', !!process.env.EMAIL_PASS); // True if password is defined
 
@@ -181,14 +191,22 @@ const sendResetEmail = async (email, link) => {
             pass: process.env.EMAIL_PASS || 'xbtjevpxkphljbkd', // Your email password or app-specific password
         },
     });
-    
+    console.log("Adeesh");
+    console.log(`${isRegistration}`);
+    // Conditionally change the email content based on whether it's a registration or reset
+    const subject = isRegistration ? 'Welcome to Our Service' : 'Password Reset';
+    const htmlContent = isRegistration
+        ? `<p>Welcome to our service! Your account has been successfully created. You can now log in and start using our platform.</p>`
+        : `<p>To reset your password, click the link below:</p>
+           <a href="${link}">Reset Password</a>`;
+
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
-        subject: 'Password Reset',
-        html: `<p>To reset your password, click the link below:</p>
-               <a href="${link}">Reset Password</a>`,
+        subject: subject,
+        html: htmlContent,
     };
+
     console.log(mailOptions);
     try {
         const info = await transporter.sendMail(mailOptions);
