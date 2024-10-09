@@ -64,7 +64,7 @@ const Login = () => {
      
         // Redirect to home page
         router.push('/');
-     
+        
       } else {
         setError(data.message || 'Invalid username or password');
       }
