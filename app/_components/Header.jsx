@@ -1,6 +1,5 @@
-"use client"; // Ensure this is at the top
-
-import { Button } from "@/components/ui/button"; // Adjust this import based on your button component
+"use client"; 
+import { Button } from "@/components/ui/button"; 
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
@@ -48,8 +47,8 @@ function Header() {
             <Link href="/">
               <h2 className="hover:scale-105 hover:text-primary cursor-pointer">Home</h2>
             </Link>
-            <Link href="/services">
-              <h2 className="hover:scale-105 hover:text-primary cursor-pointer">Services</h2>
+            <Link href="/postings">
+              <h2 className="hover:scale-105 hover:text-primary cursor-pointer">Job Postings</h2>
             </Link>
             {!user && (
               <Link href="/login">
@@ -60,19 +59,33 @@ function Header() {
           {user && (
             <div className="flex items-center gap-6">
               <span className="text-black">Welcome, <span className='text-primary'>{user.firstname}!</span></span>
-              <Button
-                className="hover:bg-primary bg-white hover:scale-105 border border-primary text-primary hover:text-white border-2 cursor-pointer"
-                onClick={handleSignOut}
-              >
-                Logout
-              </Button>
+              
+              { user.role === "normal" && (
+                <Button
+                  className="hover:bg-primary bg-white hover:scale-105 border border-primary text-primary hover:text-white border-2 cursor-pointer"
+                  onClick={handleSignOut}
+                >
+                  Logout
+                </Button>
+              )}
+              { user.role === "serviceProvider" && (
+                <Button
+                  className="hover:bg-white bg-primary hover:scale-105 border border-primary hover:text-primary text-white border-2 cursor-pointer"
+                  onClick={handleSignOut}
+                >
+                  Logout
+                </Button>
+              )}
+
             </div>
           )}
-          <Link href="/register">
-            <Button className="bg-primary text-white hover:bg-white hover:scale-105 hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer">
-              Become a Fixer
-            </Button>
-          </Link>
+          { (!user || user.role !== "serviceProvider") && (
+            <Link href="/register">
+              <Button className="bg-primary text-white hover:bg-white hover:scale-105 hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer">
+                Become a Fixer
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
     </div>
