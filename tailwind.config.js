@@ -23,8 +23,12 @@ module.exports =  {
   				DEFAULT: '#0D7A5F',
   				foreground: 'hsl(var(--primary-foreground))'
   			},
+			xanthous: {
+				DEFAULT: '#E6AF2E',
+				foreground: 'hsl(var(--xanthous-foreground))'
+			},
   			secondary: {
-  				DEFAULT: '#62c1aaff',
+  				DEFAULT: '#3D348B',
   				foreground: 'hsl(var(--secondary-foreground))'
   			},
 			eerie_black:{

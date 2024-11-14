@@ -32,7 +32,7 @@ export const createSubcategory = async (req, res) => {
         const { subCategoryName } = req.body;
 
         // Check if the category exists
-        const category = await Category.findOne({ categoryId });
+        const category = await Category.findById(categoryId);
         if (!category) {
             return res.status(404).json({ success: false, message: "Category not found" });
         }
@@ -58,7 +58,7 @@ export const deleteSubcategory = async (req, res) => {
         const { subCategoryId } = req.params;
 
         // Find and delete the subcategory by its ID
-        const subCategory = await SubCategory.findOneAndDelete({ subCategoryId });
+        const subCategory = await SubCategory.findByIdAndDelete(subCategoryId);
         if (!subCategory) {
             return res.status(404).json({ success: false, message: "Subcategory not found" });
         }
