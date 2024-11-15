@@ -61,14 +61,14 @@ function Header() {
             <div className="flex items-center gap-6">
               <span className="text-black">Welcome, <span className='text-primary'>{user.firstname}!</span></span>
               <Button
-                className="hover:bg-primary bg-white hover:scale-105 border border-primary text-primary hover:text-white border-2 cursor-pointer"
+                className="hover:bg-primary bg-white hover:scale-105 border border-primary text-primary hover:text-white cursor-pointer"
                 onClick={handleSignOut}
               >
                 Logout
               </Button>
             </div>
           )}
-          <Link href="/register">
+          <Link href="/register-service-provider">
             <Button className="bg-primary text-white hover:bg-white hover:scale-105 hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer">
               Become a Fixer
             </Button>

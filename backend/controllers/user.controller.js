@@ -55,7 +55,7 @@ export const loginUser = async (req, res) => {
 
 export const registerUser = async (req, res) => {
     try {
-        const { firstname, lastname, email, phoneNo, password, role } = req.body;
+        const { firstname, lastname, email, phoneNo, password } = req.body;
 
         // Check if email already exists
         let existingUser = await User.findOne({ email });
@@ -72,8 +72,7 @@ export const registerUser = async (req, res) => {
             lastname,
             email,
             phoneNo,
-            password: hashedPassword,
-            role
+            password: hashedPassword
         });
 
         // Save the user
@@ -102,7 +101,6 @@ export const registerUser = async (req, res) => {
                 lastname: user.lastname,
                 email: user.email,
                 phoneNo: user.phoneNo,
-                role: user.role
             },
             token // Include the token in the response
         });
@@ -112,6 +110,74 @@ export const registerUser = async (req, res) => {
         res.status(500).json({ success: false, message: "Server error", error });
     }
 };
+
+//Service Provider Registeration
+export const registerServiceProvider = async (req, res) => {
+    upload.single('certificate')(req, res, async (err) => {
+        if (err) {
+            return res.status(400).json({ success: false, message: err.message });
+        }
+
+        try {
+            const { firstname, lastname, email, phoneNo, password } = req.body;
+
+            // Ensure the role is set to "service provider"
+            // if (role !== 'service provider') {
+            //     return res.status(400).json({ success: false, message: "Invalid role for service provider registration" });
+            // }
+
+            // Check if email already exists
+            let existingUser = await User.findOne({ email });
+            if (existingUser) {
+                return res.status(400).json({ success: false, message: "Email already exists" });
+            }
+
+            // Hash the password
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            // Create new user with certificate path
+            const user = new User({
+                firstname,
+                lastname,
+                email,
+                phoneNo,
+                password: hashedPassword,
+                certificatePath: req.file.path // Store the certificate file path
+            });
+
+            // Save the user
+            await user.save();
+
+            // Generate token after saving the user
+            const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
+
+            // Send confirmation email
+            const emailSent = await sendEmail(true, user.email, "");
+            const emailMessage = emailSent
+                ? "Email confirmation sent to your email."
+                : "Failed to send email confirmation.";
+
+            res.status(201).json({
+                success: true,
+                message: "Service provider registered successfully. " + emailMessage,
+                user: {
+                    id: user._id,
+                    firstname: user.firstname,
+                    lastname: user.lastname,
+                    email: user.email,
+                    phoneNo: user.phoneNo,
+                    certificatePath: user.certificatePath // Include the path to the certificate
+                },
+                token
+            });
+
+        } catch (error) {
+            console.error('Error during registration:', error);
+            res.status(500).json({ success: false, message: "Server error", error });
+        }
+    });
+};
+
 
 
 export const authenticateToken = (req, res, next) => {

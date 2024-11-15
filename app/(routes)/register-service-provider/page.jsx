@@ -5,91 +5,106 @@ import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
-const SignUp = () => {
+const ServiceProviderSignUp = () => {
   const router = useRouter();
-  const [role, setRole] = useState("normal");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(""); 
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [selectedService, setSelectedService] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [privacyAccepted] = useState(false);
+  const [certification, setCertification] = useState(null);
   const [error, setError] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // State for password visibility
+  const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [wageType, setWageType] = useState(""); // For "hourly" or "perJob"
+  const [wageAmount, setWageAmount] = useState(""); // For the wage amount
+
+
+  const handleFileUpload = (e) => {
+    setCertification(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    // Empty first name validation
-    if (firstName.length == "") {
-      setError("Please enter First Name");
+    if (firstName === "") {
+      setError("Please enter your First Name");
       return;
     }
-    // Empty last name validation
-    if (lastName.length == "") {
-      setError("Please enter Last Name");
+    if (lastName === "") {
+      setError("Please enter your Last Name");
       return;
     }
-    // Email validation
+
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
       setError("Please enter a valid email address");
       return;
     }
 
-    // Phone number validation (ensure it's numeric and at least 10 digits)
     const phonePattern = /^[0-9]{10}$/;
     if (!phonePattern.test(phoneNumber)) {
       setError("Please enter a valid 10-digit phone number");
       return;
     }
 
-       // Password validation
-       if (password.length < 6) {
-        setError("Password must be at least 6 characters long");
-        return;
-      }
-  
-      // Confirm password validation
-      if (password !== confirmPassword) {
-        setError("Passwords do not match");
-        return;
-      }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
 
-    if (!termsAccepted) {
-      setError("You must accept the terms and conditions");
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    if (!selectedService) {
+      setError("Please select a service you provide");
+      return;
+    }
+    if (!wageType) {
+      setError("Please select a payment type");
+      return;
+    }
+    if (wageType && !wageAmount) {
+      setError(`Please enter a ${wageType === "hourly" ? "hourly" : "per job"} wage`);
+      return;
+    }
+    
+
+    if (!termsAccepted || !privacyAccepted) {
+      setError("You must accept the terms and privacy policy");
       return;
     }
 
     setIsProcessing(true);
 
-    // Register API call
     try {
-      const response = await fetch("/api/user/register", {
+      const formData = new FormData();
+      formData.append("firstName", firstName);
+      formData.append("lastName", lastName);
+      formData.append("email", email);
+      formData.append("phoneNumber", phoneNumber);
+      formData.append("password", password);
+      formData.append("service", selectedService);
+      if (certification) formData.append("certification", certification);
+
+      const response = await fetch("/api/service-provider/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firstname: firstName,
-          lastname: lastName,
-          email,
-          phoneNo: phoneNumber,
-          password,
-          role, // Include the role in the request 
-        }),
+        body: formData,
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Store token in localStorage
         localStorage.setItem("token", data.accessToken);
         localStorage.setItem("user", JSON.stringify(data.user));
-        window.dispatchEvent(new Event("storage"));
         router.push("/");
       } else {
         setError(data.message || "Registration failed. Please try again.");
@@ -105,8 +120,8 @@ const SignUp = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50">
       <div className="lg:w-2/5 md:w-2/5 w-full bg-white rounded-lg shadow-lg my-28 p-8">
-        <h1 className="text-2xl font-semibold text-center mb-4 text-gray-800">
-          Sign Up
+        <h1 className="text-2xl font-semibold text-center mb-6 text-gray-800">
+          Service Provider Registration
         </h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -119,7 +134,6 @@ const SignUp = () => {
             <input
               type="text"
               id="firstName"
-              name="firstName"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -136,7 +150,6 @@ const SignUp = () => {
             <input
               type="text"
               id="lastName"
-              name="lastName"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -153,7 +166,6 @@ const SignUp = () => {
             <input
               type="email"
               id="email"
-              name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -196,6 +208,76 @@ const SignUp = () => {
               />
             </div>
           </div>
+          
+
+          <div className="mb-4">
+            <label
+              htmlFor="service"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Service Offered
+            </label>
+            <select
+              id="service"
+              value={selectedService}
+              onChange={(e) => setSelectedService(e.target.value)}
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            >
+              <option value="">Select a Service</option>
+              <option value="plumbing">Plumbing</option>
+              <option value="electrician">Electrician</option>
+              <option value="cleaning">Cleaning</option>
+              <option value="gardening">Gardening</option>
+              <option value="carpentry">Carpentry</option>
+            </select>
+          </div>
+          <div className="mb-4">
+  <label className="block text-gray-600 text-sm font-medium mb-1">
+    Preferred Payment Type
+  </label>
+  <div className="flex items-center space-x-4">
+    <label className="flex items-center">
+      <input
+        type="radio"
+        name="wageType"
+        value="hourly"
+        checked={wageType === "hourly"}
+        onChange={(e) => setWageType(e.target.value)}
+        className="mr-2"
+      />
+      Hourly
+    </label>
+    <label className="flex items-center">
+      <input
+        type="radio"
+        name="wageType"
+        value="perJob"
+        checked={wageType === "perJob"}
+        onChange={(e) => setWageType(e.target.value)}
+        className="mr-2"
+      />
+      Per Job
+    </label>
+  </div>
+
+  {wageType && (
+    <div className="mt-4">
+      <label
+        htmlFor="wageAmount"
+        className="block text-gray-600 text-sm font-medium mb-1"
+      >
+        Enter Wage Amount ({wageType === "hourly" ? "per hour" : "per job"})
+      </label>
+      <input
+        type="number"
+        id="wageAmount"
+        value={wageAmount}
+        onChange={(e) => setWageAmount(e.target.value)}
+        className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+      />
+    </div>
+  )}
+</div>
 
           <div className="mb-4">
             <label
@@ -206,16 +288,15 @@ const SignUp = () => {
             </label>
             <div className="relative">
               <input
-                type={showPassword ? "text" : "password"} // Toggle password visibility
+                type={showPassword ? "text" : "password"}
                 id="password"
-                name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)} // Toggle showPassword state
+                onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
               >
                 <FontAwesomeIcon
@@ -225,35 +306,50 @@ const SignUp = () => {
               </button>
             </div>
           </div>
-          <div className="mb-4">
-  <label
-    htmlFor="confirmPassword"
-    className="block text-gray-600 text-sm font-medium mb-1"
-  >
-    Confirm Password
-  </label>
-  <div className="relative">
-    <input
-      type={showConfirmPassword ? "text" : "password"} // Toggle confirm password visibility
-      id="confirmPassword"
-      name="confirmPassword"
-      value={confirmPassword}
-      onChange={(e) => setConfirmPassword(e.target.value)}
-      className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-    />
-    <button
-      type="button"
-      onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle showConfirmPassword state
-      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
-    >
-      <FontAwesomeIcon
-        icon={showConfirmPassword ? faEyeSlash : faEye}
-        size="sm"
-      />
-    </button>
-  </div>
-</div>
 
+          <div className="mb-4">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Confirm Password
+            </label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+              >
+                <FontAwesomeIcon
+                  icon={showConfirmPassword ? faEyeSlash : faEye}
+                  size="sm"
+                />
+              </button>
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="certification"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Upload Certification (required)
+            </label>
+            <input
+              type="file"
+              id="certification"
+              onChange={handleFileUpload}
+              required // Make the field required
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+          </div>
 
           <div className="mb-4">
             <label className="text-gray-600 text-sm">
@@ -277,9 +373,9 @@ const SignUp = () => {
             </label>
           </div>
 
-          {/* Error Message */}
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
+          {/* Submit Button */}
           <button
             type="submit"
             className={`bg-primary hover:bg-white hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer text-white font-semibold rounded-md py-3 px-4 w-full transition duration-200 ease-in-out ${
@@ -290,7 +386,6 @@ const SignUp = () => {
             {isProcessing ? "Creating Account..." : "Create Account"}
           </button>
         </form>
-
         <div className="mt-6 text-center">
           <Link href="/login" className="text-sm text-primary hover:underline">
             Already have an account? <b>Sign In</b>
@@ -301,4 +396,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default ServiceProviderSignUp;

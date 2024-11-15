@@ -16,8 +16,6 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <div>
           <Header />
-          <Login/>
-          <SignUp/>
           {children}
           <Footer />
         </div>

@@ -5,17 +5,71 @@ import userRoutes from "./routes/user.route.js";
 import categoryRoutes from "./routes/category.route.js";
 import subCategoryRoutes from "./routes/subCategory.route.js";
 import bcrypt from 'bcryptjs';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 
+// Define __dirname for ES module compatibility
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 
-
 app.use("/api", userRoutes);
 app.use('/api', categoryRoutes);
-app.use('/api', subCategoryRoutes); 
+app.use('/api', subCategoryRoutes);
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ success: false, message: "Internal Server Error", error: err.message });
+});
+
+
+// Define certificate directory path
+const certificateDir = path.join(__dirname, 'uploads/certificates');
+if (!fs.existsSync(certificateDir)) {
+    fs.mkdirSync(certificateDir, { recursive: true });
+    console.log('Created uploads/certificates directory');
+}
+
+// Multer configuration for handling certificate uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/certificates'); // Specify upload folder
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname)); // Rename file
+    }
+});
+
+const upload = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype === 'application/pdf' || file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only PDF and image files are allowed!'), false);
+        }
+    }
+});
+
+// Route for uploading certificates
+app.post('/api/upload-certificate', upload.single('certificate'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ success: false, message: 'No file uploaded' });
+    }
+
+    res.status(200).json({
+        success: true,
+        message: 'Certificate uploaded successfully',
+        filePath: req.file.path // Path where the certificate is stored
+    });
+});
 
 // Get all categories API
 app.get("/category", async (req, res) => {
