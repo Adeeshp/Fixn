@@ -28,6 +28,7 @@ const ServiceProviderSignUp = () => {
   const [wageType, setWageType] = useState(""); // For "hourly" or "perJob"
   const [wageAmount, setWageAmount] = useState(""); // For the wage amount
 
+
   const handleFileUpload = (e) => {
     setCertification(e.target.files[0]);
   };

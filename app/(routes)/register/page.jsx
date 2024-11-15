@@ -30,6 +30,7 @@ const SignUp = () => {
       return;
     }
     // Empty last name validation
+
     if (lastName.trim() === "") {
       setError("Please enter Last Name");
       return;
@@ -284,6 +285,35 @@ const SignUp = () => {
               </button>
             </div>
           </div>
+          <div className="mb-4">
+  <label
+    htmlFor="confirmPassword"
+    className="block text-gray-600 text-sm font-medium mb-1"
+  >
+    Confirm Password
+  </label>
+  <div className="relative">
+    <input
+      type={showConfirmPassword ? "text" : "password"} // Toggle confirm password visibility
+      id="confirmPassword"
+      name="confirmPassword"
+      value={confirmPassword}
+      onChange={(e) => setConfirmPassword(e.target.value)}
+      className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+    />
+    <button
+      type="button"
+      onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle showConfirmPassword state
+      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+    >
+      <FontAwesomeIcon
+        icon={showConfirmPassword ? faEyeSlash : faEye}
+        size="sm"
+      />
+    </button>
+  </div>
+</div>
+
 
           <div className="mb-4">
             <label className="inline-flex items-center">
