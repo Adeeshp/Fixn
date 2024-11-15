@@ -4,6 +4,7 @@ import Hero from "./_components/Hero";
 import CategoryList from "./_components/CategoryList";
 import ReviewsSection from "./_components/ReviewsSection";
 import HowItWorks from "./_components/HowItWorks";
+import OurServices from "./_components/OurServices";
 
 export default function Home() {
   const [categoryList, setCategoryList] = useState([]);
@@ -18,9 +19,6 @@ export default function Home() {
   const getCategoryList = async () => {
     try {
       const response = await fetch("/api/category");
-      
-      // Log the entire response object
-      console.log("API Response:", response);
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -46,6 +44,7 @@ export default function Home() {
     <div>
       <Hero />
       <CategoryList categoryList={categoryList} />
+      <OurServices categoryList={categoryList} />
       <HowItWorks />
       <ReviewsSection />
     </div>

@@ -2,27 +2,49 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const SignUp = () => {
-  const router = useRouter(); 
+  const router = useRouter();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState(''); // New confirm password state
   const [role, setRole] = useState('normal'); // Default role
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [error, setError] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State for confirm password visibility
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
+    // Empty first name validation
+    if (firstName.trim() === "") {
+      setError('Please enter First Name');
+      return;
+    }
+    // Empty last name validation
+    if (lastName.trim() === "") {
+      setError('Please enter Last Name');
+      return;
+    }
     // Email validation
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
       setError('Please enter a valid email address');
+      return;
+    }
+
+    // Phone number validation (ensure it's numeric and at least 10 digits)
+    const phonePattern = /^[0-9]{10}$/;
+    if (!phonePattern.test(phoneNumber)) {
+      setError('Please enter a valid 10-digit phone number');
       return;
     }
 
@@ -32,10 +54,9 @@ const SignUp = () => {
       return;
     }
 
-    // Phone number validation (ensure it's numeric and at least 10 digits)
-    const phonePattern = /^[0-9]{10}$/;
-    if (!phonePattern.test(phoneNumber)) {
-      setError('Please enter a valid 10-digit phone number');
+    // Confirm password validation (match passwords)
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
       return;
     }
 
@@ -69,8 +90,8 @@ const SignUp = () => {
         // Store token in localStorage
         localStorage.setItem('token', data.accessToken);
         localStorage.setItem('user', JSON.stringify(data.user));
+        window.dispatchEvent(new Event('storage'));
         router.push('/');
-        alert('Account created successfully!');
       } else {
         setError(data.message || 'Registration failed. Please try again.');
       }
@@ -96,7 +117,6 @@ const SignUp = () => {
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              required
             />
           </div>
 
@@ -109,7 +129,6 @@ const SignUp = () => {
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              required
             />
           </div>
 
@@ -122,7 +141,6 @@ const SignUp = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              required
             />
           </div>
 
@@ -139,7 +157,6 @@ const SignUp = () => {
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                required
               />
             </div>
           </div>
@@ -152,7 +169,6 @@ const SignUp = () => {
               value={role}
               onChange={(e) => setRole(e.target.value)}
               className="w-full border border-gray-300 rounded-md bg-transparent py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent h-12"
-              required
             >
               <option value="normal">Normal User</option>
               <option value="serviceProvider">Service Provider</option>
@@ -161,46 +177,73 @@ const SignUp = () => {
 
           <div className="mb-4">
             <label htmlFor="password" className="block text-gray-600 text-sm font-medium mb-1">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'} // Toggle password visibility
+                id="password"
+                name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)} // Toggle showPassword state
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+              >
+                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} size="sm"/>
+              </button>
+            </div>
+          </div>
+
+          {/* Confirm Password Field */}
+          <div className="mb-4">
+            <label htmlFor="confirmPassword" className="block text-gray-600 text-sm font-medium mb-1">Confirm Password</label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? 'text' : 'password'} // Toggle confirm password visibility
+                id="confirmPassword"
+                name="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle showConfirmPassword state
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+              >
+                <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} size="sm"/>
+              </button>
+            </div>
           </div>
 
           <div className="mb-4">
-            <label className="text-gray-600 text-sm">
+            <label className="inline-flex items-center">
               <input
                 type="checkbox"
-                id="terms"
-                name="terms"
                 checked={termsAccepted}
                 onChange={(e) => setTermsAccepted(e.target.checked)}
-                className="mr-2 "
-                required
+                className="form-checkbox h-4 w-4 text-primary"
               />
-              I agree to the <Link href="#" className="text-primary hover:underline">Terms and Conditions</Link> and have reviewed the <Link href="#" className="text-primary hover:underline">Privacy Policy</Link>.
+              <span className="ml-2 text-sm text-gray-600">&nbsp; I accept the <Link href="#" className="text-primary">Terms and Conditions</Link> and <Link href="#" className="text-primary">Privacy Policy.</Link></span>
             </label>
           </div>
 
-          {/* Error Message */}
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-          
-          <button type="submit" className={`bg-primary hover:bg-white hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer text-white font-semibold rounded-md py-3 px-4 w-full transition duration-200 ease-in-out ${
-              isProcessing ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-            disabled={isProcessing}>
-            {isProcessing ? 'Creating Account...' : 'Create Account'}
+
+          <button
+            type="submit"
+            disabled={isProcessing}
+            className="w-full py-2 px-4 bg-primary text-white font-semibold rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+          >
+            {isProcessing ? 'Signing up...' : 'Sign Up'}
           </button>
         </form>
 
-        <div className="mt-6 text-center">
-          <Link href="/login" className="text-sm text-primary hover:underline">Already have an account? <b>Sign In</b></Link>
-        </div>
+        <p className="mt-4 text-sm text-gray-600 text-center ">
+          <Link href="/login" className="text-primary">Already have an account? <b>Log in</b></Link>  
+        </p>
       </div>
     </div>
   );
