@@ -1,12 +1,14 @@
 import express from "express";
 const router = express.Router();
-import {loginUser, registerUser, authenticateToken, getUserProfile, forgotPassword, resetPassword} from '../controllers/user.controller.js';
+import {loginUser, registerUser, registerServiceProvider, authenticateToken, getUserProfile, forgotPassword, resetPassword} from '../controllers/user.controller.js';
 
 // Login API
 router.post("/user/login", loginUser);
 
 // Registration API
 router.post("/user/register", registerUser);
+
+router.post('/api/register-service-provider', registerServiceProvider);
 
 router.get('/user/profile', authenticateToken, getUserProfile);
 

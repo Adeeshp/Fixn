@@ -45,6 +45,9 @@ const userSchema = new mongoose.Schema({
         enum: ['normal', 'serviceProvider'], 
         required: true
     },
+    certificatePath: { 
+        type: String 
+    }, 
     wageType: {
         type: String,
         enum: ['hourly', 'fixed']
