@@ -126,22 +126,6 @@ app.post("/category/:categoryId/subcategory", async (req, res) => {
     }
 });
 
-// Delete a subcategory by ID
-app.delete("/subcategory/:subCategoryId", async (req, res) => {
-    try {
-        const { subCategoryId } = req.params;
-
-        // Find and delete the subcategory by its ID
-        const subCategory = await SubCategory.findOneAndDelete({ subCategoryId });
-        if (!subCategory) {
-            return res.status(404).json({ success: false, message: "Subcategory not found" });
-        }
-
-        res.status(200).json({ success: true, message: "Subcategory deleted successfully" });
-    } catch (error) {
-        res.status(500).json({ success: false, message: "Server error", error });
-    }
-});
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
