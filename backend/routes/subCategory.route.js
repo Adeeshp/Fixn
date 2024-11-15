@@ -15,4 +15,5 @@ router.post('/subCategory/:categoryId', createSubcategory);
 // /api/subcategory/:subCategoryId
 router.delete('/subcategory/:subCategoryId', deleteSubcategory);
 
+
 export default router;

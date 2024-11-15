@@ -2,8 +2,11 @@ import mongoose from "mongoose";
 import User from "../models/user.model.js";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
 
+// const nodemailer = require('nodemailer');
 const JWT_SECRET = process.env.JWT_SECRET || "mySuperSecretKey123!"
+const BASE_URL = process.env.BASE_URL || 'http://localhost:3000'; // Your frontend URL (e.g., )
 
 export const loginUser = async (req, res) => {
     try {
@@ -25,14 +28,14 @@ export const loginUser = async (req, res) => {
             return res.status(400).json({ success: false, message: "Invalid credentials" });
         }
 
-        const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
         console.log('Token generated:', token);
 
         // Send success response
         res.status(200).json({
             success: true,
             message: "Login successful",
-            userId: user,
+            user: user,
             accessToken: token
         });
     } catch (error) {
@@ -69,12 +72,22 @@ export const registerUser = async (req, res) => {
         await user.save();
 
         // Generate token after user is saved
-        const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
 
-        // Send success response with the token
+        // Attempt to send the confirmation email
+        const emailSent = await sendEmail(true, user.email, "");
+        let emailMessage = "";
+
+        if (emailSent) {
+            emailMessage = "Email confirmation sent to your email.";
+        } else {
+            emailMessage = "Failed to send email confirmation.";
+        }
+
+        // Send success response including the email status
         res.status(201).json({
             success: true,
-            message: "User registered successfully",
+            message: "User registered successfully. " + emailMessage,
             user: {
                 id: user._id,
                 firstname: user.firstname,
@@ -85,6 +98,7 @@ export const registerUser = async (req, res) => {
             },
             token // Include the token in the response
         });
+
     } catch (error) {
         console.error('Error during registration:', error);
         res.status(500).json({ success: false, message: "Server error", error });
@@ -113,10 +127,10 @@ export const authenticateToken = (req, res, next) => {
 export const getUserProfile = async (req, res) => {
     try {
         // Find user by ID from the token
-        const user = await User.findById(req.user.userId).select('-password'); // Exclude the password field
+        const user = await User.findById(req.user._id).select('-password'); // Exclude the password field
 
         if (!user) {
-            console.log('User not found:', req.user.userId);
+            console.log('User not found:', req.user._id);
             return res.status(404).json({ success: false, message: "User not found" });
         }
 
@@ -128,5 +142,112 @@ export const getUserProfile = async (req, res) => {
     } catch (error) {
         console.error("Error retrieving profile:", error);
         res.status(500).json({ success: false, message: "Server error", error: error.message });
+    }
+};
+
+//Forgot Password
+export const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        // Check if user exists
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        // Generate reset token
+        const resetToken = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
+
+        // Generate reset link
+        const resetLink = `${BASE_URL}/reset-password?token=${resetToken}`;
+        console.log(`Generated Reset Link: ${resetLink}`);
+
+        // Send email with reset link
+        const emailSent = await sendEmail(false, user.email, resetLink);
+        if (emailSent) {
+            res.status(200).json({
+                success: true,
+                message: "Password reset link has been sent to your email.",
+            });
+        } else {
+            res.status(500).json({ success: false, message: "Failed to send email" });
+        }
+    } catch (error) {
+        console.error("Error sending password reset email:", error);
+        res.status(500).json({ success: false, message: "Server error", error });
+    }
+};
+
+// Function to send reset email using nodemailer
+const sendEmail = async (isRegistration, email, link) => {
+    console.log('Email User:', process.env.EMAIL_USER);
+    console.log('Email Pass (hidden for security):', !!process.env.EMAIL_PASS); // True if password is defined
+
+    const transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: process.env.EMAIL_USER || 'fixnfixn00@gmail.com', // Your email address
+            pass: process.env.EMAIL_PASS || 'xbtjevpxkphljbkd', // Your email password or app-specific password
+        },
+    });
+    console.log("Adeesh");
+    console.log(`${isRegistration}`);
+    // Conditionally change the email content based on whether it's a registration or reset
+    const subject = isRegistration ? 'Welcome to Our Service' : 'Password Reset';
+    const htmlContent = isRegistration
+        ? `<p>Welcome to our service! Your account has been successfully created. You can now log in and start using our platform.</p>`
+        : `<p>To reset your password, click the link below:</p>
+           <a href="${link}">Reset Password</a>`;
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: subject,
+        html: htmlContent,
+    };
+
+    console.log(mailOptions);
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully:', info.response);
+        return true;
+    } catch (error) {
+        console.error('Error sending email:', error.message || error);
+        return false;
+    }
+};
+
+// Reset Password Function
+export const resetPassword = async (req, res) => {
+    const { token, newPassword } = req.body;
+
+    try {
+        // Verify the token
+        const decoded = jwt.verify(token, JWT_SECRET);
+
+        // Find the user by the ID in the token
+        const user = await User.findById(decoded.id); // Use decoded.id instead of decoded._id
+        console.log(`Decoded Token: ${JSON.stringify(decoded)}`);
+        console.log(`User: ${user}`);
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update the user's password
+        user.password = hashedPassword;
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Password updated successfully.",
+        });
+    } catch (error) {
+        console.error("Error resetting password:", error);
+        res.status(500).json({ success: false, message: "Server error", error });
     }
 };

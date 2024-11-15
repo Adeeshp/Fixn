@@ -1,13 +1,9 @@
 import mongoose from 'mongoose';
-import AutoIncrementFactory from 'mongoose-sequence';
-
-// Initialize AutoIncrement with mongoose
-// const AutoIncrement = AutoIncrementFactory(mongoose);
 
 const subCategorySchema = new mongoose.Schema({
     subCategoryId: {
-        type: mongoose.Schema.Types.ObjectId, 
-        auto: true,
+      type: mongoose.Schema.Types.ObjectId,
+      auto: true,
     },
     subCategoryName: {
         type: String,
@@ -17,15 +13,10 @@ const subCategorySchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
         required: true
-    },
-   
+    }
 }, {
-    timestamps: true // Automatically adds createdAt and updatedAt fields
+    timestamps: true 
 });
-
-
-// Apply AutoIncrement plugin to subCategoryId
-// subCategorySchema.plugin(AutoIncrement, { inc_field: 'subCategoryId' });
 
 // Model
 const SubCategory = mongoose.model('SubCategory', subCategorySchema);
