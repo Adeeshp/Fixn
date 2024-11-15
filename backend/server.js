@@ -5,10 +5,6 @@ import userRoutes from "./routes/user.route.js";
 import categoryRoutes from "./routes/category.route.js";
 import subCategoryRoutes from "./routes/subCategory.route.js";
 import bcrypt from 'bcryptjs';
-<<<<<<< HEAD
-=======
-
->>>>>>> refs/remotes/origin/dt_home_api
 
 dotenv.config();
 
