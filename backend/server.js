@@ -4,6 +4,8 @@ import { connectDB } from './config/db.js';
 import userRoutes from "./routes/user.route.js";
 import categoryRoutes from "./routes/category.route.js";
 import subCategoryRoutes from "./routes/subCategory.route.js";
+import taskRoutes from "./routes/task.route.js";
+
 import bcrypt from 'bcryptjs';
 
 dotenv.config();
@@ -12,9 +14,11 @@ const app = express();
 app.use(express.json());
 
 
-app.use("/api", userRoutes);
-app.use('/api', categoryRoutes);
-app.use('/api', subCategoryRoutes); 
+app.use("/api", userRoutes, categoryRoutes, subCategoryRoutes, taskRoutes);
+// app.use('/api', categoryRoutes);
+// app.use('/api', subCategoryRoutes); 
+// app.use("/api", taskRoutes);
+
 
 // Get all categories API
 app.get("/category", async (req, res) => {

@@ -58,8 +58,8 @@ const taskSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Request",
     },
-    estimatedTime: {
-      type: Date,
+    estimatedTime: {  
+      type: String,
     },
     transportRequired: {
       type: Boolean,
