@@ -26,7 +26,7 @@ const ServiceProviderSignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [wageType, setWageType] = useState(""); // For "hourly" or "perJob"
-  const [wageAmount, setWageAmount] = useState(""); // For the wage amount
+const [wageAmount, setWageAmount] = useState(""); // For the wage amount
 
 
   const handleFileUpload = (e) => {
@@ -74,7 +74,6 @@ const ServiceProviderSignUp = () => {
       setError("Please enter a valid Canadian zip code (e.g., A1A 1A1)");
       return;
     }
-
     if (password.length < 6) {
       setError("Password must be at least 6 characters long");
       return;
@@ -123,22 +122,23 @@ const ServiceProviderSignUp = () => {
         body: formData,
       });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (response.ok) {
-        localStorage.setItem("token", data.accessToken);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        router.push("/");
-      } else {
-        setError(data.message || "Registration failed. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error during registration:", error);
-      setError("Server error. Please try again later.");
-    } finally {
-      setIsProcessing(false);
+    if (response.ok) {
+      localStorage.setItem("token", data.accessToken);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      router.push("/");
+    } else {
+      setError(data.message || "Registration failed. Please try again.");
     }
-  };
+  } catch (error) {
+    console.error("Error during registration:", error);
+    setError("Server error. Please try again later.");
+  } finally {
+    setIsProcessing(false);
+  }
+};
+
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50">
@@ -541,6 +541,7 @@ const ServiceProviderSignUp = () => {
             </label>
           </div>
 
+          {/* Error Message */}
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
           {/* Submit Button */}
