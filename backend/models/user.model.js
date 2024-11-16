@@ -28,26 +28,27 @@
             type: String
         },
         imageURL: {
-            type: String
+            type: Buffer
         },
         gender: {
             type: String,
             enum: ['Male', 'Female', 'Other']
         },
         categoryId: {
-            type: Number
-        },
-        subCategoryId: {
-            type: Number
-        },
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Category' // replace 'Category' with the actual model name for category
+          },
+          subCategoryId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'SubCategory' // replace 'SubCategory' with the actual model name for subcategory
+          },
         role: {
             type: String,
-            enum: ['normal', 'serviceProvider'], 
-            // required: true
+            enum: ['normal', 'serviceProvider']
         },
-        certificatePath: { 
-            type: String 
-        }, 
+        certificatePath: {
+            type: String
+        },
         wageType: {
             type: String,
             enum: ['hourly', 'fixed']
@@ -55,12 +56,16 @@
         wage: {
             type: Number
         },
-        documentId: {
-            type: Number
-        }
+        documents: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Document"
+            }
+        ]
     }, {
         timestamps: true // Automatically adds createdAt and updatedAt fields
     });
-
-    const User = mongoose.model('User', userSchema);
+    
+    const User = mongoose.model("User", userSchema);
     export default User;
+    
