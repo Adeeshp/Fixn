@@ -26,8 +26,7 @@ const ServiceProviderSignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [wageType, setWageType] = useState(""); // For "hourly" or "perJob"
-const [wageAmount, setWageAmount] = useState(""); // For the wage amount
-
+  const [wageAmount, setWageAmount] = useState(""); // For the wage amount
 
   const handleFileUpload = (e) => {
     setCertification(e.target.files[0]);
@@ -122,23 +121,22 @@ const [wageAmount, setWageAmount] = useState(""); // For the wage amount
         body: formData,
       });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (response.ok) {
-      localStorage.setItem("token", data.accessToken);
-      localStorage.setItem("user", JSON.stringify(data.user));
-      router.push("/");
-    } else {
-      setError(data.message || "Registration failed. Please try again.");
+      if (response.ok) {
+        localStorage.setItem("token", data.accessToken);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        router.push("/");
+      } else {
+        setError(data.message || "Registration failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during registration:", error);
+      setError("Server error. Please try again later.");
+    } finally {
+      setIsProcessing(false);
     }
-  } catch (error) {
-    console.error("Error during registration:", error);
-    setError("Server error. Please try again later.");
-  } finally {
-    setIsProcessing(false);
-  }
-};
-
+  };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50">
@@ -468,98 +466,79 @@ const [wageAmount, setWageAmount] = useState(""); // For the wage amount
               htmlFor="password"
               className="block text-gray-600 text-sm font-medium mb-1"
             >
-              Password
+              Payment Type
             </label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
-              >
-                <FontAwesomeIcon
-                  icon={showPassword ? faEyeSlash : faEye}
-                  size="sm"
+            <div className="flex space-x-4">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="wageType"
+                  value="hourly"
+                  checked={wageType === "hourly"}
+                  onChange={() => setWageType("hourly")}
+                  className="form-radio"
                 />
-              </button>
+                <span className="ml-2">Hourly</span>
+              </label>
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="wageType"
+                  value="perJob"
+                  checked={wageType === "perJob"}
+                  onChange={() => setWageType("perJob")}
+                  className="form-radio"
+                />
+                <span className="ml-2">Per Job</span>
+              </label>
             </div>
           </div>
 
-          <div className="mb-4">
-            <label
-              htmlFor="confirmPassword"
-              className="block text-gray-600 text-sm font-medium mb-1"
-            >
-              Confirm Password
-            </label>
-            <div className="relative">
+          {wageType && (
+            <div className="mb-4">
+              <label
+                htmlFor="wageAmount"
+                className="block text-gray-600 text-sm font-medium mb-1"
+              >
+                Wage Amount ({wageType === "hourly" ? "per hour" : "per job"})
+              </label>
               <input
-                type={showConfirmPassword ? "text" : "password"}
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                type="number"
+                id="wageAmount"
+                value={wageAmount}
+                onChange={(e) => setWageAmount(e.target.value)}
                 className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
-              >
-                <FontAwesomeIcon
-                  icon={showConfirmPassword ? faEyeSlash : faEye}
-                  size="sm"
-                />
-              </button>
             </div>
-          </div>
+          )}
 
           <div className="mb-4">
             <label className="text-gray-600 text-sm">
               <input
                 type="checkbox"
-                id="terms"
-                name="terms"
                 checked={termsAccepted}
                 onChange={(e) => setTermsAccepted(e.target.checked)}
-                className="mr-2 "
+                className="mr-2"
               />
-              I agree to the{" "}
-              <Link href="#" className="text-primary hover:underline">
-                Terms and Conditions
-              </Link>{" "}
-              and have reviewed the{" "}
-              <Link href="#" className="text-primary hover:underline">
-                Privacy Policy
+              I accept the{" "}
+              <Link href="/terms" className="text-blue-500">
+                terms and conditions
               </Link>
-              .
             </label>
           </div>
 
-          {/* Error Message */}
-          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+          {error && (
+            <p className="text-red-500 text-sm mb-4">{error}</p>
+          )}
 
-          {/* Submit Button */}
           <button
             type="submit"
-            className={`bg-primary hover:bg-white hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer text-white font-semibold rounded-md py-3 px-4 w-full transition duration-200 ease-in-out ${
-              isProcessing ? "opacity-50 cursor-not-allowed" : ""
-            }`}
             disabled={isProcessing}
+            className="w-full bg-primary text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           >
-            {isProcessing ? "Creating Account..." : "Create Account"}
+            {isProcessing ? "Processing..." : "Sign Up"}
           </button>
         </form>
-        <div className="mt-6 text-center">
-          <Link href="/login" className="text-sm text-primary hover:underline">
-            Already have an account? <b>Sign In</b>
-          </Link>
-        </div>
       </div>
     </div>
   );
