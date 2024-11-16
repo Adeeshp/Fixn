@@ -1,12 +1,16 @@
+"use client";
 import Image from "next/image";
-import React from "react";
+import React, { useContext } from "react";
 import Link from "next/link";
+import { UserContext } from "../contexts/UserContext";
 
 const Footer = () => {
+  const { user } = useContext(UserContext);
+
   return (
     <footer className="bg-primary/10 text-gray-700 text-center text-surface/75 lg:text-left">
-      <div className="mx-6 py-10 text-center md:text-left ">
-        <div className="grid-1 grid gap-16 md:grid-cols-3 lg:grid-cols-3 ">
+      <div className="mx-6 py-10 text-center md:text-left">
+        <div className="grid-1 grid gap-16 md:grid-cols-3 lg:grid-cols-3">
           <div className="lg:ml-16">
             <h6 className="mb-4 flex items-center justify-center font-semibold uppercase md:justify-start">
               <Link href="/">
@@ -14,26 +18,33 @@ const Footer = () => {
               </Link>
             </h6>
             <p>
-              Your Trusted Experts for Quick, Reliable, and Quality
-              Repairs, Wherever You Need Them.
+              Your Trusted Experts for Quick, Reliable, and Quality Repairs,
+              Wherever You Need Them.
             </p>
           </div>
 
-          <div className="">
+          <div>
             <h6 className="mb-4 flex justify-center font-semibold uppercase md:justify-start">
               Quick Links
             </h6>
             <p className="mb-4">
               <Link href="/">Home</Link>
             </p>
+            {user && (
+              <p className="mb-4">
+                <Link href="/postings">Job Postings</Link>
+              </p>
+            )}
+            {!user && (
+              <p className="mb-4">
+                <Link href="/login">Login</Link>
+              </p>
+            )}
             <p className="mb-4">
-              <Link href="/services">Services</Link>
-            </p>
-            <p className="mb-4">
-              <Link href="/">About Us</Link>
+              <Link href="/about">About Us</Link>
             </p>
             <p>
-              <Link href="/">Privacy Policy</Link>
+              <Link href="/privacy">Privacy Policy</Link>
             </p>
           </div>
 
