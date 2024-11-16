@@ -3,6 +3,9 @@ import User from "../models/user.model.js";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
+import multer from "multer";
+import path from "path";
+// import { JWT_SECRET } from "../config/config.js"; // Replace with your JWT secret
 
 // const nodemailer = require('nodemailer');
 const JWT_SECRET = process.env.JWT_SECRET || "mySuperSecretKey123!"
@@ -112,8 +115,106 @@ export const registerUser = async (req, res) => {
 };
 
 //Service Provider Registeration
+// export const registerServiceProvider = async (req, res) => {
+//     upload.single('certificate')(req, res, async (err) => {
+//         if (err) {
+//             return res.status(400).json({ success: false, message: err.message });
+//         }
+
+//         try {
+//             const { firstname, lastname, email, phoneNo, password} = req.body;
+
+//             // Ensure the role is set to "service provider"
+//             // if (role !== 'service provider') {
+//             //     return res.status(400).json({ success: false, message: "Invalid role for service provider registration" });
+//             // }
+
+//             // Check if email already exists
+//             let existingUser = await User.findOne({ email });
+//             if (existingUser) {
+//                 return res.status(400).json({ success: false, message: "Email already exists" });
+//             }
+
+//             // Hash the password
+//             const hashedPassword = await bcrypt.hash(password, 10);
+
+//             // Create new user with certificate path
+//             const user = new User({
+//                 firstname,
+//                 lastname,
+//                 email,
+//                 phoneNo,
+//                 role :"serviceProvider",
+//                 password: hashedPassword,
+//                 certificatePath: req.file.path // Store the certificate file path
+//             });
+
+//             // Save the user
+//             await user.save();
+
+//             // Generate token after saving the user
+//             const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
+
+//             // Send confirmation email
+//             const emailSent = await sendEmail(true, user.email, "");
+//             const emailMessage = emailSent
+//                 ? "Email confirmation sent to your email."
+//                 : "Failed to send email confirmation.";
+
+//             res.status(201).json({
+//                 success: true,
+//                 message: "Service provider registered successfully. " + emailMessage,
+//                 user: {
+//                     id: user._id,
+//                     firstname: user.firstname,
+//                     lastname: user.lastname,
+//                     email: user.email,
+//                     role: user.role,
+//                     phoneNo: user.phoneNo,
+//                     certificatePath: user.certificatePath // Include the path to the certificate
+//                 },
+//                 token
+//             });
+
+//         } catch (error) {
+//             console.error('Error during registration:', error);
+//             res.status(500).json({ success: false, message: "Server error", error });
+//         }
+//     });
+// };
+
+
+
+// Set up multer storage
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/certificates'); // Save files to this folder
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, `${uniqueSuffix}-${file.originalname}`);
+    }
+});
+
+// File filter for certificates
+const fileFilter = (req, file, cb) => {
+    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('Invalid file type. Only PDF, JPEG, and PNG are allowed.'));
+    }
+};
+
+const upload = multer({
+    storage,
+    fileFilter
+}).single('certificate'); // Single file upload with the key 'certificate'
+
+// Controller function
 export const registerServiceProvider = async (req, res) => {
-    upload.single('certificate')(req, res, async (err) => {
+    // Use multer for file handling
+    upload(req, res, async (err) => {
         if (err) {
             return res.status(400).json({ success: false, message: err.message });
         }
@@ -121,13 +222,8 @@ export const registerServiceProvider = async (req, res) => {
         try {
             const { firstname, lastname, email, phoneNo, password } = req.body;
 
-            // Ensure the role is set to "service provider"
-            // if (role !== 'service provider') {
-            //     return res.status(400).json({ success: false, message: "Invalid role for service provider registration" });
-            // }
-
             // Check if email already exists
-            let existingUser = await User.findOne({ email });
+            const existingUser = await User.findOne({ email });
             if (existingUser) {
                 return res.status(400).json({ success: false, message: "Email already exists" });
             }
@@ -135,48 +231,44 @@ export const registerServiceProvider = async (req, res) => {
             // Hash the password
             const hashedPassword = await bcrypt.hash(password, 10);
 
-            // Create new user with certificate path
+            // Create user with the uploaded file path
             const user = new User({
                 firstname,
                 lastname,
                 email,
                 phoneNo,
+                role: "serviceProvider",
                 password: hashedPassword,
-                certificatePath: req.file.path // Store the certificate file path
+                certificatePath: req.file ? req.file.path : null // Save file path if available
             });
 
-            // Save the user
+            // Save the user to the database
             await user.save();
 
-            // Generate token after saving the user
+            // Generate JWT token
             const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
-
-            // Send confirmation email
-            const emailSent = await sendEmail(true, user.email, "");
-            const emailMessage = emailSent
-                ? "Email confirmation sent to your email."
-                : "Failed to send email confirmation.";
 
             res.status(201).json({
                 success: true,
-                message: "Service provider registered successfully. " + emailMessage,
+                message: "Service provider registered successfully.",
                 user: {
                     id: user._id,
                     firstname: user.firstname,
                     lastname: user.lastname,
                     email: user.email,
                     phoneNo: user.phoneNo,
-                    certificatePath: user.certificatePath // Include the path to the certificate
+                    role: user.role,
+                    certificatePath: user.certificatePath
                 },
                 token
             });
-
         } catch (error) {
-            console.error('Error during registration:', error);
+            console.error("Error during registration:", error);
             res.status(500).json({ success: false, message: "Server error", error });
         }
     });
 };
+
 
 
 

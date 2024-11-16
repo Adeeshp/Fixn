@@ -11,18 +11,18 @@ const ServiceProviderSignUp = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [address, setAddress] = useState(""); // Add this state for the address
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [selectedService, setSelectedService] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [privacyAccepted] = useState(false);
   const [certification, setCertification] = useState(null);
   const [error, setError] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [wageType, setWageType] = useState(""); // For "hourly" or "perJob"
-  const [wageAmount, setWageAmount] = useState(""); // For the wage amount
+const [wageAmount, setWageAmount] = useState(""); // For the wage amount
 
 
   const handleFileUpload = (e) => {
@@ -53,7 +53,10 @@ const ServiceProviderSignUp = () => {
       setError("Please enter a valid 10-digit phone number");
       return;
     }
-
+    if(!address){
+      setError("Please enter your address");
+      return;
+    }
     if (password.length < 6) {
       setError("Password must be at least 6 characters long");
       return;
@@ -68,6 +71,11 @@ const ServiceProviderSignUp = () => {
       setError("Please select a service you provide");
       return;
     }
+    if (!termsAccepted) {
+      setError("You must accept the terms and conditions");
+      return;
+    }
+
     if (!wageType) {
       setError("Please select a payment type");
       return;
@@ -78,44 +86,44 @@ const ServiceProviderSignUp = () => {
     }
     
 
-    if (!termsAccepted || !privacyAccepted) {
-      setError("You must accept the terms and privacy policy");
-      return;
-    }
-
     setIsProcessing(true);
 
-    try {
-      const formData = new FormData();
-      formData.append("firstName", firstName);
-      formData.append("lastName", lastName);
-      formData.append("email", email);
-      formData.append("phoneNumber", phoneNumber);
-      formData.append("password", password);
-      formData.append("service", selectedService);
-      if (certification) formData.append("certification", certification);
+   
+  try {
+    const formData = new FormData();
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("email", email);
+    formData.append("phoneNumber", phoneNumber);
+    formData.append("address", address); // Include address
+    formData.append("password", password);
+    formData.append("service", selectedService);
+    formData.append("wageType", wageType); // Include wage type
+    formData.append("wageAmount", wageAmount); // Include wage amount
+    if (certification) formData.append("certification", certification);
 
-      const response = await fetch("/api/service-provider/register", {
-        method: "POST",
-        body: formData,
-      });
+    const response = await fetch("/api/user/registerServiceProvider", {
+      method: "POST",
+      body: formData,
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (response.ok) {
-        localStorage.setItem("token", data.accessToken);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        router.push("/");
-      } else {
-        setError(data.message || "Registration failed. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error during registration:", error);
-      setError("Server error. Please try again later.");
-    } finally {
-      setIsProcessing(false);
+    if (response.ok) {
+      localStorage.setItem("token", data.accessToken);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      router.push("/");
+    } else {
+      setError(data.message || "Registration failed. Please try again.");
     }
-  };
+  } catch (error) {
+    console.error("Error during registration:", error);
+    setError("Server error. Please try again later.");
+  } finally {
+    setIsProcessing(false);
+  }
+};
+
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50">
@@ -209,7 +217,21 @@ const ServiceProviderSignUp = () => {
             </div>
           </div>
           
-
+          <div className="mb-4">
+  <label
+    htmlFor="address"
+    className="block text-gray-600 text-sm font-medium mb-1"
+  >
+    Address
+  </label>
+  <input
+    type="text"
+    id="address"
+    value={address}
+    onChange={(e) => setAddress(e.target.value)}
+    className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+  />
+</div>
           <div className="mb-4">
             <label
               htmlFor="service"
@@ -373,6 +395,7 @@ const ServiceProviderSignUp = () => {
             </label>
           </div>
 
+          {/* Error Message */}
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
           {/* Submit Button */}

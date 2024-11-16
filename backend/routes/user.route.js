@@ -8,7 +8,7 @@ router.post("/user/login", loginUser);
 // Registration API
 router.post("/user/register", registerUser);
 
-router.post('/api/register-service-provider', registerServiceProvider);
+router.post('/user/registerServiceProvider', registerServiceProvider);
 
 router.get('/user/profile', authenticateToken, getUserProfile);
 
