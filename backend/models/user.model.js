@@ -36,11 +36,11 @@
         },
         categoryId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Category' // replace 'Category' with the actual model name for category
+            ref: 'Category'
           },
           subCategoryId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'SubCategory' // replace 'SubCategory' with the actual model name for subcategory
+            ref: 'SubCategory'
           },
         role: {
             type: String,
