@@ -50,6 +50,15 @@ const taskSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    city: {
+      type: String,
+    },
+    province: {
+      type: String,
+    },
+    country: {
+      type: String,
+    },
     zipcode: {
       type: String,
       required: true,

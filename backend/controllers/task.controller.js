@@ -20,13 +20,14 @@ export const createTask = async (req, res) => {
         description,
         image,
         address,
+        city,
+        province,
         zipcode,
         estimatedTime,
         transportRequired,
         taskStartTime,
-        taskEndTime,
-        // wageType,
-        // wage
+        // taskEndTime,
+       
     } = req.body;
 
     const imageFile = req.files["image"] ? req.files["image"][0].buffer : null;
@@ -40,13 +41,15 @@ export const createTask = async (req, res) => {
             description,
             image : imageFile,
             address,
+            city,
+            province,
+            country: "Canada",
             zipcode,
             estimatedTime,
             transportRequired,
             taskStartTime,
             taskEndTime,
-            // wageType,
-            // wage
+           
         });
 
         await newTask.save();
