@@ -43,39 +43,7 @@ const Login = () => {
       return;
     }
 
-    setIsProcessing(true); // Start processing
-
-    // Simulate a login API call
-    // try {
-    //   const response = await fetch('/api/user/login', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({ email: username, password }),
-    //   });
-
-    //   const data = await response.json();
-
-    //   if (response.ok) {
-    //     console.log('Login successful:', data);
-    //     // Store the user info in localStorage (or sessionStorage)
-    //     localStorage.setItem('token', data.accessToken);
-    //     localStorage.setItem('user', JSON.stringify(data.user)); // Store user object
-
-    //     window.location.reload();
-
-    //     // Redirect to home page
-    //     navigate('/');
-    //   } else {
-    //     setError(data.message || 'Invalid username or password');
-    //   }
-    // } catch (error) {
-    //   console.error('Error logging in:', error);
-    //   setError('Server error. Please try again later.');
-    // } finally {
-    //   setIsProcessing(false); // End processing
-    // }
+    setIsProcessing(true); 
 
     try {
       const response = await fetch('/api/user/login', {
@@ -105,7 +73,7 @@ const Login = () => {
       setIsProcessing(false);
     }
   };
-  
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50 px-4">
       <div className="lg:w-2/6 md:w-1/2 w-full bg-white rounded-lg shadow-lg p-8">
