@@ -11,6 +11,10 @@ const ServiceProviderSignUp = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [zipCode, setZipCode] = useState("");
+const [city, setCity] = useState("");
+const [province, setProvince] = useState("");
+
   const [address, setAddress] = useState(""); // Add this state for the address
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -56,6 +60,20 @@ const ServiceProviderSignUp = () => {
       setError("Please enter your address");
       return;
     }
+    if (city === "") {
+      setError("Please enter your city");
+      return;
+    }
+    if (province === "") {
+      setError("Please select your province");
+      return;
+    }
+    const zipPattern = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+    if (!zipPattern.test(zipCode)) {
+      setError("Please enter a valid Canadian zip code (e.g., A1A 1A1)");
+      return;
+    }
+    
     if (password.length < 6) {
       setError("Password must be at least 6 characters long");
       return;
@@ -97,6 +115,9 @@ const ServiceProviderSignUp = () => {
       formData.append("service", selectedService);
       formData.append("wageType", wageType); // Include wage type
       formData.append("wage", wageAmount); // Include wage amount
+      formData.append("city", city);
+formData.append("province", province);
+formData.append("zipCode", zipCode);
       if (certification) formData.append("certification", certification);
 
       const response = await fetch("/api/user/registerServiceProvider", {
@@ -176,6 +197,61 @@ const ServiceProviderSignUp = () => {
             />
           </div>
 
+        <div className="mb-4">
+            <label
+              htmlFor="password"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+              >
+                <FontAwesomeIcon
+                  icon={showPassword ? faEyeSlash : faEye}
+                  size="sm"
+                />
+              </button>
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Confirm Password
+            </label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+              >
+                <FontAwesomeIcon
+                  icon={showConfirmPassword ? faEyeSlash : faEye}
+                  size="sm"
+                />
+              </button>
+            </div>
+          </div>
           <div className="mb-4">
             <label
               htmlFor="phoneNumber"
@@ -212,6 +288,81 @@ const ServiceProviderSignUp = () => {
               />
             </div>
           </div>
+          <div className="mb-4">
+  <label
+    htmlFor="country"
+    className="block text-gray-600 text-sm font-medium mb-1"
+  >
+    Country
+  </label>
+  <input
+    type="text"
+    id="country"
+    value="Canada"
+    readOnly
+    className="w-full border border-gray-300 rounded-md py-2 px-3 bg-gray-100 cursor-not-allowed focus:outline-none"
+  />
+</div>
+
+<div className="mb-4">
+  <label
+    htmlFor="province"
+    className="block text-gray-600 text-sm font-medium mb-1"
+  >
+    Province
+  </label>
+  <select
+    id="province"
+    value={province}
+    onChange={(e) => setProvince(e.target.value)}
+    className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+  >
+    <option value="">Select a Province</option>
+    <option value="Alberta">Alberta</option>
+    <option value="British Columbia">British Columbia</option>
+    <option value="Manitoba">Manitoba</option>
+    <option value="New Brunswick">New Brunswick</option>
+    <option value="Newfoundland and Labrador">Newfoundland and Labrador</option>
+    <option value="Nova Scotia">Nova Scotia</option>
+    <option value="Ontario">Ontario</option>
+    <option value="Prince Edward Island">Prince Edward Island</option>
+    <option value="Quebec">Quebec</option>
+    <option value="Saskatchewan">Saskatchewan</option>
+  </select>
+</div>
+<div className="mb-4 flex space-x-4">
+  <div className="w-1/2">
+    <label
+      htmlFor="city"
+      className="block text-gray-600 text-sm font-medium mb-1"
+    >
+      City
+    </label>
+    <input
+      type="text"
+      id="city"
+      value={city}
+      onChange={(e) => setCity(e.target.value)}
+      className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+    />
+  </div>
+
+  <div className="w-1/2">
+    <label
+      htmlFor="zipCode"
+      className="block text-gray-600 text-sm font-medium mb-1"
+    >
+      Zip Code
+    </label>
+    <input
+      type="text"
+      id="zipCode"
+      value={zipCode}
+      onChange={(e) => setZipCode(e.target.value)}
+      className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+    />
+  </div>
+</div>
 
           <div className="mb-4">
             <label
@@ -303,46 +454,71 @@ const ServiceProviderSignUp = () => {
               />
             </div>
           )}
+        
 
-          <div className="mb-4">
-            <label className="block text-gray-600 text-sm font-medium mb-1">
-              Certification
+         
+        <div className="mb-4">
+            <label
+              htmlFor="certification"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Upload Certification (required)
             </label>
             <input
               type="file"
+              id="certification"
               onChange={handleFileUpload}
-              accept="application/pdf, image/jpeg, image/png"
-              className="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              required // Make the field required
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
 
+
+
           <div className="mb-4">
-            <label className="flex items-center">
+            <label className="text-gray-600 text-sm">
               <input
                 type="checkbox"
+                id="terms"
+                name="terms"
                 checked={termsAccepted}
                 onChange={(e) => setTermsAccepted(e.target.checked)}
-                className="mr-2"
+                className="mr-2 "
               />
-              I accept the{" "}
-              <Link href="/terms" className="text-blue-500">
-                terms and conditions
+              I agree to the{" "}
+              <Link href="#" className="text-primary hover:underline">
+                Terms and Conditions
+              </Link>{" "}
+              and have reviewed the{" "}
+              <Link href="#" className="text-primary hover:underline">
+                Privacy Policy
               </Link>
+              .
             </label>
           </div>
+
 
           {error && (
             <p className="text-red-500 text-sm mb-4">{error}</p>
           )}
 
-          <button
+           {/* Submit Button */}
+           <button
             type="submit"
+            className={`bg-primary hover:bg-white hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer text-white font-semibold rounded-md py-3 px-4 w-full transition duration-200 ease-in-out ${
+              isProcessing ? "opacity-50 cursor-not-allowed" : ""
+            }`}
             disabled={isProcessing}
-            className="w-full bg-primary text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           >
-            {isProcessing ? "Processing..." : "Sign Up"}
+            {isProcessing ? "Creating Account..." : "Create Account"}
           </button>
         </form>
+        <div className="mt-6 text-center">
+          <Link href="/login" className="text-sm text-primary hover:underline">
+            Already have an account? <b>Sign In</b>
+          </Link>
+        </div>
+
       </div>
     </div>
   );
