@@ -1,8 +1,9 @@
 import { Calendar, Clock, MapPin, User } from 'lucide-react';
 import Image from 'next/image';
-import React from 'react';
-// import dateFormatter from './DateFormatter';
-// import { calculateTimeAgo } from './calculateTimeAgo'; 
+import React, {useEffect, useState, useContext} from 'react';
+import { UserContext } from '../contexts/UserContext';
+import dateFormatter from './DateFormatter';
+import { calculateTimeAgo } from './calculateTimeAgo'; 
 
 function JobPostingList({ jobPost, type }) {
     const { user } = useContext(UserContext);
@@ -43,29 +44,20 @@ function JobPostingList({ jobPost, type }) {
                         No Data Found
                     </div>                    
                 }
-                
-                // {data.length > 0 ? if((category, index) => (
-                //     <div></div>
-                // )) : 
-                //     [1,2,3,4,5,6].map((item,index)=>(
-                //         <div key={index} className='h-[120px] w-full bg-slate-200 animate-pulse rounded-lg'></div>
-                //     ))
-                // }
-
             } else { // service provider
-        
+                
             }
 
           } else {
             console.error("Error fetching tasks:", data.message);
           }
         } catch (error) {
-          console.error("Fetch error:", error);
+        //   console.error("Fetch error:", error);
+          throw new Error(`HTTP error! Status: ${error}`);
         }
     };
 
     const JobPostingCard = ({ job }) => {
-        const strDate = dateToString(job.createdAt);
         return (
             <div className='border rounded-lg p-4 mb-5'>
                 <div className='flex gap-4'>
@@ -83,8 +75,7 @@ function JobPostingList({ jobPost, type }) {
                             </h2>
                             <div className='flex flex-row'>
                                 <h4 className='text-gray-500 text-sm'>
-                                    Posted {calculateTimeAgo(job.createdAt)}
-                                    
+                                    Posted {calculateTimeAgo(job.createdAt)}   
                                 </h4>
                                 <h4 className='pl-2 text-primary text-sm'>
                                     Applied
@@ -107,12 +98,12 @@ function JobPostingList({ jobPost, type }) {
                                 <Calendar className='text-primary' />
                                 {/* {booking.date} */}
                                 {/* 16-11-2024 */}
-                                <DateFormatter formatter="MMM d, yyyy" isoDate={job.createdAt} />
+                                <dateFormatter formatter="MMM d, yyyy" isoDate={job.createdAt} />
                             </h2>
                             <h2 className='flex gap-2 text-gray-500'>
                                 <Clock className='text-primary' />
                                 {/* {booking.time} */}
-                                <DateFormatter formatter="h:mm a" isoDate={job.taskStartTime} />
+                                <dateFormatter formatter="h:mm a" isoDate={job.taskStartTime} />
                             </h2>
                         </div>
                         <h2 className='text-gray-500 pl-1 text-sm'>
@@ -124,18 +115,6 @@ function JobPostingList({ jobPost, type }) {
             </div>
         )
     }
-
-    const DateFormatter = ({ formatter, isoDate }) => {
-        const formattedDate = format(parseISO(isoDate), formatter);
-      
-        return <div>{formattedDate}</div>;
-      };
-
-      const convertDateToString = (isoDate) => {
-        const date = new Date(isoDate); // Parse ISO 8601 date string
-        return date.toString(); // Convert to a readable string
-    };
-
     
     // return (
     //     <div className='gap-2'>
@@ -272,3 +251,5 @@ function JobPostingList({ jobPost, type }) {
     //     </div>
     // )
 }
+
+export default JobPostingList
