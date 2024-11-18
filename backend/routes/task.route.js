@@ -2,7 +2,7 @@ import express from 'express';
 import {
     createTask,
     getAllTasks,
-    getTaskById,
+    getTaskByUserId,
     updateTask,
     deleteTask
 } from '../controllers/task.controller.js';
@@ -15,8 +15,8 @@ router.post('/task', createTask); // Create a new task (used by a normal user to
 // **GET /api/tasks**
 router.get('/tasks', getAllTasks); // Get a list of all tasks (viewable by all service providers)
 
-// **GET /api/task/:taskId**
-router.get('/task/:taskId', getTaskById); // Get details of a specific task by its ID
+// **GET /api/task/:userId**
+router.get('/task/:userId', getTaskByUserId); // Get details of a specific task by its ID
 
 // **PUT /api/task/:taskId**
 router.put('/task/:taskId', updateTask); // Update details of a specific task by its ID

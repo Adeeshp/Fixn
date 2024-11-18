@@ -69,15 +69,18 @@ export const getAllTasks = async (req, res) => {
     }
 };
 
-// Get task by ID
-export const getTaskById = async (req, res) => {
-    const { taskId } = req.params;
+// Get task by UserID
+export const getTaskByUserId = async (req, res) => {
+    const { userId } = req.params; // Get userId from the request parameters
     try {
-        const task = await Task.findById(taskId);
-        if (!task) return res.status(404).json({ success: false, message: 'Task not found' });
-        res.status(200).json({ success: true, data: task });
+        // Find tasks where userId matches
+        const tasks = await Task.find({ userId: userId });
+        if (tasks.length === 0) {
+            return res.status(200).json({ success: true, message: 'No tasks found for this user', data: [] });
+        }
+        res.status(200).json({ success: true, data: tasks }); 
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({ success: false, message: error.message }); 
     }
 };
 
