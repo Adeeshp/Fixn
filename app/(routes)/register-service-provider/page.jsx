@@ -114,6 +114,9 @@ const ServiceProviderSignUp = () => {
       formData.append("password", password);
       formData.append("wageType", wageType); // Include wage type
       formData.append("wage", wageAmount); // Include wage amount
+      formData.append("city", city);
+formData.append("province", province);
+formData.append("zipCode", zipCode);
       if (certification) formData.append("certification", certification);
 
       const response = await fetch("/api/user/registerServiceProvider", {
@@ -445,7 +448,6 @@ const ServiceProviderSignUp = () => {
               />
             </div>
           )}
-
           <div className="mb-4">
             <label
               htmlFor="certification"
@@ -512,33 +514,52 @@ const ServiceProviderSignUp = () => {
             </div>
           )}
 
+
+
           <div className="mb-4">
             <label className="text-gray-600 text-sm">
               <input
                 type="checkbox"
+                id="terms"
+                name="terms"
                 checked={termsAccepted}
                 onChange={(e) => setTermsAccepted(e.target.checked)}
-                className="mr-2"
+                className="mr-2 "
               />
-              I accept the{" "}
-              <Link href="/terms" className="text-blue-500">
-                terms and conditions
+              I agree to the{" "}
+              <Link href="#" className="text-primary hover:underline">
+                Terms and Conditions
+              </Link>{" "}
+              and have reviewed the{" "}
+              <Link href="#" className="text-primary hover:underline">
+                Privacy Policy
               </Link>
+              .
             </label>
           </div>
+
 
           {error && (
             <p className="text-red-500 text-sm mb-4">{error}</p>
           )}
 
-          <button
+           {/* Submit Button */}
+           <button
             type="submit"
+            className={`bg-primary hover:bg-white hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer text-white font-semibold rounded-md py-3 px-4 w-full transition duration-200 ease-in-out ${
+              isProcessing ? "opacity-50 cursor-not-allowed" : ""
+            }`}
             disabled={isProcessing}
-            className="w-full bg-primary text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           >
-            {isProcessing ? "Processing..." : "Sign Up"}
+            {isProcessing ? "Creating Account..." : "Create Account"}
           </button>
         </form>
+        <div className="mt-6 text-center">
+          <Link href="/login" className="text-sm text-primary hover:underline">
+            Already have an account? <b>Sign In</b>
+          </Link>
+        </div>
+
       </div>
     </div>
   );
