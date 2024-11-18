@@ -15,4 +15,7 @@ router.delete('/category/:categoryId', deleteCategory); // Delete a category by 
 // /api/category/:categoryId
 router.put('/category/:categoryId', updateCategory); // Update a category by ID
 
+// /api/category/:categoryId
+router.put('/category/:categoryId', updateCategory); // Update a category by ID
+
 export default router;
