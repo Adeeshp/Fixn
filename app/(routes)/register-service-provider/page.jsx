@@ -14,7 +14,8 @@ const ServiceProviderSignUp = () => {
   const [zipCode, setZipCode] = useState("");
 const [city, setCity] = useState("");
 const [province, setProvince] = useState("");
-
+const [category, setCategory] = React.useState("");
+const [subcategory, setSubcategory] = React.useState("");
   const [address, setAddress] = useState(""); // Add this state for the address
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -380,29 +381,72 @@ formData.append("zipCode", zipCode);
             />
           </div>
 
-          <div className="mb-4">
-            <label
-              htmlFor="service"
-              className="block text-gray-600 text-sm font-medium mb-1"
-            >
-              Service Offered
-            </label>
-            <select
-              id="service"
-              value={selectedService}
-              onChange={(e) => setSelectedService(e.target.value)}
-              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            >
-              <option value="">Select a Service</option>
-              <option value="Cleaning">Cleaning</option>
-              <option value="Plumbing">Plumbing</option>
-              <option value="Electrical">Electrical</option>
-              <option value="Carpentry">Carpentry</option>
-              <option value="Gardening">Gardening</option>
-              <option value="Painting">Painting</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
+       
+        {/* Category Section */}
+<div className="mb-6 border-b pb-4">
+  <h2 className="text-lg font-semibold text-gray-700 mb-3">Category</h2>
+  <label htmlFor="category" className="block text-gray-700 text-sm font-medium mb-2">
+    Select Category
+  </label>
+  <select
+    id="category"
+    value={category}
+    onChange={(e) => setCategory(e.target.value)}
+    className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+  >
+    <option value="">Select a category</option>
+    <option value="Cleaning">Cleaning</option>
+    <option value="Maintenance">Maintenance</option>
+    <option value="Delivery">Delivery</option>
+    <option value="Shopping">Shopping</option>
+  </select>
+</div>
+
+{/* Subcategory Section */}
+{category && (
+  <div className="mb-6 border-b pb-4">
+    <h2 className="text-lg font-semibold text-gray-700 mb-3">Subcategory</h2>
+    <label htmlFor="subcategory" className="block text-gray-700 text-sm font-medium mb-2">
+      Select Subcategory
+    </label>
+    <select
+      id="subcategory"
+      value={subcategory}
+      onChange={(e) => setSubcategory(e.target.value)}
+      className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+    >
+      <option value="">Select a subcategory</option>
+      {category === "Cleaning" && (
+        <>
+          <option value="Home Cleaning">Home Cleaning</option>
+          <option value="Office Cleaning">Office Cleaning</option>
+          <option value="Deep Cleaning">Deep Cleaning</option>
+        </>
+      )}
+      {category === "Maintenance" && (
+        <>
+          <option value="Electrical">Electrical</option>
+          <option value="Plumbing">Plumbing</option>
+          <option value="HVAC">HVAC</option>
+        </>
+      )}
+      {category === "Delivery" && (
+        <>
+          <option value="Food Delivery">Food Delivery</option>
+          <option value="Parcel Delivery">Parcel Delivery</option>
+          <option value="Grocery Delivery">Grocery Delivery</option>
+        </>
+      )}
+      {category === "Shopping" && (
+        <>
+          <option value="Clothing">Clothing</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Groceries">Groceries</option>
+        </>
+      )}
+    </select>
+  </div>
+)}
 
           <div className="mb-4">
             <label
