@@ -102,7 +102,18 @@ const [subcategory, setSubcategory] = React.useState("");
       setError(`Please enter a ${wageType === "hourly" ? "hourly" : "per job"} wage`);
       return;
     }
-
+    async function fetchCategories() {
+      try {
+        const response = await fetch('/category'); // Replace with your actual API endpoint
+        if (!response.ok) {
+          throw new Error('Failed to fetch categories');
+        }
+        return await response.json();
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
+    }
     setIsProcessing(true);
 
     try {
