@@ -114,6 +114,7 @@ const [subcategory, setSubcategory] = React.useState("");
         return [];
       }
     }
+
     setIsProcessing(true);
 
     try {

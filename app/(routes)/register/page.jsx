@@ -7,30 +7,31 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const SignUp = () => {
   const router = useRouter();
-  const [role, setRole] = useState("normal");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(""); 
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState(''); // New confirm password state
+  const [role, setRole] = useState('normal'); // Default role
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [error, setError] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPassword, setShowPassword] = useState(false); // State for password visibility
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State for confirm password visibility
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     // Empty first name validation
-    if (firstName.length == "") {
-      setError("Please enter First Name");
+    if (firstName.trim() === "") {
+      setError('Please enter First Name');
       return;
     }
     // Empty last name validation
-    if (lastName.length == "") {
-      setError("Please enter Last Name");
+    if (lastName.trim() === "") {
+      setError('Please enter Last Name');
       return;
     }
     // Email validation
@@ -47,17 +48,17 @@ const SignUp = () => {
       return;
     }
 
-       // Password validation
-       if (password.length < 6) {
-        setError("Password must be at least 6 characters long");
-        return;
-      }
-  
-      // Confirm password validation
-      if (password !== confirmPassword) {
-        setError("Passwords do not match");
-        return;
-      }
+    // Password validation (minimum 6 characters)
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
+
+    // Confirm password validation (match passwords)
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
 
     if (!termsAccepted) {
       setError("You must accept the terms and conditions");
@@ -256,14 +257,12 @@ const SignUp = () => {
 
 
           <div className="mb-4">
-            <label className="text-gray-600 text-sm">
+            <label className="inline-flex items-center">
               <input
                 type="checkbox"
-                id="terms"
-                name="terms"
                 checked={termsAccepted}
                 onChange={(e) => setTermsAccepted(e.target.checked)}
-                className="mr-2 "
+                className="form-checkbox h-4 w-4 text-primary"
               />
               I agree to the{" "}
               <Link href="#" className="text-primary hover:underline">
@@ -277,7 +276,6 @@ const SignUp = () => {
             </label>
           </div>
 
-          {/* Error Message */}
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
           <button
