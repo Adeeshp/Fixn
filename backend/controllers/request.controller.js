@@ -2,27 +2,45 @@ import Request from '../models/request.model.js';
 import Task from '../models/task.model.js';
 import Appointment from '../models/appointment.model.js';
 
+
 // Create a new request by Service Provider
 export const createRequest = async (req, res) => {
-  const { taskId, userId, wageType, wage } = req.body;
+  const { taskId, userId, wageType, wage, requested_Status } = req.body;
 
   try {
+    // Find the task by taskId
     const task = await Task.findById(taskId);
-    if (!task) return res.status(404).json({ success: false, message: 'Task not found' });
+    console.log("Task found:", task);
 
+    if (!task) {
+      return res.status(404).json({ success: false, message: 'Task not found' });
+    }
+
+    // Create a new request
     const newRequest = new Request({
       taskId,
       userId,
       wageType,
       wage,
+      requested_Status,
     });
 
+    // Save the new request
     await newRequest.save();
+
+    // Update the task to add the new requestId to the requests array using $addToSet
+    await Task.updateOne(
+      { _id: taskId },
+      { $addToSet: { requestId: newRequest._id } } // This will add the requestId only if it doesn't already exist
+    );
+
+    // Send the response with the new request data
     res.status(201).json({ success: true, data: newRequest });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 // Get all requests
 export const getAllRequests = async (req, res) => {
@@ -123,3 +141,25 @@ export const deleteRequest = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// Get request by Task ID
+export const getRequestsByTaskId = async (req, res) => {
+  const { taskId } = req.params; // Get the taskId from request parameters
+
+  try {
+    // Find all requests associated with the given taskId, populate user and task data
+    const requests = await Request.find({ taskId })
+      // .populate('taskId') // Populate task data
+      .populate('userId'); // Populate user data
+
+    if (requests.length === 0) {
+      return res.status(404).json({ success: false, message: 'No requests found for this task' });
+    }
+
+    res.status(200).json({ success: true, data: requests });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+

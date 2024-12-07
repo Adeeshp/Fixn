@@ -6,6 +6,7 @@ import {
   acceptRequest,
   rejectRequest,
   deleteRequest,
+  getRequestsByTaskId,
 } from '../controllers/request.controller.js';
 
 const router = express.Router();
@@ -33,5 +34,7 @@ router.put('/request/:requestId/reject', rejectRequest);  // Reject a request (u
 // **DELETE /api/request/:requestId**
 router.delete('/request/:requestId', deleteRequest);  // Delete a request by ID (admin or task owner can delete)
 
+// **Get /api/request/:taskId**
+router.get('/requests/task/:taskId', getRequestsByTaskId);  // Get All request by taskID
 
 export default router;
