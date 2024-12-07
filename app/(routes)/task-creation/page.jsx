@@ -15,13 +15,13 @@ const TaskForm = () => {
   const [province, setProvince] = useState("");
   const [category, setCategory] = React.useState("");
 const [subcategory, setSubcategory] = React.useState("");
-
+const [vehicleRequired, setVehicleRequired] = useState('');
     const [address, setAddress] = useState(""); // Add this state for the address
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     updateProgress();
-  }, [address, taskSize, taskType, description, image]);
+  }, [address, taskSize, taskType, description, image, vehicleRequired]);
 
   const handleContinue = (e) => {
     e.preventDefault();
@@ -292,7 +292,26 @@ const [subcategory, setSubcategory] = React.useState("");
               ))}
             </div>
           </div>
-
+  {/* Vehicle Requirement Section */}
+  <div className="mb-6 border-b pb-4">
+            <h2 className="text-lg font-semibold text-gray-700 mb-3">Vehicle Requirement</h2>
+            <label className="block text-gray-700 text-sm font-medium mb-2">Is a Vehicle Required?</label>
+            <div className="space-y-3">
+              {['Yes', 'No'].map((option) => (
+                <label key={option} className="flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="vehicle-required"
+                    value={option}
+                    checked={vehicleRequired === option}
+                    onChange={(e) => setVehicleRequired(e.target.value)}
+                    className="form-radio text-primary mr-3"
+                  />
+                  <span className="text-gray-700">{option}</span>
+                </label>
+              ))}
+            </div>
+          </div>
           {/* Task Description Section */}
           <div className="mb-6 border-b pb-4">
             <h2 className="text-lg font-semibold text-gray-700 mb-3">Task Description</h2>
