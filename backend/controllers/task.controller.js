@@ -62,8 +62,20 @@ export const createTask = async (req, res) => {
 // Get all tasks
 export const getAllTasks = async (req, res) => {
     try {
-        const tasks = await Task.find().populate('userId');
-        res.status(200).json({ success: true, data: tasks });
+        const tasks = await Task.find(); // Find all tasks
+        const populatedTasks = await Task.populate(tasks, [
+            { path: 'userId' }, // Populate userId field
+            { path: 'categoryId' }, // Populate categoryId field
+            { path: 'subCategoryId' }, // Populate subCategoryId field
+            { path: 'requestId' }, // Populate requestId (now an array)
+            { path: 'appointmentId' }, // Populate appointmentId field
+            { path: 'receiptId' }, // Populate receiptId field
+            { path: 'reviewId' }, // Populate reviewId field
+        ]);
+
+        console.log(populatedTasks); // Check the populated tasks
+
+        res.status(200).json({ success: true, data: populatedTasks });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -71,18 +83,28 @@ export const getAllTasks = async (req, res) => {
 
 // Get task by UserID
 export const getTaskByUserId = async (req, res) => {
-    const { userId } = req.params; // Get userId from the request parameters
+    const { userId } = req.params;
     try {
-        // Find tasks where userId matches
-        const tasks = await Task.find({ userId: userId });
+        const tasks = await Task.find({ userId })
+            .populate('userId') // Populate userId field
+            .populate('categoryId') // Populate categoryId field
+            .populate('subCategoryId') // Populate subCategoryId field
+            .populate('requestId') // Populate requestId field (which is now an array)
+            .populate('appointmentId') // Populate appointmentId field
+            .populate('receiptId') // Populate receiptId field
+            .populate('reviewId'); // Populate reviewId field
+
         if (tasks.length === 0) {
             return res.status(200).json({ success: true, message: 'No tasks found for this user', data: [] });
         }
-        res.status(200).json({ success: true, data: tasks }); 
+
+        res.status(200).json({ success: true, data: tasks });
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message }); 
+        res.status(500).json({ success: false, message: error.message });
     }
 };
+
+
 
 // Update task
 export const updateTask = async (req, res) => {

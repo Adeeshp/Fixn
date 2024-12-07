@@ -63,10 +63,12 @@ const taskSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    requestId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Request",
-    },
+    requestId: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Request",
+      },
+    ],
     estimatedTime: {  
       type: String,
     },
