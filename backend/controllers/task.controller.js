@@ -26,7 +26,7 @@ export const createTask = async (req, res) => {
         estimatedTime,
         transportRequired,
         taskStartTime,
-        // taskEndTime,
+        taskEndTime,
        
     } = req.body;
 
@@ -62,7 +62,7 @@ export const createTask = async (req, res) => {
 // Get all tasks
 export const getAllTasks = async (req, res) => {
     try {
-        const tasks = await Task.find();
+        const tasks = await Task.find().populate('userId');
         res.status(200).json({ success: true, data: tasks });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
