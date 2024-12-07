@@ -1,9 +1,9 @@
 "use client";
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const SignUp = () => {
   const router = useRouter();
@@ -15,14 +15,14 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState(''); // New confirm password state
   const [role, setRole] = useState('normal'); // Default role
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPassword, setShowPassword] = useState(false); // State for password visibility
   const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State for confirm password visibility
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     // Empty first name validation
     if (firstName.trim() === "") {
@@ -37,14 +37,14 @@ const SignUp = () => {
     // Email validation
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
-      setError('Please enter a valid email address');
+      setError("Please enter a valid email address");
       return;
     }
 
     // Phone number validation (ensure it's numeric and at least 10 digits)
     const phonePattern = /^[0-9]{10}$/;
     if (!phonePattern.test(phoneNumber)) {
-      setError('Please enter a valid 10-digit phone number');
+      setError("Please enter a valid 10-digit phone number");
       return;
     }
 
@@ -61,7 +61,7 @@ const SignUp = () => {
     }
 
     if (!termsAccepted) {
-      setError('You must accept the terms and conditions');
+      setError("You must accept the terms and conditions");
       return;
     }
 
@@ -69,10 +69,10 @@ const SignUp = () => {
 
     // Register API call
     try {
-      const response = await fetch('/api/user/register', {
-        method: 'POST',
+      const response = await fetch("/api/user/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           firstname: firstName,
@@ -80,7 +80,7 @@ const SignUp = () => {
           email,
           phoneNo: phoneNumber,
           password,
-          role // Include the role in the request body
+          role, // Include the role in the request 
         }),
       });
 
@@ -88,16 +88,16 @@ const SignUp = () => {
 
       if (response.ok) {
         // Store token in localStorage
-        localStorage.setItem('token', data.accessToken);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        window.dispatchEvent(new Event('storage'));
-        router.push('/');
+        localStorage.setItem("token", data.accessToken);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        window.dispatchEvent(new Event("storage"));
+        router.push("/");
       } else {
-        setError(data.message || 'Registration failed. Please try again.');
+        setError(data.message || "Registration failed. Please try again.");
       }
     } catch (error) {
-      console.error('Error during registration:', error);
-      setError('Server error. Please try again later.');
+      console.error("Error during registration:", error);
+      setError("Server error. Please try again later.");
     } finally {
       setIsProcessing(false);
     }
@@ -106,10 +106,17 @@ const SignUp = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50">
       <div className="lg:w-2/5 md:w-2/5 w-full bg-white rounded-lg shadow-lg my-28 p-8">
-        <h1 className="text-2xl font-semibold text-center mb-4 text-gray-800">Sign Up</h1>
+        <h1 className="text-2xl font-semibold text-center mb-4 text-gray-800">
+          Sign Up
+        </h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label htmlFor="firstName" className="block text-gray-600 text-sm font-medium mb-1">First Name</label>
+            <label
+              htmlFor="firstName"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              First Name
+            </label>
             <input
               type="text"
               id="firstName"
@@ -121,7 +128,12 @@ const SignUp = () => {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="lastName" className="block text-gray-600 text-sm font-medium mb-1">Last Name</label>
+            <label
+              htmlFor="lastName"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Last Name
+            </label>
             <input
               type="text"
               id="lastName"
@@ -133,7 +145,12 @@ const SignUp = () => {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-600 text-sm font-medium mb-1">Email Address</label>
+            <label
+              htmlFor="email"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Email Address
+            </label>
             <input
               type="email"
               id="email"
@@ -145,11 +162,31 @@ const SignUp = () => {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="phoneNumber" className="block text-gray-600 text-sm font-medium mb-1">Phone Number</label>
+            <label
+              htmlFor="phoneNumber"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Phone Number
+            </label>
             <div className="flex">
               <select className="border border-gray-300 rounded-md py-2 px-3 mr-2 focus:outline-none focus:ring-2 focus:ring-primary">
-                <option value="+1">+1</option>
+                <option value="+1">+1 (USA/Canada)</option>
+                <option value="+44">+44 (UK)</option>
+                <option value="+91">+91 (India)</option>
+                <option value="+61">+61 (Australia)</option>
+                <option value="+81">+81 (Japan)</option>
+                <option value="+49">+49 (Germany)</option>
+                <option value="+33">+33 (France)</option>
+                <option value="+86">+86 (China)</option>
+                <option value="+39">+39 (Italy)</option>
+                <option value="+55">+55 (Brazil)</option>
+                <option value="+34">+34 (Spain)</option>
+                <option value="+7">+7 (Russia)</option>
+                <option value="+27">+27 (South Africa)</option>
+                <option value="+64">+64 (New Zealand)</option>
+                <option value="+82">+82 (South Korea)</option>
               </select>
+
               <input
                 type="text"
                 id="phoneNumber"
@@ -162,24 +199,15 @@ const SignUp = () => {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="role" className="block text-gray-600 text-sm font-medium mb-1">Role</label>
-            <select
-              id="role"
-              name="role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full border border-gray-300 rounded-md bg-transparent py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent h-12"
+            <label
+              htmlFor="password"
+              className="block text-gray-600 text-sm font-medium mb-1"
             >
-              <option value="normal">Normal User</option>
-              <option value="serviceProvider">Service Provider</option>
-            </select>
-          </div>
-
-          <div className="mb-4">
-            <label htmlFor="password" className="block text-gray-600 text-sm font-medium mb-1">Password</label>
+              Password
+            </label>
             <div className="relative">
               <input
-                type={showPassword ? 'text' : 'password'} // Toggle password visibility
+                type={showPassword ? "text" : "password"} // Toggle password visibility
                 id="password"
                 name="password"
                 value={password}
@@ -191,10 +219,42 @@ const SignUp = () => {
                 onClick={() => setShowPassword(!showPassword)} // Toggle showPassword state
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
               >
-                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} size="sm"/>
+                <FontAwesomeIcon
+                  icon={showPassword ? faEyeSlash : faEye}
+                  size="sm"
+                />
               </button>
             </div>
           </div>
+          <div className="mb-4">
+  <label
+    htmlFor="confirmPassword"
+    className="block text-gray-600 text-sm font-medium mb-1"
+  >
+    Confirm Password
+  </label>
+  <div className="relative">
+    <input
+      type={showConfirmPassword ? "text" : "password"} // Toggle confirm password visibility
+      id="confirmPassword"
+      name="confirmPassword"
+      value={confirmPassword}
+      onChange={(e) => setConfirmPassword(e.target.value)}
+      className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+    />
+    <button
+      type="button"
+      onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle showConfirmPassword state
+      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+    >
+      <FontAwesomeIcon
+        icon={showConfirmPassword ? faEyeSlash : faEye}
+        size="sm"
+      />
+    </button>
+  </div>
+</div>
+
 
           {/* Confirm Password Field */}
           <div className="mb-4">
