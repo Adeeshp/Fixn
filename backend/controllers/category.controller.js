@@ -84,3 +84,20 @@ export const deleteCategory = async (req, res) => {
         res.status(500).json({ success: false, message: "Server error", error });
     }
 };
+
+// Get a category by ID
+export const getCategoryById = async (req, res) => {
+    try {
+        const { categoryId } = req.params;
+
+        // Find the category by its ID
+        const category = await Category.findById(categoryId);
+        if (!category) {
+            return res.status(404).json({ success: false, message: "Category not found" });
+        }
+
+        res.status(200).json({ success: true, category });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Server error", error });
+    }
+};

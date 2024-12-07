@@ -1,11 +1,13 @@
-"use client";
-import Link from 'next/link';
-import React, { useState } from 'react';
+'use client';
+import React, { useState, useContext } from 'react';
 import { useRouter } from 'next/navigation';
+import { UserContext } from '@/app/contexts/UserContext';
+import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const Login = () => {
+  const { setUser } = useContext(UserContext);  // Access setUser from UserContext
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -41,15 +43,12 @@ const Login = () => {
       return;
     }
 
-    setIsProcessing(true); // Start processing
+    setIsProcessing(true); 
 
-    // Simulate a login API call
     try {
       const response = await fetch('/api/user/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: username, password }),
       });
 
@@ -57,15 +56,13 @@ const Login = () => {
 
       if (response.ok) {
         console.log('Login successful:', data);
-        // Store the user info in localStorage (or sessionStorage)
         localStorage.setItem('token', data.accessToken);
-        localStorage.setItem('user', JSON.stringify(data.user)); // Store user object
+        localStorage.setItem('user', JSON.stringify(data.user)); // Store user data
 
-        // Trigger a custom event to inform other components
-        window.dispatchEvent(new Event('storage'));
+        // Update the UserContext state
+        setUser(data.user);  // This will trigger a re-render and display user data immediately
 
-        // Redirect to home page
-        router.push('/');
+        router.push('/');  // Redirect to home
       } else {
         setError(data.message || 'Invalid username or password');
       }
@@ -73,7 +70,7 @@ const Login = () => {
       console.error('Error logging in:', error);
       setError('Server error. Please try again later.');
     } finally {
-      setIsProcessing(false); // End processing
+      setIsProcessing(false);
     }
   };
 
