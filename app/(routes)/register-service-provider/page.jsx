@@ -11,6 +11,11 @@ const ServiceProviderSignUp = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [zipCode, setZipCode] = useState("");
+const [city, setCity] = useState("");
+const [province, setProvince] = useState("");
+const [category, setCategory] = React.useState("");
+const [subcategory, setSubcategory] = React.useState("");
   const [address, setAddress] = useState(""); // Add this state for the address
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -56,6 +61,20 @@ const ServiceProviderSignUp = () => {
       setError("Please enter your address");
       return;
     }
+    if (city === "") {
+      setError("Please enter your city");
+      return;
+    }
+    if (province === "") {
+      setError("Please select your province");
+      return;
+    }
+    const zipPattern = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+    if (!zipPattern.test(zipCode)) {
+      setError("Please enter a valid Canadian zip code (e.g., A1A 1A1)");
+      return;
+    }
+    
     if (password.length < 6) {
       setError("Password must be at least 6 characters long");
       return;
@@ -97,6 +116,9 @@ const ServiceProviderSignUp = () => {
       formData.append("service", selectedService);
       formData.append("wageType", wageType); // Include wage type
       formData.append("wage", wageAmount); // Include wage amount
+      formData.append("city", city);
+formData.append("province", province);
+formData.append("zipCode", zipCode);
       if (certification) formData.append("certification", certification);
 
       const response = await fetch("/api/user/registerServiceProvider", {
@@ -176,6 +198,61 @@ const ServiceProviderSignUp = () => {
             />
           </div>
 
+        <div className="mb-4">
+            <label
+              htmlFor="password"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+              >
+                <FontAwesomeIcon
+                  icon={showPassword ? faEyeSlash : faEye}
+                  size="sm"
+                />
+              </button>
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Confirm Password
+            </label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+              >
+                <FontAwesomeIcon
+                  icon={showConfirmPassword ? faEyeSlash : faEye}
+                  size="sm"
+                />
+              </button>
+            </div>
+          </div>
           <div className="mb-4">
             <label
               htmlFor="phoneNumber"
@@ -212,6 +289,81 @@ const ServiceProviderSignUp = () => {
               />
             </div>
           </div>
+          <div className="mb-4">
+  <label
+    htmlFor="country"
+    className="block text-gray-600 text-sm font-medium mb-1"
+  >
+    Country
+  </label>
+  <input
+    type="text"
+    id="country"
+    value="Canada"
+    readOnly
+    className="w-full border border-gray-300 rounded-md py-2 px-3 bg-gray-100 cursor-not-allowed focus:outline-none"
+  />
+</div>
+
+<div className="mb-4">
+  <label
+    htmlFor="province"
+    className="block text-gray-600 text-sm font-medium mb-1"
+  >
+    Province
+  </label>
+  <select
+    id="province"
+    value={province}
+    onChange={(e) => setProvince(e.target.value)}
+    className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+  >
+    <option value="">Select a Province</option>
+    <option value="Alberta">Alberta</option>
+    <option value="British Columbia">British Columbia</option>
+    <option value="Manitoba">Manitoba</option>
+    <option value="New Brunswick">New Brunswick</option>
+    <option value="Newfoundland and Labrador">Newfoundland and Labrador</option>
+    <option value="Nova Scotia">Nova Scotia</option>
+    <option value="Ontario">Ontario</option>
+    <option value="Prince Edward Island">Prince Edward Island</option>
+    <option value="Quebec">Quebec</option>
+    <option value="Saskatchewan">Saskatchewan</option>
+  </select>
+</div>
+<div className="mb-4 flex space-x-4">
+  <div className="w-1/2">
+    <label
+      htmlFor="city"
+      className="block text-gray-600 text-sm font-medium mb-1"
+    >
+      City
+    </label>
+    <input
+      type="text"
+      id="city"
+      value={city}
+      onChange={(e) => setCity(e.target.value)}
+      className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+    />
+  </div>
+
+  <div className="w-1/2">
+    <label
+      htmlFor="zipCode"
+      className="block text-gray-600 text-sm font-medium mb-1"
+    >
+      Zip Code
+    </label>
+    <input
+      type="text"
+      id="zipCode"
+      value={zipCode}
+      onChange={(e) => setZipCode(e.target.value)}
+      className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+    />
+  </div>
+</div>
 
           <div className="mb-4">
             <label
@@ -229,29 +381,72 @@ const ServiceProviderSignUp = () => {
             />
           </div>
 
-          <div className="mb-4">
-            <label
-              htmlFor="service"
-              className="block text-gray-600 text-sm font-medium mb-1"
-            >
-              Service Offered
-            </label>
-            <select
-              id="service"
-              value={selectedService}
-              onChange={(e) => setSelectedService(e.target.value)}
-              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            >
-              <option value="">Select a Service</option>
-              <option value="Cleaning">Cleaning</option>
-              <option value="Plumbing">Plumbing</option>
-              <option value="Electrical">Electrical</option>
-              <option value="Carpentry">Carpentry</option>
-              <option value="Gardening">Gardening</option>
-              <option value="Painting">Painting</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
+       
+        {/* Category Section */}
+<div className="mb-6 border-b pb-4">
+  <h2 className="text-lg font-semibold text-gray-700 mb-3">Category</h2>
+  <label htmlFor="category" className="block text-gray-700 text-sm font-medium mb-2">
+    Select Category
+  </label>
+  <select
+    id="category"
+    value={category}
+    onChange={(e) => setCategory(e.target.value)}
+    className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+  >
+    <option value="">Select a category</option>
+    <option value="Cleaning">Cleaning</option>
+    <option value="Maintenance">Maintenance</option>
+    <option value="Delivery">Delivery</option>
+    <option value="Shopping">Shopping</option>
+  </select>
+</div>
+
+{/* Subcategory Section */}
+{category && (
+  <div className="mb-6 border-b pb-4">
+    <h2 className="text-lg font-semibold text-gray-700 mb-3">Subcategory</h2>
+    <label htmlFor="subcategory" className="block text-gray-700 text-sm font-medium mb-2">
+      Select Subcategory
+    </label>
+    <select
+      id="subcategory"
+      value={subcategory}
+      onChange={(e) => setSubcategory(e.target.value)}
+      className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+    >
+      <option value="">Select a subcategory</option>
+      {category === "Cleaning" && (
+        <>
+          <option value="Home Cleaning">Home Cleaning</option>
+          <option value="Office Cleaning">Office Cleaning</option>
+          <option value="Deep Cleaning">Deep Cleaning</option>
+        </>
+      )}
+      {category === "Maintenance" && (
+        <>
+          <option value="Electrical">Electrical</option>
+          <option value="Plumbing">Plumbing</option>
+          <option value="HVAC">HVAC</option>
+        </>
+      )}
+      {category === "Delivery" && (
+        <>
+          <option value="Food Delivery">Food Delivery</option>
+          <option value="Parcel Delivery">Parcel Delivery</option>
+          <option value="Grocery Delivery">Grocery Delivery</option>
+        </>
+      )}
+      {category === "Shopping" && (
+        <>
+          <option value="Clothing">Clothing</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Groceries">Groceries</option>
+        </>
+      )}
+    </select>
+  </div>
+)}
 
           <div className="mb-4">
             <label
@@ -303,46 +498,71 @@ const ServiceProviderSignUp = () => {
               />
             </div>
           )}
+        
 
-          <div className="mb-4">
-            <label className="block text-gray-600 text-sm font-medium mb-1">
-              Certification
+         
+        <div className="mb-4">
+            <label
+              htmlFor="certification"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Upload Certification (required)
             </label>
             <input
               type="file"
+              id="certification"
               onChange={handleFileUpload}
-              accept="application/pdf, image/jpeg, image/png"
-              className="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              required // Make the field required
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
 
+
+
           <div className="mb-4">
-            <label className="flex items-center">
+            <label className="text-gray-600 text-sm">
               <input
                 type="checkbox"
+                id="terms"
+                name="terms"
                 checked={termsAccepted}
                 onChange={(e) => setTermsAccepted(e.target.checked)}
-                className="mr-2"
+                className="mr-2 "
               />
-              I accept the{" "}
-              <Link href="/terms" className="text-blue-500">
-                terms and conditions
+              I agree to the{" "}
+              <Link href="#" className="text-primary hover:underline">
+                Terms and Conditions
+              </Link>{" "}
+              and have reviewed the{" "}
+              <Link href="#" className="text-primary hover:underline">
+                Privacy Policy
               </Link>
+              .
             </label>
           </div>
+
 
           {error && (
             <p className="text-red-500 text-sm mb-4">{error}</p>
           )}
 
-          <button
+           {/* Submit Button */}
+           <button
             type="submit"
+            className={`bg-primary hover:bg-white hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer text-white font-semibold rounded-md py-3 px-4 w-full transition duration-200 ease-in-out ${
+              isProcessing ? "opacity-50 cursor-not-allowed" : ""
+            }`}
             disabled={isProcessing}
-            className="w-full bg-primary text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           >
-            {isProcessing ? "Processing..." : "Sign Up"}
+            {isProcessing ? "Creating Account..." : "Create Account"}
           </button>
         </form>
+        <div className="mt-6 text-center">
+          <Link href="/login" className="text-sm text-primary hover:underline">
+            Already have an account? <b>Sign In</b>
+          </Link>
+        </div>
+
       </div>
     </div>
   );

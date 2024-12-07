@@ -68,3 +68,19 @@ export const deleteSubcategory = async (req, res) => {
         res.status(500).json({ success: false, message: "Server error", error });
     }
 };
+
+export const getSubcategoryById = async (req, res) => {
+    try {
+        const { subCategoryId } = req.params;
+
+        // Find the subcategory by its ID
+        const subCategory = await SubCategory.findById(subCategoryId);
+        if (!subCategory) {
+            return res.status(404).json({ success: false, message: "Subcategory not found" });
+        }
+
+        res.status(200).json({ success: true, data: subCategory });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Server error", error });
+    }
+};

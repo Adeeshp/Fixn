@@ -1,5 +1,5 @@
 import express from 'express';
-import { getSubcategoriesByCategory, createSubcategory, deleteSubcategory } from '../controllers/subCategory.controller.js';
+import { getSubcategoriesByCategory, createSubcategory, deleteSubcategory, getSubcategoryById } from '../controllers/subCategory.controller.js';
 
 const router = express.Router();
 
@@ -14,6 +14,10 @@ router.post('/subCategory/:categoryId', createSubcategory);
 // Delete a subcategory by its ID
 // /api/subcategory/:subCategoryId
 router.delete('/subcategory/:subCategoryId', deleteSubcategory);
+
+// /api/subcategory/:subCategoryId
+router.get('/sub_category/:subCategoryId', getSubcategoryById);
+
 
 
 export default router;
