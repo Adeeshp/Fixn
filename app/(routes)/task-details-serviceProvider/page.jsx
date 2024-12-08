@@ -135,7 +135,7 @@ const ProviderDashboard = () => {
           ></textarea>
 
           <button
-            className="bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-md w-full font-semibold shadow-md"
+            className="bg-primary hover:bg-green-600 text-white py-3 px-6 rounded-md w-full font-semibold shadow-md"
             onClick={submitProposal}
           >
             Submit Proposal

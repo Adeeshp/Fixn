@@ -132,14 +132,14 @@ const TaskDetails = () => {
               <strong>Transport Required:</strong>{" "}
               {task.transportRequired ? "Yes" : "No"}
             </p>
-          </div>
-        </div>
         <button
           className="absolute bottom-4 right-4 bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full shadow-lg"
           onClick={() => setShowReceipt(true)}
         >
           <FaReceipt size={20} />
         </button>
+          </div>
+        </div>
         {showReceipt && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white p-8 rounded-lg shadow-lg w-96">
