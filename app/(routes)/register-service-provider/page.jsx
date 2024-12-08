@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,10 +13,8 @@ const ServiceProviderSignUp = () => {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [zipCode, setZipCode] = useState("");
-const [city, setCity] = useState("");
-const [province, setProvince] = useState("");
-const [category, setCategory] = React.useState("");
-const [subcategory, setSubcategory] = React.useState("");
+  const [city, setCity] = useState("");
+  const [province, setProvince] = useState("");
   const [address, setAddress] = useState(""); // Add this state for the address
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -28,7 +27,65 @@ const [subcategory, setSubcategory] = React.useState("");
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [wageType, setWageType] = useState(""); // For "hourly" or "perJob"
   const [wageAmount, setWageAmount] = useState(""); // For the wage amount
+  const [categoryList, setCategoryList] = useState([]);
+  const [subcategoryList, setSubcategoryList] = useState([]);
+  const [category, setCategory] = useState("");
+  const [subcategory, setSubcategory] = useState("");
 
+  // Fetch category list on initial render
+  useEffect(() => {
+    getCategoryList();
+  }, []);
+
+  /**
+   * Fetches category list from the backend API
+   */
+  const getCategoryList = async () => {
+    try {
+      const response = await fetch("/api/category");
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        console.log(data.data);
+        setCategoryList(data.data);
+      } else {
+        console.error("Error fetching categories:", data.message);
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
+  };
+
+  /**
+   * Fetches subcategories based on the selected category
+   */
+  const getSubcategoriesByCategory = async (categoryId) => {
+    console.log("this is the category id", categoryId);
+    try {
+      const response = await fetch(`/api/subcategory/${categoryId}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        console.log("Subcategory response data:", data.data);
+        setSubcategoryList(data.data);
+      } else {
+        console.error("Error fetching subcategories:", data.message);
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
+  };
+ 
   const handleFileUpload = (e) => {
     setCertification(e.target.files[0]);
   };
@@ -74,7 +131,7 @@ const [subcategory, setSubcategory] = React.useState("");
       setError("Please enter a valid Canadian zip code (e.g., A1A 1A1)");
       return;
     }
-    
+
     if (password.length < 6) {
       setError("Password must be at least 6 characters long");
       return;
@@ -99,20 +156,10 @@ const [subcategory, setSubcategory] = React.useState("");
       return;
     }
     if (wageType && !wageAmount) {
-      setError(`Please enter a ${wageType === "hourly" ? "hourly" : "per job"} wage`);
+      setError(
+        `Please enter a ${wageType === "hourly" ? "hourly" : "per job"} wage`
+      );
       return;
-    }
-    async function fetchCategories() {
-      try {
-        const response = await fetch('/category'); // Replace with your actual API endpoint
-        if (!response.ok) {
-          throw new Error('Failed to fetch categories');
-        }
-        return await response.json();
-      } catch (error) {
-        console.error(error);
-        return [];
-      }
     }
 
     setIsProcessing(true);
@@ -129,8 +176,8 @@ const [subcategory, setSubcategory] = React.useState("");
       formData.append("wageType", wageType); // Include wage type
       formData.append("wage", wageAmount); // Include wage amount
       formData.append("city", city);
-formData.append("province", province);
-formData.append("zipCode", zipCode);
+      formData.append("province", province);
+      formData.append("zipCode", zipCode);
       if (certification) formData.append("certification", certification);
 
       const response = await fetch("/api/user/registerServiceProvider", {
@@ -210,7 +257,7 @@ formData.append("zipCode", zipCode);
             />
           </div>
 
-        <div className="mb-4">
+          <div className="mb-4">
             <label
               htmlFor="password"
               className="block text-gray-600 text-sm font-medium mb-1"
@@ -302,80 +349,82 @@ formData.append("zipCode", zipCode);
             </div>
           </div>
           <div className="mb-4">
-  <label
-    htmlFor="country"
-    className="block text-gray-600 text-sm font-medium mb-1"
-  >
-    Country
-  </label>
-  <input
-    type="text"
-    id="country"
-    value="Canada"
-    readOnly
-    className="w-full border border-gray-300 rounded-md py-2 px-3 bg-gray-100 cursor-not-allowed focus:outline-none"
-  />
-</div>
+            <label
+              htmlFor="country"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Country
+            </label>
+            <input
+              type="text"
+              id="country"
+              value="Canada"
+              readOnly
+              className="w-full border border-gray-300 rounded-md py-2 px-3 bg-gray-100 cursor-not-allowed focus:outline-none"
+            />
+          </div>
 
-<div className="mb-4">
-  <label
-    htmlFor="province"
-    className="block text-gray-600 text-sm font-medium mb-1"
-  >
-    Province
-  </label>
-  <select
-    id="province"
-    value={province}
-    onChange={(e) => setProvince(e.target.value)}
-    className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-  >
-    <option value="">Select a Province</option>
-    <option value="Alberta">Alberta</option>
-    <option value="British Columbia">British Columbia</option>
-    <option value="Manitoba">Manitoba</option>
-    <option value="New Brunswick">New Brunswick</option>
-    <option value="Newfoundland and Labrador">Newfoundland and Labrador</option>
-    <option value="Nova Scotia">Nova Scotia</option>
-    <option value="Ontario">Ontario</option>
-    <option value="Prince Edward Island">Prince Edward Island</option>
-    <option value="Quebec">Quebec</option>
-    <option value="Saskatchewan">Saskatchewan</option>
-  </select>
-</div>
-<div className="mb-4 flex space-x-4">
-  <div className="w-1/2">
-    <label
-      htmlFor="city"
-      className="block text-gray-600 text-sm font-medium mb-1"
-    >
-      City
-    </label>
-    <input
-      type="text"
-      id="city"
-      value={city}
-      onChange={(e) => setCity(e.target.value)}
-      className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-    />
-  </div>
+          <div className="mb-4">
+            <label
+              htmlFor="province"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Province
+            </label>
+            <select
+              id="province"
+              value={province}
+              onChange={(e) => setProvince(e.target.value)}
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            >
+              <option value="">Select a Province</option>
+              <option value="Alberta">Alberta</option>
+              <option value="British Columbia">British Columbia</option>
+              <option value="Manitoba">Manitoba</option>
+              <option value="New Brunswick">New Brunswick</option>
+              <option value="Newfoundland and Labrador">
+                Newfoundland and Labrador
+              </option>
+              <option value="Nova Scotia">Nova Scotia</option>
+              <option value="Ontario">Ontario</option>
+              <option value="Prince Edward Island">Prince Edward Island</option>
+              <option value="Quebec">Quebec</option>
+              <option value="Saskatchewan">Saskatchewan</option>
+            </select>
+          </div>
+          <div className="mb-4 flex space-x-4">
+            <div className="w-1/2">
+              <label
+                htmlFor="city"
+                className="block text-gray-600 text-sm font-medium mb-1"
+              >
+                City
+              </label>
+              <input
+                type="text"
+                id="city"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+            </div>
 
-  <div className="w-1/2">
-    <label
-      htmlFor="zipCode"
-      className="block text-gray-600 text-sm font-medium mb-1"
-    >
-      Zip Code
-    </label>
-    <input
-      type="text"
-      id="zipCode"
-      value={zipCode}
-      onChange={(e) => setZipCode(e.target.value)}
-      className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-    />
-  </div>
-</div>
+            <div className="w-1/2">
+              <label
+                htmlFor="zipCode"
+                className="block text-gray-600 text-sm font-medium mb-1"
+              >
+                Zip Code
+              </label>
+              <input
+                type="text"
+                id="zipCode"
+                value={zipCode}
+                onChange={(e) => setZipCode(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+            </div>
+          </div>
 
           <div className="mb-4">
             <label
@@ -392,74 +441,81 @@ formData.append("zipCode", zipCode);
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
-
-       
-        {/* Category Section */}
-<div className="mb-6 border-b pb-4">
+  {/* Category Section */}
+  <div className="mb-6 border-b pb-4">
   <h2 className="text-lg font-semibold text-gray-700 mb-3">Category</h2>
-  <label htmlFor="category" className="block text-gray-700 text-sm font-medium mb-2">
+  <label
+    htmlFor="category"
+    className="block text-gray-700 text-sm font-medium mb-2"
+  >
     Select Category
   </label>
   <select
     id="category"
     value={category}
-    onChange={(e) => setCategory(e.target.value)}
+    onChange={(e) => {
+      const selectedCategory = category._id
+      console.log(e.target);
+      console.log(category);
+ 
+      setCategory(selectedCategory);  
+      setSubcategory(""); // Reset subcategory
+      if (selectedCategory) {
+       
+        getSubcategoriesByCategory(selectedCategory); // Fetch subcategories
+      } else {
+        {console.log("Adees")}
+        setSubcategoryList([]); // Clear subcategory list if no category is selected
+      }
+    }}
     className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
   >
     <option value="">Select a category</option>
-    <option value="Cleaning">Cleaning</option>
-    <option value="Maintenance">Maintenance</option>
-    <option value="Delivery">Delivery</option>
-    <option value="Shopping">Shopping</option>
+    {categoryList.length > 0 ? (
+      categoryList.map((cat) => (
+        <option key={cat.categoryId} value={cat.categoryId}>
+          {cat.categoryName}
+        </option>
+      ))
+    ) : (
+      <option value="no-category">No categories found</option>
+    )}
   </select>
 </div>
 
-{/* Subcategory Section */}
-{category && (
-  <div className="mb-6 border-b pb-4">
-    <h2 className="text-lg font-semibold text-gray-700 mb-3">Subcategory</h2>
-    <label htmlFor="subcategory" className="block text-gray-700 text-sm font-medium mb-2">
-      Select Subcategory
-    </label>
-    <select
-      id="subcategory"
-      value={subcategory}
-      onChange={(e) => setSubcategory(e.target.value)}
-      className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
-    >
-      <option value="">Select a subcategory</option>
-      {category === "Cleaning" && (
-        <>
-          <option value="Home Cleaning">Home Cleaning</option>
-          <option value="Office Cleaning">Office Cleaning</option>
-          <option value="Deep Cleaning">Deep Cleaning</option>
-        </>
-      )}
-      {category === "Maintenance" && (
-        <>
-          <option value="Electrical">Electrical</option>
-          <option value="Plumbing">Plumbing</option>
-          <option value="HVAC">HVAC</option>
-        </>
-      )}
-      {category === "Delivery" && (
-        <>
-          <option value="Food Delivery">Food Delivery</option>
-          <option value="Parcel Delivery">Parcel Delivery</option>
-          <option value="Grocery Delivery">Grocery Delivery</option>
-        </>
-      )}
-      {category === "Shopping" && (
-        <>
-          <option value="Clothing">Clothing</option>
-          <option value="Electronics">Electronics</option>
-          <option value="Groceries">Groceries</option>
-        </>
-      )}
-    </select>
-  </div>
-)}
+  
 
+      {/* Subcategory Section */}
+      {category && (
+        <div className="mb-6 border-b pb-4">
+          <h2 className="text-lg font-semibold text-gray-700 mb-3">
+            Subcategory
+          </h2>
+          <label
+            htmlFor="subcategory"
+            className="block text-gray-700 text-sm font-medium mb-2"
+          >
+            Select Subcategory
+          </label>
+          <select
+            id="subcategory"
+            value={subcategory}
+            onChange={(e) => setSubcategory(e.target.value)}
+            className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+          >
+            
+            {subcategoryList.length > 0 ? (
+              subcategoryList.map((subcat) => (
+                <option key={subcat.subcategoryId} value={subcat.subcategoryId}>
+                  {subcat.subCategoryName}
+                </option>
+              ))
+            ) : (
+              <option value="no-subcategory">No subcategories found</option>
+            )}
+          </select>
+        </div>
+      )}
           <div className="mb-4">
             <label
               htmlFor="wageType"
@@ -510,10 +566,8 @@ formData.append("zipCode", zipCode);
               />
             </div>
           )}
-        
 
-         
-        <div className="mb-4">
+          <div className="mb-4">
             <label
               htmlFor="certification"
               className="block text-gray-600 text-sm font-medium mb-1"
@@ -528,8 +582,6 @@ formData.append("zipCode", zipCode);
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
-
-
 
           <div className="mb-4">
             <label className="text-gray-600 text-sm">
@@ -553,13 +605,10 @@ formData.append("zipCode", zipCode);
             </label>
           </div>
 
+          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
-          {error && (
-            <p className="text-red-500 text-sm mb-4">{error}</p>
-          )}
-
-           {/* Submit Button */}
-           <button
+          {/* Submit Button */}
+          <button
             type="submit"
             className={`bg-primary hover:bg-white hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer text-white font-semibold rounded-md py-3 px-4 w-full transition duration-200 ease-in-out ${
               isProcessing ? "opacity-50 cursor-not-allowed" : ""
@@ -574,7 +623,6 @@ formData.append("zipCode", zipCode);
             Already have an account? <b>Sign In</b>
           </Link>
         </div>
-
       </div>
     </div>
   );
