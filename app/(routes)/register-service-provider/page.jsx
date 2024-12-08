@@ -32,27 +32,26 @@ const ServiceProviderSignUp = () => {
   const [subcategoryList, setSubcategoryList] = useState([]);
   const [category, setCategory] = useState("");
   const [subcategory, setSubcategory] = useState("");
-
+  
   // Fetch category list on initial render
   useEffect(() => {
     getCategoryList();
   }, []);
-
+  
   /**
    * Fetches category list from the backend API
    */
   const getCategoryList = async () => {
     try {
       const response = await fetch("/api/category");
-
+  
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
+  
       const data = await response.json();
-
+  
       if (data.success) {
-        console.log(data.data);
         setCategoryList(data.data);
       } else {
         console.error("Error fetching categories:", data.message);
@@ -61,23 +60,21 @@ const ServiceProviderSignUp = () => {
       console.error("Fetch error:", error);
     }
   };
-
+  
   /**
    * Fetches subcategories based on the selected category
    */
   const getSubcategoriesByCategory = async (categoryId) => {
-    console.log("this is the category id", categoryId);
     try {
       const response = await fetch(`/api/subcategory/${categoryId}`);
-
+  
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-
+  
       const data = await response.json();
-
+  
       if (data.success) {
-        console.log("Subcategory response data:", data.data);
         setSubcategoryList(data.data);
       } else {
         console.error("Error fetching subcategories:", data.message);
@@ -86,7 +83,7 @@ const ServiceProviderSignUp = () => {
       console.error("Fetch error:", error);
     }
   };
- 
+  
   const handleFileUpload = (e) => {
     setCertification(e.target.files[0]);
   };
@@ -498,6 +495,10 @@ const ServiceProviderSignUp = () => {
           </select>
         </div>
       )}
+    </select>
+  </div>
+)}
+
           <div className="mb-4">
             <label
               htmlFor="wageType"
