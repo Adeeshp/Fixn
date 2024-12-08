@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -27,7 +28,65 @@ const ServiceProviderSignUp = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [wageType, setWageType] = useState(""); // For "hourly" or "perJob"
   const [wageAmount, setWageAmount] = useState(""); // For the wage amount
+  const [categoryList, setCategoryList] = useState([]);
+  const [subcategoryList, setSubcategoryList] = useState([]);
+  const [category, setCategory] = useState("");
+  const [subcategory, setSubcategory] = useState("");
 
+  // Fetch category list on initial render
+  useEffect(() => {
+    getCategoryList();
+  }, []);
+
+  /**
+   * Fetches category list from the backend API
+   */
+  const getCategoryList = async () => {
+    try {
+      const response = await fetch("/api/category");
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        console.log(data.data);
+        setCategoryList(data.data);
+      } else {
+        console.error("Error fetching categories:", data.message);
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
+  };
+
+  /**
+   * Fetches subcategories based on the selected category
+   */
+  const getSubcategoriesByCategory = async (categoryId) => {
+    console.log("this is the category id", categoryId);
+    try {
+      const response = await fetch(`/api/subcategory/${categoryId}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        console.log("Subcategory response data:", data.data);
+        setSubcategoryList(data.data);
+      } else {
+        console.error("Error fetching subcategories:", data.message);
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
+  };
+ 
   const handleFileUpload = (e) => {
     setCertification(e.target.files[0]);
   };
@@ -126,8 +185,8 @@ const ServiceProviderSignUp = () => {
       formData.append("wageType", wageType); // Include wage type
       formData.append("wage", wageAmount); // Include wage amount
       formData.append("city", city);
-formData.append("province", province);
-formData.append("zipCode", zipCode);
+      formData.append("province", province);
+      formData.append("zipCode", zipCode);
       if (certification) formData.append("certification", certification);
 
       const response = await fetch("/api/user/registerServiceProvider", {
@@ -408,6 +467,37 @@ formData.append("zipCode", zipCode);
             </div>
           )}
 
+      {/* Subcategory Section */}
+      {category && (
+        <div className="mb-6 border-b pb-4">
+          <h2 className="text-lg font-semibold text-gray-700 mb-3">
+            Subcategory
+          </h2>
+          <label
+            htmlFor="subcategory"
+            className="block text-gray-700 text-sm font-medium mb-2"
+          >
+            Select Subcategory
+          </label>
+          <select
+            id="subcategory"
+            value={subcategory}
+            onChange={(e) => setSubcategory(e.target.value)}
+            className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+          >
+            
+            {subcategoryList.length > 0 ? (
+              subcategoryList.map((subcat) => (
+                <option key={subcat.subcategoryId} value={subcat.subcategoryId}>
+                  {subcat.subCategoryName}
+                </option>
+              ))
+            ) : (
+              <option value="no-subcategory">No subcategories found</option>
+            )}
+          </select>
+        </div>
+      )}
           <div className="mb-4">
             <label
               htmlFor="wageType"
@@ -524,8 +614,6 @@ formData.append("zipCode", zipCode);
             </div>
           )}
 
-
-
           <div className="mb-4">
             <label className="text-gray-600 text-sm">
               <input
@@ -548,13 +636,10 @@ formData.append("zipCode", zipCode);
             </label>
           </div>
 
+          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
-          {error && (
-            <p className="text-red-500 text-sm mb-4">{error}</p>
-          )}
-
-           {/* Submit Button */}
-           <button
+          {/* Submit Button */}
+          <button
             type="submit"
             className={`bg-primary hover:bg-white hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer text-white font-semibold rounded-md py-3 px-4 w-full transition duration-200 ease-in-out ${
               isProcessing ? "opacity-50 cursor-not-allowed" : ""
@@ -569,7 +654,6 @@ formData.append("zipCode", zipCode);
             Already have an account? <b>Sign In</b>
           </Link>
         </div>
-
       </div>
     </div>
   );
