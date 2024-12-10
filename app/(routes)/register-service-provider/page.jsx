@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -457,6 +456,7 @@ const ServiceProviderSignUp = () => {
       
       if (selectedCategory) {
         getSubcategoriesByCategory(selectedCategory); // Fetch subcategories based on selected category
+        console.log(selectedCategory);
       } else {
         console.log("No category selected");
         setSubcategoryList([]); // Clear subcategory list if no category is selected
@@ -479,6 +479,7 @@ const ServiceProviderSignUp = () => {
 
 {/* Subcategory Section */}
 {category && (
+    
   <div className="mb-6 border-b pb-4">
     <h2 className="text-lg font-semibold text-gray-700 mb-3">Subcategory</h2>
     <label
@@ -493,6 +494,7 @@ const ServiceProviderSignUp = () => {
       onChange={(e) => setSubcategory(e.target.value)}
       className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
     >
+      
       <option value="">Select a subcategory</option>
       {subcategoryList.length > 0 ? (
         subcategoryList.map((subcat) => (
