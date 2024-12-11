@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -17,7 +17,7 @@ const ServiceProviderSignUp = () => {
   const [address, setAddress] = useState(""); // Add this state for the address
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  // const [selectedService] = useState("");
+  const [image, setImage] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [document, setCertification] = useState(null);
   const [error, setError] = useState("");
@@ -86,129 +86,130 @@ const ServiceProviderSignUp = () => {
   const handleFileUpload = (e) => {
     setCertification(e.target.files[0]);
   };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-
-    if (firstName === "") {
-      setError("Please enter your First Name");
-      return;
-    }
-    if (lastName === "") {
-      setError("Please enter your Last Name");
-      return;
-    }
-
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email)) {
-      setError("Please enter a valid email address");
-      return;
-    }
-
-    const phonePattern = /^[0-9]{10}$/;
-    if (!phonePattern.test(phoneNumber)) {
-      setError("Please enter a valid 10-digit phone number");
-      return;
-    }
-    if (!address) {
-      setError("Please enter your address");
-      return;
-    }
-    if (city === "") {
-      setError("Please enter your city");
-      return;
-    }
-    if (province === "") {
-      setError("Please select your province");
-      return;
-    }
-    const zipPattern = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
-    if (!zipPattern.test(zipCode)) {
-      setError("Please enter a valid Canadian zip code (e.g., A1A 1A1)");
-      return;
-    }
-
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-
-    //   if (!selectedService) {
-    //     setError("Please select a service you provide");
-    //     return;
-    // }
-    if (!termsAccepted) {
-      setError("You must accept the terms and conditions");
-      return;
-    }
-
-    if (!wageType) {
-      setError("Please select a payment type");
-      return;
-    }
-    if (wageType && !wageAmount) {
-      setError(
-        `Please enter a ${wageType === "hourly" ? "hourly" : "per job"} wage`
-      );
-      return;
-    }
-
-    setIsProcessing(true);
-
-    try {
-      const formData = new FormData();
-      formData.append("firstname", firstName);
-      formData.append("lastname", lastName);
-      
-      formData.append("email", email);
-      formData.append("phoneNo", phoneNumber);
-      
-      formData.append("address", address); // Include address
-      formData.append("password", password);
-      formData.append("city", city);
-      formData.append("province", province);
-      formData.append("zipCode", zipCode);
-      formData.append("country",country);
-      formData.append("wage", wageAmount); 
-      formData.append("wageType", wageType);
-      formData.append("categoryId", category);
-      formData.append("subCategoryId", subcategory);
-      formData.append("gender", gender)
-      if (document) formData.append("document", document);
-      for (let [key, value] of formData.entries()) {
-        if (value instanceof File) {
-          console.log(`${key}: ${value.name} (${value.size} bytes)`);
+const handleImageUpload = (e) =>{
+  setImage(e.target.files[0]);
+}
+  
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      setError("");
+  
+      // Validation checks
+      if (firstName === "") {
+        setError("Please enter your First Name");
+        return;
+      }
+      if (lastName === "") {
+        setError("Please enter your Last Name");
+        return;
+      }
+  
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email)) {
+        setError("Please enter a valid email address");
+        return;
+      }
+  
+      const phonePattern = /^[0-9]{10}$/;
+      if (!phonePattern.test(phoneNumber)) {
+        setError("Please enter a valid 10-digit phone number");
+        return;
+      }
+      if (!address) {
+        setError("Please enter your address");
+        return;
+      }
+      if (city === "") {
+        setError("Please enter your city");
+        return;
+      }
+      if (province === "") {
+        setError("Please select your province");
+        return;
+      }
+      const zipPattern = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+      if (!zipPattern.test(zipCode)) {
+        setError("Please enter a valid Canadian zip code (e.g., A1A 1A1)");
+        return;
+      }
+  
+      if (password.length < 6) {
+        setError("Password must be at least 6 characters long");
+        return;
+      }
+  
+      if (password !== confirmPassword) {
+        setError("Passwords do not match");
+        return;
+      }
+  
+      if (!termsAccepted) {
+        setError("You must accept the terms and conditions");
+        return;
+      }
+  
+      if (!wageType) {
+        setError("Please select a payment type");
+        return;
+      }
+      if (wageType && !wageAmount) {
+        setError(`Please enter a ${wageType === "hourly" ? "hourly" : "per job"} wage`);
+        return;
+      }
+  
+      if (!image) {
+        setError("Please upload an image");
+        return;
+      }
+      if (!document) {
+        setError("Please upload a document");
+        return;
+      }
+  
+      setIsProcessing(true);
+  
+      try {
+        const formData = new FormData();
+        formData.append("firstname", firstName);
+        formData.append("lastname", lastName);
+        formData.append("email", email);
+        formData.append("phoneNo", phoneNumber);
+        formData.append("address", address);
+        formData.append("password", password);
+        formData.append("city", city);
+        formData.append("province", province);
+        formData.append("zipCode", zipCode);
+        formData.append("country", country);
+        formData.append("wage", wageAmount);
+        formData.append("wageType", wageType);
+        formData.append("categoryId", category);
+        formData.append("subCategoryId", subcategory);
+        formData.append("gender", gender);
+        formData.append("image", image);
+        if (document) formData.append("document", document);
+  
+        const response = await fetch("/api/user/registerServiceProvider", {
+          method: "POST",
+          body: formData,
+        });
+  
+        const data = await response.json();
+  
+        if (response.ok) {
+          localStorage.setItem("token", data.accessToken);
+          localStorage.setItem("user", JSON.stringify(data.user));
+          router.push("/");
         } else {
-          console.log(`${key}: ${value}`);
+          setError(data.message || "Registration failed. Please try again.");
         }
+      } catch (error) {
+        console.error("Error during registration:", error);
+        setError("Server error. Please try again later.");
+      } finally {
+        setIsProcessing(false);
       }
-      
-      const response = await fetch("/api/user/registerServiceProvider", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        localStorage.setItem("token", data.accessToken);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        router.push("/");
-      } else {
-        setError(data.message || "Registration failed. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error during registration:", error);
-      setError("Server error. Please try again later.");
-    } finally {
-      setIsProcessing(false);
-    }
+    
+  
   };
 
   return (
@@ -631,7 +632,21 @@ const ServiceProviderSignUp = () => {
           </div>
 
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
+<div className="mb-4">
+<label
+              htmlFor="image"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Image (required)
+            </label>
+            <input
+              type="file"
+              id="image"
+              onChange={handleImageUpload}
+              required // Make the field required
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+</div>
         {/* Submit Button */}
         <button
             type="submit"
