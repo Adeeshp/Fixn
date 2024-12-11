@@ -1,10 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-
 const ServiceProviderSignUp = () => {
   const router = useRouter();
   const [firstName, setFirstName] = useState("");
@@ -668,8 +666,8 @@ const ServiceProviderSignUp = () => {
 
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
-          {/* Submit Button */}
-          <button
+        {/* Submit Button */}
+        <button
             type="submit"
             className={`bg-primary hover:bg-white hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer text-white font-semibold rounded-md py-3 px-4 w-full transition duration-200 ease-in-out ${
               isProcessing ? "opacity-50 cursor-not-allowed" : ""
