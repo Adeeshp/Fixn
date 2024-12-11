@@ -43,7 +43,8 @@ const ServiceProviderSignUp = () => {
   const getCategoryList = async () => {
     try {
       const response = await fetch("/api/category");
-  
+        console.log("this is one");
+        console.log(response);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -498,6 +499,35 @@ const ServiceProviderSignUp = () => {
   </div>
 )}
 
+      {/* Subcategory Section */}
+      {category && (
+        <div className="mb-6 border-b pb-4">
+          <h2 className="text-lg font-semibold text-gray-700 mb-3">Subcategory</h2>
+          <label
+            htmlFor="subcategory"
+            className="block text-gray-700 text-sm font-medium mb-2"
+          >
+            Select Subcategory
+          </label>
+          <select
+            id="subcategory"
+            value={subcategory}
+            onChange={(e) => setSubcategory(e.target.value)}
+            className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+          >
+            <option value="">Select a subcategory</option>
+            {subcategoryList.length > 0 ? (
+              subcategoryList.map((subcat) => (
+                <option key={subcat._id} value={subcat._id}>
+                  {subcat.subCategoryName}
+                </option>
+              ))
+            ) : (
+              <option value="no-subcategory">No subcategories found</option>
+            )}
+          </select>
+        </div>
+      )}
           <div className="mb-4">
             <label
               htmlFor="wageType"
