@@ -272,7 +272,6 @@ const [subcategory, setSubcategory] = React.useState("");
   </div>
 )}
 
-
           {/* Task Size Section */}
           <div className="mb-6 border-b pb-4">
             <h2 className="text-lg font-semibold text-gray-700 mb-3">Task Size</h2>
@@ -331,8 +330,6 @@ const [subcategory, setSubcategory] = React.useState("");
               />
             </div>
           </div>
-
-
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
           <button
             type="submit"
