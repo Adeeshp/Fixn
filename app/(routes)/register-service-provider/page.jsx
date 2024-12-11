@@ -14,11 +14,10 @@ const ServiceProviderSignUp = () => {
   const[country, setCountry] = useState("");
   const[gender, setGender]= useState("");
   const [province, setProvince] = useState("");
-  const [category, setCategory] = React.useState("");
-  const [subcategory, setSubcategory] = React.useState("");
   const [address, setAddress] = useState(""); // Add this state for the address
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  // const [selectedService] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [document, setCertification] = useState(null);
   const [error, setError] = useState("");
@@ -129,6 +128,7 @@ const ServiceProviderSignUp = () => {
       setError("Please enter a valid Canadian zip code (e.g., A1A 1A1)");
       return;
     }
+
     if (password.length < 6) {
       setError("Password must be at least 6 characters long");
       return;
@@ -139,6 +139,10 @@ const ServiceProviderSignUp = () => {
       return;
     }
 
+    //   if (!selectedService) {
+    //     setError("Please select a service you provide");
+    //     return;
+    // }
     if (!termsAccepted) {
       setError("You must accept the terms and conditions");
       return;
@@ -154,18 +158,7 @@ const ServiceProviderSignUp = () => {
       );
       return;
     }
-    async function fetchCategories() {
-      try {
-        const response = await fetch('/category'); // Replace with your actual API endpoint
-        if (!response.ok) {
-          throw new Error('Failed to fetch categories');
-        }
-        return await response.json();
-      } catch (error) {
-        console.error(error);
-        return [];
-      }
-    }
+
     setIsProcessing(true);
 
     try {
@@ -177,9 +170,6 @@ const ServiceProviderSignUp = () => {
       formData.append("phoneNo", phoneNumber);
       
       formData.append("address", address); // Include address
-      formData.append("city", city);
-      formData.append("province", province);
-      formData.append("zipCode", zipCode);
       formData.append("password", password);
       formData.append("city", city);
       formData.append("province", province);
@@ -304,6 +294,58 @@ const ServiceProviderSignUp = () => {
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
+
+             {/* Password */}
+             <div className="mb-4">
+            <label
+              htmlFor="password"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
+
+          {/* Confirm Password */}
+          <div className="mb-4">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Confirm Password
+            </label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+              >
+                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
           <div className="mb-4">
             <label
               htmlFor="phoneNumber"
@@ -342,51 +384,20 @@ const ServiceProviderSignUp = () => {
           </div>
           <div className="mb-4">
             <label
-              htmlFor="address"
+              htmlFor="country"
               className="block text-gray-600 text-sm font-medium mb-1"
             >
-              Address
+              Country
             </label>
             <input
               type="text"
-              id="address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              id="country"
+              value="Canada"
+              readOnly
+              className="w-full border border-gray-300 rounded-md py-2 px-3 bg-gray-100 cursor-not-allowed focus:outline-none"
             />
           </div>
-          <div className="mb-4 flex space-x-4">
-            <div className="w-1/2">
-              <label
-                htmlFor="city"
-                className="block text-gray-600 text-sm font-medium mb-1"
-              >
-                City
-              </label>
-              <input
-                type="text"
-                id="city"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-            </div>
-            <div className="w-1/2">
-              <label
-                htmlFor="zipCode"
-                className="block text-gray-600 text-sm font-medium mb-1"
-              >
-                Zip Code
-              </label>
-              <input
-                type="text"
-                id="zipCode"
-                value={zipCode}
-                onChange={(e) => setZipCode(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-            </div>
-          </div>
+
           <div className="mb-4">
             <label
               htmlFor="province"
@@ -415,131 +426,91 @@ const ServiceProviderSignUp = () => {
               <option value="Saskatchewan">Saskatchewan</option>
             </select>
           </div>
+          <div className="mb-4 flex space-x-4">
+            <div className="w-1/2">
+              <label
+                htmlFor="city"
+                className="block text-gray-600 text-sm font-medium mb-1"
+              >
+                City
+              </label>
+              <input
+                type="text"
+                id="city"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+            </div>
+
+            <div className="w-1/2">
+              <label
+                htmlFor="zipCode"
+                className="block text-gray-600 text-sm font-medium mb-1"
+              >
+                Zip Code
+              </label>
+              <input
+                type="text"
+                id="zipCode"
+                value={zipCode}
+                onChange={(e) => setZipCode(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+            </div>
+          </div>
+
           <div className="mb-4">
             <label
-              htmlFor="country"
+              htmlFor="address"
               className="block text-gray-600 text-sm font-medium mb-1"
             >
-              Country
+              Address
             </label>
             <input
               type="text"
-              id="country"
-              value="Canada"
-              readOnly
-              className="w-full border border-gray-300 rounded-md py-2 px-3 bg-gray-100 cursor-not-allowed focus:outline-none"
+              id="address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
-          {/* Category Section */}
-          <div className="mb-6 border-b pb-4">
-            <h2 className="text-lg font-semibold text-gray-700 mb-3">
-              Category
-            </h2>
-            <label
-              htmlFor="category"
-              className="block text-gray-700 text-sm font-medium mb-2"
-            >
-              Select Category
-            </label>
-            <select
-              id="category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
-            >
-              <option value="">Select a category</option>
-              <option value="Cleaning">Cleaning</option>
-              <option value="Maintenance">Maintenance</option>
-              <option value="Delivery">Delivery</option>
-              <option value="Shopping">Shopping</option>
-            </select>
-          </div>
-
-          {/* Subcategory Section */}
-          {category && (
-            <div className="mb-6 border-b pb-4">
-              <h2 className="text-lg font-semibold text-gray-700 mb-3">
-                Subcategory
-              </h2>
-              <label
-                htmlFor="subcategory"
-                className="block text-gray-700 text-sm font-medium mb-2"
-              >
-                Select Subcategory
-              </label>
-              <select
-                id="subcategory"
-                value={subcategory}
-                onChange={(e) => setSubcategory(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
-              >
-                <option value="">Select a subcategory</option>
-                {category === "Cleaning" && (
-                  <>
-                    <option value="Home Cleaning">Home Cleaning</option>
-                    <option value="Office Cleaning">Office Cleaning</option>
-                    <option value="Deep Cleaning">Deep Cleaning</option>
-                  </>
-                )}
-                {category === "Maintenance" && (
-                  <>
-                    <option value="Electrical">Electrical</option>
-                    <option value="Plumbing">Plumbing</option>
-                    <option value="HVAC">HVAC</option>
-                  </>
-                )}
-                {category === "Delivery" && (
-                  <>
-                    <option value="Food Delivery">Food Delivery</option>
-                    <option value="Parcel Delivery">Parcel Delivery</option>
-                    <option value="Grocery Delivery">Grocery Delivery</option>
-                  </>
-                )}
-                {category === "Shopping" && (
-                  <>
-                    <option value="Clothing">Clothing</option>
-                    <option value="Electronics">Electronics</option>
-                    <option value="Groceries">Groceries</option>
-                  </>
-                )}
-              </select>
-            </div>
+  {/* Category Section */}
+  <div className="mb-6 border-b pb-4">
+        <h2 className="text-lg font-semibold text-gray-700 mb-3">Category</h2>
+        <label
+          htmlFor="category"
+          className="block text-gray-700 text-sm font-medium mb-2"
+        >
+          Select Category
+        </label>
+        <select
+          id="category"
+          value={category}
+          onChange={(e) => {
+            const selectedCategory = e.target.value;
+            setCategory(selectedCategory);
+            setSubcategory(""); // Reset subcategory
+            if (selectedCategory) {
+              getSubcategoriesByCategory(selectedCategory);
+            } else {
+              setSubcategoryList([]); // Clear subcategory list
+            }
+          }}
+          className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+        >
+          <option value="">Select a category</option>
+          {categoryList.length > 0 ? (
+            categoryList.map((cat) => (
+              <option key={cat._id} value={cat._id}>
+                {cat.categoryName}
+              </option>
+            ))
+          ) : (
+            <option value="no-category">No categories found</option>
           )}
-
-      {/* Subcategory Section */}
-      {category && (
-        <div className="mb-6 border-b pb-4">
-          <h2 className="text-lg font-semibold text-gray-700 mb-3">
-            Subcategory
-          </h2>
-          <label
-            htmlFor="subcategory"
-            className="block text-gray-700 text-sm font-medium mb-2"
-          >
-            Select Subcategory
-          </label>
-          <select
-            id="subcategory"
-            value={subcategory}
-            onChange={(e) => setSubcategory(e.target.value)}
-            className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
-          >
-            
-            {subcategoryList.length > 0 ? (
-              subcategoryList.map((subcat) => (
-                <option key={subcat.subcategoryId} value={subcat.subcategoryId}>
-                  {subcat.subCategoryName}
-                </option>
-              ))
-            ) : (
-              <option value="no-subcategory">No subcategories found</option>
-            )}
-          </select>
-        </div>
-      )}
-    </select>
-  </div>
-)}
+        </select>
+      </div>
 
       {/* Subcategory Section */}
       {category && (
@@ -620,6 +591,7 @@ const ServiceProviderSignUp = () => {
               />
             </div>
           )}
+
           <div className="mb-4">
             <label
               htmlFor="certification"
@@ -635,56 +607,6 @@ const ServiceProviderSignUp = () => {
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
-          <div className="mb-4">
-            <label
-              htmlFor="password"
-              className="block text-gray-600 text-sm font-medium mb-1"
-            >
-              Payment Type
-            </label>
-            <div className="flex space-x-4">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="wageType"
-                  value="hourly"
-                  checked={wageType === "hourly"}
-                  onChange={() => setWageType("hourly")}
-                  className="form-radio"
-                />
-                <span className="ml-2">Hourly</span>
-              </label>
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="wageType"
-                  value="perJob"
-                  checked={wageType === "perJob"}
-                  onChange={() => setWageType("perJob")}
-                  className="form-radio"
-                />
-                <span className="ml-2">Per Job</span>
-              </label>
-            </div>
-          </div>
-
-          {wageType && (
-            <div className="mb-4">
-              <label
-                htmlFor="wageAmount"
-                className="block text-gray-600 text-sm font-medium mb-1"
-              >
-                Wage Amount ({wageType === "hourly" ? "per hour" : "per job"})
-              </label>
-              <input
-                type="number"
-                id="wageAmount"
-                value={wageAmount}
-                onChange={(e) => setWageAmount(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-            </div>
-          )}
 
           <div className="mb-4">
             <label className="text-gray-600 text-sm">
