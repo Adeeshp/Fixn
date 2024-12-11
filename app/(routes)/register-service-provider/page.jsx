@@ -35,9 +35,9 @@ const ServiceProviderSignUp = () => {
     getCategoryList();
   }, []);
   
-  /**
-   * Fetches category list from the backend API
-   */
+
+    // Fetches category list from the backend API
+
   const getCategoryList = async () => {
     try {
       const response = await fetch("/api/category");
