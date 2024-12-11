@@ -10,7 +10,10 @@ import JobPostingList from "@/app/_components/JobPostingList";
 
 function MyBooking() {
   const { user } = useContext(UserContext);
-  const [taskList, setTaskList] = useState([]); // State for tasks
+  const [createTaskList, setCreateTaskList] = useState([]); // State for tasks
+  const [ongoingTasks, setOngoingTasks] = useState([]);
+  const [completedOrCancelledTasks, setCompletedOrCancelledTasks] = useState([]);
+  const [upcomingTasks, setUpcomingTasks] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
   
@@ -32,7 +35,10 @@ function MyBooking() {
       const data = await response.json();
       if (data.success) {
         // console.log(data.data);
-        setTaskList(data.data); // Assuming the task array is in `data.tasks`
+        setCreateTaskList(data.data); // Assuming the task array is in `data.data`
+        setOngoingTasks(data.data.filter(task => task.status === "ongoing"));
+        setCompletedOrCancelledTasks(data.data.filter(task => task.status === "completed" || task.status === "cancelled"));
+        setUpcomingTasks(data.data.filter(task => task.status === "upcoming"));
         
       } else {
         setError(data.message || "Unable to fetch tasks");
@@ -54,7 +60,11 @@ function MyBooking() {
       const data = await response.json();
       if (data.success) {
         // console.log(data.data);
-        setTaskList(data.data); // Assuming the task array is in data.tasks
+        setCreateTaskList(data.data); // Assuming the task array is in `data.data`
+        setOngoingTasks(data.data.filter(task => task.status === "ongoing"));
+        setCompletedOrCancelledTasks(data.data.filter(task => task.status === "completed" || task.status === "cancelled"));
+        setUpcomingTasks(data.data.filter(task => task.status === "upcoming"));
+
       } else {
         setError(data.message || "Unable to fetch tasks");
       }
@@ -66,36 +76,11 @@ function MyBooking() {
     }
   };
 
-  // const {data}=useSession();
-  // const [bookingHistory,setBookingHistory]=useState([]);
-  // useEffect(()=>{
-  //     data&&GetUserBookingHistory();
-  // },[data])
-
-  /**
-   * Used to Get User Booking History
-   */
-  // const GetUserBookingHistory=()=>{
-  //     GlobalApi.GetUserBookingHistory(data.user.email).then(resp=>{
-  //         console.log(resp);
-  //         setBookingHistory(resp.bookings);
-  //     })
-  // }
-
-  // const filterData=(type)=>{
-  //     const result=bookingHistory.filter(item=>
-  //         type=='booked'?
-  //         new Date(item.date)>=new Date()
-  //         :new Date(item.date)<=new Date());
-
-  //         return result;
-  // }
-
   return (
     <div className="pt-24 pb-20 mx-20 flex flex-row">
       <div className="pr-5 row w-8/12">
         <h2 className="font-bold text-[20px] my-2">Job Postings</h2>
-        <JobPostingList taskList={taskList} loading={loading} error={error} />
+        <JobPostingList taskList={createTaskList} loading={loading} error={error} />
       </div>
       <div className="pl-5 w-4/12 border-l-2 border-primary">
         <h2 className="font-bold text-[20px] my-2">My Bookings</h2>
@@ -121,22 +106,13 @@ function MyBooking() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="upcoming">
-            <BookingHistoryList
-            // bookingHistory={filterData('upcoming')}
-            // type='booked'
-            />
+            <BookingHistoryList taskList={upcomingTasks}  loading={loading} error={error} />
           </TabsContent>
           <TabsContent value="ongoing">
-            <BookingHistoryList
-            // bookingHistory={filterData('ongoing')}
-            // type='booked'
-            />
+            <BookingHistoryList taskList={ongoingTasks}  loading={loading} error={error} />
           </TabsContent>
           <TabsContent value="completed">
-            <BookingHistoryList
-            // bookingHistory={filterData('completed')}
-            // type='completed'
-            />
+            <BookingHistoryList taskList={completedOrCancelledTasks}  loading={loading} error={error} />
           </TabsContent>
         </Tabs>
       </div>
