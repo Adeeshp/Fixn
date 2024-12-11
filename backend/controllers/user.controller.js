@@ -54,7 +54,7 @@ export const loginUser = async (req, res) => {
 // Register User
 export const registerUser = async (req, res) => {
     try {
-        const { firstname, lastname, email, phoneNo, password } = req.body;
+        const { firstname, lastname, email, phoneNo, password, city, province, country } = req.body;
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -68,6 +68,9 @@ export const registerUser = async (req, res) => {
             lastname,
             email,
             phoneNo,
+            city,
+            province,
+            country,
             password: hashedPassword,
         });
 
@@ -103,6 +106,9 @@ export const registerServiceProvider = (req, res) => {
                 email,
                 password,
                 address,
+                city,
+            province,
+            country,
                 zipcode,
                 gender,
                 wageType,
@@ -145,6 +151,9 @@ export const registerServiceProvider = (req, res) => {
                 email,
                 password: hashedPassword,
                 address,
+                city,
+                province,
+                country,
                 zipcode,
                 gender,
                 wageType,
