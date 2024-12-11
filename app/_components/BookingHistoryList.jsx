@@ -1,6 +1,10 @@
-import { Calendar, Clock, MapPin, User } from 'lucide-react';
-import Image from 'next/image';
-import React from 'react';
+import { Calendar, MapPin, User } from "lucide-react";
+import Image from "next/image";
+import React, { useContext } from "react";
+import { UserContext } from "../contexts/UserContext";
+import DateFormatter from "./DateFormatter";
+import { calculateTimeAgo } from "./calculateTimeAgo";
+
 // import {
 //   AlertDialog,
 //   AlertDialogAction,
@@ -17,154 +21,126 @@ import React from 'react';
 // import { toast } from 'sonner';
 
 
-function BookingHistoryList({ bookingHistory, type }) {
-
-    //   const cancelAppointment=(booking)=>{
-    //       GlobalApi.deleteBooking(booking.id).then(resp=>{
-    //         if(resp)
-    //         {
-    //           toast('Booking Delete Successfully!')
-    //         }
-    //       },(e)=>{
-    //         toast('Error while canceling booking!')
-    //       })
-    //   }
+const BookingHistoryCard = ({ job, user, isServiceProvider }) => {
+    //Check if job is posted by the same user
+    const isMyJob = job.userId._id === user._id;
 
     return (
-        <div className='gap-2'>
-            {/* {bookingHistory.map((booking,index)=>( */}
-            
-
-            <div className='border rounded-lg p-4 mb-5'>
-                {/* <div key={index} className='flex gap-4  '> */}
-                <div className='flex gap-4  '>
-                    {/* {booking?.businessList?.name&&
-              <Image src={booking?.businessList?.images[0]?.url} */}
-                    <div className="w-[150px] h-[160px] bg-slate-200 rounded-lg animate-pulse flex items-center justify-center">
-                        <Image 
-                            src="/fixn.svg"
-                            alt="fixn-logo"
-                            width={60}
-                            height={60}
-                            className="filter grayscale"
-                        />
-                    </div>
-
-                    {/* <Image src=""
-                        alt='image'
-                        width={120}
-                        height={120}
-                        className='rounded-lg object-cover'
-                    /> */}
-                    {/* } */}
-                    <div className='flex flex-col gap-2'>
-                        <h2 className='font-bold'>
-                            {/* {booking.businessList.name} */}
-                            Painting
-                        </h2>
-                        <h2 className='flex gap-2 text-primary'> <User />
-                            {/* {booking.businessList.contactPerson} */}
-                            Chris Stewart
-                        </h2>
-                        <h2 className='flex gap-2 text-gray-500'> <MapPin className='text-primary' />
-                            {/* {booking.businessList.address} */}
-                            300 Uni Avennue, Waterloo
-                        </h2>
-                        <h2 className='flex gap-2 text-gray-500'>
-                            <Calendar className='text-primary' />
-                            <span className='text-black'>
-                                {/* {booking.date} */}
-                                06-11-2024
-                            </span></h2>
-                        <h2 className='flex gap-2 text-gray-500'>
-                            <Clock className='text-primary' />
-                            <span className='text-black'>
-                                {/* {booking.time} */}
-                                16:00
-                            </span></h2>
-
-                    </div>
-                </div>
+      <div className="gap-2">
+        <div className="border rounded-lg p-4 mb-5">
+          <div className="flex gap-4  ">
+            <div className="w-[150px] h-[160px] bg-slate-200 rounded-lg animate-pulse flex items-center justify-center">
+              <Image
+                src="/fixn.svg"
+                alt="fixn-logo"
+                width={60}
+                height={60}
+                className="filter grayscale"
+              />
             </div>
+            <div className="flex flex-col gap-2">
+              <h2 className="font-bold">
+                {job.categoryId?.categoryName || "Loading category..."},
+                {job.subCategoryId?.subCategoryName || "Loading SubCategory..."}
+              </h2>
+              <h2 className="flex gap-2 text-primary">
+                {" "}
+                <User />
+                {isServiceProvider ? (
+                  // If the user is a service provider, display the following
+                  <a href="./profile">
+                    <h2 className="flex gap-2 text-primary hover:font-bold">
+                      <User /> {job.userId.firstname} {job.userId.lastname}
+                    </h2>
+                  </a>
+                ) : (
+                  // If not a service provider, filter for jobs where requested_Status is "Accepted"
+                  (() => {
+                    const acceptedJobs = job.filter(
+                      (job) => job.requestId?.requested_Status === "Accepted"
+                    );
 
-            <div className='border rounded-lg p-4 mb-5'>
-                {/* <div key={index} className='flex gap-4  '> */}
-                <div className='flex gap-4  '>
-                    {/* {booking?.businessList?.name&&
-                    <Image src={booking?.businessList?.images[0]?.url} */}
-                    {/* <div className="w-[150px] h-[160px] bg-slate-200 rounded-lg animate-pulse flex items-center justify-center"> */}
-                        <Image 
-                            // src="https://img.freepik.com/free-photo/haunted-house-gothic-style_23-2151626620.jpg?semt=ais_hybrid"
-                            src="https://i0.wp.com/theconstructor.org/wp-content/uploads/2019/08/Defects-in-Painting.jpg?fit=916%2C605&ssl=1"
-                            alt="fixn-logo"
-                            width={150}
-                            height={160}
-                            className="rounded-lg object-cover"
-                        />
-                    {/* </div> */}
-                    {/* <Image src=""
-                        alt='image'
-                        width={120}
-                        height={120}
-                        className='rounded-lg object-cover'
-                    /> */}
-                    {/* } */}
-                    <div className='flex flex-col gap-2'>
-                        <h2 className='font-bold'>
-                            {/* {booking.businessList.name} */}
-                            Painting
+                    return acceptedJobs.length > 0 ? (
+                      <a href="./profile">
+                        <h2 className="flex gap-2 text-primary hover:font-bold">
+                          <User /> {job.requestId.firstname}{" "}
+                          {job.userId.lastname}
                         </h2>
-                        <h2 className='flex gap-2 text-primary'> <User />
-                            {/* {booking.businessList.contactPerson} */}
-                            John Doe
+                      </a>
+                    ) : (
+                      // Fallback when there are no accepted jobs, still render profile
+                      <a href="./profile">
+                        <h2 className="flex gap-2 text-primary hover:font-bold">
+                          <User /> {job.userId.firstname} {job.userId.lastname}
                         </h2>
-                        <h2 className='flex gap-2 text-gray-500'> <MapPin className='text-primary' />
-                            {/* {booking.businessList.address} */}
-                            300 Uni Avennue, Waterloo
-                        </h2>
-                        <h2 className='flex gap-2 text-gray-500'>
-                            <Calendar className='text-primary' />
-                            <span className='text-black'>
-                                {/* {booking.date} */}
-                                16-11-2024
-                            </span></h2>
-                        <h2 className='flex gap-2 text-gray-500'>
-                            <Clock className='text-primary' />
-                            <span className='text-black'>
-                                {/* {booking.time} */}
-                                16:00
-                            </span></h2>
-
-                    </div>
-                </div>
-
-                {/* <AlertDialog>
-            <AlertDialogTrigger asChild>
-            <Button
-                    variant="outline"
-                        className="mt-5 w-full border-red-300 ">Cancel Appointment</Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-                <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete your account
-                    and remove your data from our servers.
-                </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                onClick={()=>cancelAppointment(booking)}
-                >Continue</AlertDialogAction>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-            </AlertDialog> */}
-
+                      </a>
+                    );
+                  })()
+                )}
+              </h2>
+              <h2 className="flex gap-2 text-gray-500">
+                {" "}
+                <h2 className="flex gap-2 text-gray-500">
+                  <MapPin className="text-primary" />
+                  {`${job.address}, ${job.city}, ${job.country}, ${job.zipcode}`}
+                </h2>
+              </h2>
+              <h2 className="flex gap-2 text-gray-500">
+                <Calendar className="text-primary" />
+                <DateFormatter
+                  formatter="MMM d, yyyy"
+                  isoDate={job.createdAt}
+                />
+              </h2>
+              <h2 className="flex gap-2 text-gray-500">
+                <Clock className="text-primary" />
+                {`Est Time ${job.estimatedTime}`}
+              </h2>
             </div>
-
-            {/* ))} */}
+          </div>
         </div>
+      </div>
+    );
+};
+
+
+function BookingHistoryList({ taskList = [], loading, error }) {
+    const { user } = useContext(UserContext);
+
+    if (loading) {
+      return <div>Loading tasks...</div>;
+    }
+
+    if (error) {
+      return <div>Error: {error}</div>;
+    }
+
+    if (!taskList.length) {
+      return <div className="h-[120px] w-full text-center">No Jobs Found</div>;
+    }
+
+    return (
+        <div>
+      {taskList.map((job) => (
+        <div key={job._id}>
+          {user?.role === "normal" ? (
+              <BookingHistoryCard
+                key={job._id}
+                job={job}
+                user={user}
+                isServiceProvider={false}
+              />
+            ) : (
+                <BookingHistoryCard
+                  key={job._id}
+                  job={job}
+                  user={user}
+                  isServiceProvider={true}
+                />
+            )}
+        </div>
+      ))}
+    </div>
     )
 }
 

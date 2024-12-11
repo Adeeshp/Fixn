@@ -96,8 +96,7 @@ function JobPostingList({ taskList = [], loading, error }) {
     <div>
       {taskList.map((job) => (
         <div key={job._id}>
-          {job.status === "created" ? (
-            user?.role === "normal" ? (
+          {user?.role === "normal" ? (
               <JobPostingCard
                 key={job._id}
                 job={job}
@@ -114,10 +113,7 @@ function JobPostingList({ taskList = [], loading, error }) {
                   isServiceProvider={true}
                 />
               )
-            )
-          ) : (
-            <h2 className="text-gray-500">Task is not active</h2>
-          )}
+            )}
         </div>
       ))}
     </div>
