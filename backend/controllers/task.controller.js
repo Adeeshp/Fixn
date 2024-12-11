@@ -67,7 +67,10 @@ export const getAllTasks = async (req, res) => {
             { path: 'userId' }, // Populate userId field
             { path: 'categoryId' }, // Populate categoryId field
             { path: 'subCategoryId' }, // Populate subCategoryId field
-            { path: 'requestId' }, // Populate requestId (now an array)
+            { 
+                path: 'requestId', // Populate requestId field
+                populate: { path: 'userId' }, // Also populate userId inside requestId
+            },
             { path: 'appointmentId' }, // Populate appointmentId field
             { path: 'receiptId' }, // Populate receiptId field
             { path: 'reviewId' }, // Populate reviewId field
@@ -89,7 +92,10 @@ export const getTaskByUserId = async (req, res) => {
             .populate('userId') // Populate userId field
             .populate('categoryId') // Populate categoryId field
             .populate('subCategoryId') // Populate subCategoryId field
-            .populate('requestId') // Populate requestId field (which is now an array)
+            .populate({
+                path: 'requestId', // Populate requestId field
+                populate: { path: 'userId' }, // Populate userId within requestId
+            }) // Populate requestId field (which is now an array)
             .populate('appointmentId') // Populate appointmentId field
             .populate('receiptId') // Populate receiptId field
             .populate('reviewId'); // Populate reviewId field
