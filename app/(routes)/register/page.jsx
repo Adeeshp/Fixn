@@ -2,8 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import {Eye, EyeOff} from "lucide-react";
 
 const SignUp = () => {
   const router = useRouter();
@@ -113,7 +112,6 @@ const SignUp = () => {
       setIsProcessing(false);
     }
   };
-
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50">
       <div className="lg:w-2/5 md:w-2/5 w-full bg-white rounded-lg shadow-lg my-28 p-8">
@@ -208,7 +206,7 @@ const SignUp = () => {
               />
             </div>
           </div>
-         
+
           <div className="mb-4">
             <label
               htmlFor="country"
@@ -253,22 +251,22 @@ const SignUp = () => {
               <option value="Saskatchewan">Saskatchewan</option>
             </select>
           </div>
-          <div className="mb-4 ">
 
-              <label
-                htmlFor="city"
-                className="block text-gray-600 text-sm font-medium mb-1"
-              >
-                City
-              </label>
-              <input
-                type="text"
-                id="city"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-            </div>
+          <div className="mb-4">
+            <label
+              htmlFor="city"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              City
+            </label>
+            <input
+              type="text"
+              id="city"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+          </div>
 
           <div className="mb-4">
             <label
@@ -279,7 +277,7 @@ const SignUp = () => {
             </label>
             <div className="relative">
               <input
-                type={showPassword ? "text" : "password"} // Toggle password visibility
+                type={showPassword ? "text" : "password"}
                 id="password"
                 name="password"
                 value={password}
@@ -288,15 +286,14 @@ const SignUp = () => {
               />
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)} // Toggle showPassword state
+                onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
               >
-                <FontAwesomeIcon
-                  icon={showPassword ? faEyeSlash : faEye}
-                  size="sm"
-                />
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
-        </div>
+            </div>
+          </div>
+
           <div className="mb-4">
             <label
               htmlFor="confirmPassword"
@@ -306,7 +303,7 @@ const SignUp = () => {
             </label>
             <div className="relative">
               <input
-                type={showConfirmPassword ? "text" : "password"} // Toggle confirm password visibility
+                type={showConfirmPassword ? "text" : "password"}
                 id="confirmPassword"
                 name="confirmPassword"
                 value={confirmPassword}
@@ -315,24 +312,23 @@ const SignUp = () => {
               />
               <button
                 type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle showConfirmPassword state
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
               >
-                <FontAwesomeIcon
-                  icon={showConfirmPassword ? faEyeSlash : faEye}
-                  size="sm"
-                />
+                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
           </div>
-          </div>
+
           <div className="mb-4">
-            <label className="inline-flex items-center">
+            <label className="text-gray-600 text-sm">
               <input
                 type="checkbox"
+                id="terms"
+                name="terms"
                 checked={termsAccepted}
                 onChange={(e) => setTermsAccepted(e.target.checked)}
-                className="form-checkbox h-4 w-4 text-primary"
+                className="mr-2"
               />
               I agree to the{" "}
               <Link href="#" className="text-primary hover:underline">
@@ -368,5 +364,4 @@ const SignUp = () => {
     </div>
   );
 };
-
 export default SignUp;

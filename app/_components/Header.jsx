@@ -46,7 +46,7 @@ function Header() {
             </div>
           )}
           {(!user || user.role !== "serviceProvider") && (
-            <Link href="/register">
+            <Link href="/register-service-provider">
               <Button className="bg-primary text-white hover:bg-white hover:scale-105 hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer">
                 Become a Fixer
               </Button>
