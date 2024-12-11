@@ -42,8 +42,6 @@ const ServiceProviderSignUp = () => {
   const getCategoryList = async () => {
     try {
       const response = await fetch("/api/category");
-      console.log("this is one");
-      console.log(response);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -226,7 +224,7 @@ const ServiceProviderSignUp = () => {
           <div className="mb-6">
             <label
               htmlFor="profile-image"
-              className="block text-gray-700 text-sm font-semibold mb-2"
+              className="flex justify-center text-gray-700 text-sm font-semibold mb-2"
             >
               Upload Your Profile Image
             </label>
@@ -299,6 +297,22 @@ const ServiceProviderSignUp = () => {
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
+       
+          <div className="mb-4">
+            <label
+              htmlFor="email"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Email Address
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+          </div>
           <div className="mb-4">
             <label className="block text-gray-600 text-sm font-medium mb-1">
               Gender
@@ -327,22 +341,6 @@ const ServiceProviderSignUp = () => {
                 <span className="ml-2 text-gray-600">Female</span>
               </label>
             </div>
-          </div>
-
-          <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-gray-600 text-sm font-medium mb-1"
-            >
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
           </div>
 
           {/* Password */}
