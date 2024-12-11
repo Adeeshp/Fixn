@@ -23,8 +23,7 @@ import { calculateTimeAgo } from "./calculateTimeAgo";
 
 const BookingHistoryCard = ({ job, user, isServiceProvider }) => {
     //Check if job is posted by the same user
-    const isMyJob = job.userId._id === user._id;
-
+    // const isMyJob = job.userId._id === user._id;
     return (
       <div className="gap-2">
         <div className="border rounded-lg p-4 mb-5">
@@ -44,8 +43,6 @@ const BookingHistoryCard = ({ job, user, isServiceProvider }) => {
                 {job.subCategoryId?.subCategoryName || "Loading SubCategory..."}
               </h2>
               <h2 className="flex gap-2 text-primary">
-                {" "}
-                <User />
                 {isServiceProvider ? (
                   // If the user is a service provider, display the following
                   <a href="./profile">
@@ -56,18 +53,17 @@ const BookingHistoryCard = ({ job, user, isServiceProvider }) => {
                 ) : (
                   // If not a service provider, filter for jobs where requested_Status is "Accepted"
                   (() => {
-                    const acceptedJobs = job.filter(
-                      (job) => job.requestId?.requested_Status === "Accepted"
+                    const hasAcceptedRequest = job.requestId?.some(
+                      (request) => request.requested_Status === "Accepted"
                     );
-
-                    return acceptedJobs.length > 0 ? (
+              
+                    return hasAcceptedRequest ? (
                       <a href="./profile">
                         <h2 className="flex gap-2 text-primary hover:font-bold">
-                          <User /> {job.requestId.firstname}{" "}
-                          {job.userId.lastname}
+                          <User />{job.requestId[0]?.userId.firstname} {job.requestId[0]?.userId.lastname}
                         </h2>
                       </a>
-                    ) : (
+                    ) : (                    
                       // Fallback when there are no accepted jobs, still render profile
                       <a href="./profile">
                         <h2 className="flex gap-2 text-primary hover:font-bold">
@@ -93,7 +89,7 @@ const BookingHistoryCard = ({ job, user, isServiceProvider }) => {
                 />
               </h2>
               <h2 className="flex gap-2 text-gray-500">
-                <Clock className="text-primary" />
+                <Calendar className="text-primary" />
                 {`Est Time ${job.estimatedTime}`}
               </h2>
             </div>
