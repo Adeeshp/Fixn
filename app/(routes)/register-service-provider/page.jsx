@@ -1,10 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-
 const ServiceProviderSignUp = () => {
   const router = useRouter();
   const [firstName, setFirstName] = useState("");
@@ -254,7 +252,8 @@ const ServiceProviderSignUp = () => {
             />
           </div>
 
-          <div className="mb-4">
+             {/* Password */}
+             <div className="mb-4">
             <label
               htmlFor="password"
               className="block text-gray-600 text-sm font-medium mb-1"
@@ -274,14 +273,12 @@ const ServiceProviderSignUp = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
               >
-                <FontAwesomeIcon
-                  icon={showPassword ? faEyeSlash : faEye}
-                  size="sm"
-                />
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
 
+          {/* Confirm Password */}
           <div className="mb-4">
             <label
               htmlFor="confirmPassword"
@@ -302,10 +299,7 @@ const ServiceProviderSignUp = () => {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
               >
-                <FontAwesomeIcon
-                  icon={showConfirmPassword ? faEyeSlash : faEye}
-                  size="sm"
-                />
+                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
@@ -595,8 +589,8 @@ const ServiceProviderSignUp = () => {
 
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
-          {/* Submit Button */}
-          <button
+        {/* Submit Button */}
+        <button
             type="submit"
             className={`bg-primary hover:bg-white hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer text-white font-semibold rounded-md py-3 px-4 w-full transition duration-200 ease-in-out ${
               isProcessing ? "opacity-50 cursor-not-allowed" : ""
