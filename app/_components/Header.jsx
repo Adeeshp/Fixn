@@ -9,7 +9,7 @@ function Header() {
   const { user, signOut } = useContext(UserContext);
 
   return (
-    <div className="sticky w-full z-10 shadow-sm bg-white">
+    <div className="fixed w-full z-10 shadow-sm bg-white">
       <div className="mx-6 md:mx-20 py-5 flex justify-between">
         <div className="flex items-center">
           <Link href="/">
@@ -35,21 +35,23 @@ function Header() {
           {user && (
             <div className="flex items-center gap-6">
               <span className="text-black">
-                Welcome, <span className="text-primary">{user.firstname}!</span>
+                Welcome, <Link href="/profile?userId=${user.id}"><span className="text-primary">{user.firstname}!</span></Link>
               </span>
               <Button
-                className="hover:bg-primary bg-white hover:scale-105 border border-primary text-primary hover:text-white cursor-pointer"
-                onClick={handleSignOut}
+                className="hover:bg-primary bg-white hover:scale-105  border-primary text-primary hover:text-white border-2 cursor-pointer"
+                onClick={signOut}
               >
                 Logout
               </Button>
             </div>
           )}
-          <Link href="/register-service-provider">
-            <Button className="bg-primary text-white hover:bg-white hover:scale-105 hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer">
-              Become a Fixer
-            </Button>
-          </Link>
+          {(!user || user.role !== "serviceProvider") && (
+            <Link href="/register">
+              <Button className="bg-primary text-white hover:bg-white hover:scale-105 hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer">
+                Become a Fixer
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
     </div>
