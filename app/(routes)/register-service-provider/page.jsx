@@ -258,8 +258,8 @@ const ServiceProviderSignUp = () => {
                 <input
                   type="radio"
                   name="gender"
-                  value="male"
-                  checked={gender === "male"}
+                  value="Male"
+                  checked={gender === "Male"}
                   onChange={(e) => setGender(e.target.value)}
                   className="form-radio text-primary focus:ring-primary"
                 />
@@ -269,8 +269,8 @@ const ServiceProviderSignUp = () => {
                 <input
                   type="radio"
                   name="gender"
-                  value="female"
-                  checked={gender === "female"}
+                  value="Female"
+                  checked={gender === "Female"}
                   onChange={(e) => setGender(e.target.value)}
                   className="form-radio text-primary focus:ring-primary"
                 />
