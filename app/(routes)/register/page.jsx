@@ -7,29 +7,30 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const SignUp = () => {
   const router = useRouter();
-  const [role, setRole] = useState("normal");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(""); 
+  const [confirmPassword, setConfirmPassword] = useState(""); // New confirm password state
+  const [role, setRole] = useState("normal"); // Default role
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [error, setError] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPassword, setShowPassword] = useState(false); // State for password visibility
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State for confirm password visibility
+``
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     // Empty first name validation
-    if (firstName.length == "") {
+    if (firstName.trim() === "") {
       setError("Please enter First Name");
       return;
     }
     // Empty last name validation
-    if (lastName.length == "") {
+    if (lastName.trim() === "") {
       setError("Please enter Last Name");
       return;
     }
@@ -47,17 +48,17 @@ const SignUp = () => {
       return;
     }
 
-       // Password validation
-       if (password.length < 6) {
-        setError("Password must be at least 6 characters long");
-        return;
-      }
-  
-      // Confirm password validation
-      if (password !== confirmPassword) {
-        setError("Passwords do not match");
-        return;
-      }
+    // Password validation (minimum 6 characters)
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
+
+    // Confirm password validation (match passwords)
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
 
     if (!termsAccepted) {
       setError("You must accept the terms and conditions");
@@ -79,7 +80,7 @@ const SignUp = () => {
           email,
           phoneNo: phoneNumber,
           password,
-          role, // Include the role in the request 
+          role, // Include the role in the request
         }),
       });
 
@@ -226,37 +227,66 @@ const SignUp = () => {
             </div>
           </div>
           <div className="mb-4">
-  <label
-    htmlFor="confirmPassword"
-    className="block text-gray-600 text-sm font-medium mb-1"
-  >
-    Confirm Password
-  </label>
-  <div className="relative">
-    <input
-      type={showConfirmPassword ? "text" : "password"} // Toggle confirm password visibility
-      id="confirmPassword"
-      name="confirmPassword"
-      value={confirmPassword}
-      onChange={(e) => setConfirmPassword(e.target.value)}
-      className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-    />
-    <button
-      type="button"
-      onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle showConfirmPassword state
-      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
-    >
-      <FontAwesomeIcon
-        icon={showConfirmPassword ? faEyeSlash : faEye}
-        size="sm"
-      />
-    </button>
-  </div>
-</div>
+            <label
+              htmlFor="confirmPassword"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Confirm Password
+            </label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"} // Toggle confirm password visibility
+                id="confirmPassword"
+                name="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle showConfirmPassword state
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+              >
+                <FontAwesomeIcon
+                  icon={showConfirmPassword ? faEyeSlash : faEye}
+                  size="sm"
+                />
+              </button>
+            </div>
+          </div>
 
+          {/* Confirm Password Field */}
+          <div className="mb-4">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Confirm Password
+            </label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"} // Toggle confirm password visibility
+                id="confirmPassword"
+                name="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle showConfirmPassword state
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+              >
+                <FontAwesomeIcon
+                  icon={showConfirmPassword ? faEyeSlash : faEye}
+                  size="sm"
+                />
+              </button>
+            </div>
+          </div>
 
           <div className="mb-4">
-            <label className="text-gray-600 text-sm">
+            <label className="inline-flex items-center">
               <input
                 type="checkbox"
                 id="terms"
@@ -265,15 +295,16 @@ const SignUp = () => {
                 onChange={(e) => setTermsAccepted(e.target.checked)}
                 className="mr-2 "
               />
-              I agree to the{" "}
-              <Link href="#" className="text-primary hover:underline">
-                Terms and Conditions
-              </Link>{" "}
-              and have reviewed the{" "}
-              <Link href="#" className="text-primary hover:underline">
-                Privacy Policy
-              </Link>
-              .
+              <span className="ml-2 text-sm text-gray-600">
+                &nbsp; I accept the{" "}
+                <Link href="#" className="text-primary">
+                  Terms and Conditions
+                </Link>{" "}
+                and{" "}
+                <Link href="#" className="text-primary">
+                  Privacy Policy.
+                </Link>
+              </span>
             </label>
           </div>
 
@@ -287,15 +318,15 @@ const SignUp = () => {
             }`}
             disabled={isProcessing}
           >
-            {isProcessing ? "Creating Account..." : "Create Account"}
+            {isProcessing ? "Signing up..." : "Sign Up"}
           </button>
         </form>
 
-        <div className="mt-6 text-center">
-          <Link href="/login" className="text-sm text-primary hover:underline">
-            Already have an account? <b>Sign In</b>
+        <p className="mt-4 text-sm text-gray-600 text-center ">
+          <Link href="/login" className="text-primary">
+            Already have an account? <b>Log in</b>
           </Link>
-        </div>
+        </p>
       </div>
     </div>
   );

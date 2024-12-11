@@ -12,14 +12,13 @@ const ServiceProviderSignUp = () => {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [zipCode, setZipCode] = useState("");
-const [city, setCity] = useState("");
-const [province, setProvince] = useState("");
-const [category, setCategory] = React.useState("");
-const [subcategory, setSubcategory] = React.useState("");
+  const [city, setCity] = useState("");
+  const [province, setProvince] = useState("");
+  const [category, setCategory] = React.useState("");
+  const [subcategory, setSubcategory] = React.useState("");
   const [address, setAddress] = useState(""); // Add this state for the address
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [selectedService, setSelectedService] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [certification, setCertification] = useState(null);
   const [error, setError] = useState("");
@@ -74,7 +73,7 @@ const [subcategory, setSubcategory] = React.useState("");
       setError("Please enter a valid Canadian zip code (e.g., A1A 1A1)");
       return;
     }
-    
+
     if (password.length < 6) {
       setError("Password must be at least 6 characters long");
       return;
@@ -85,10 +84,6 @@ const [subcategory, setSubcategory] = React.useState("");
       return;
     }
 
-    if (!selectedService) {
-      setError("Please select a service you provide");
-      return;
-    }
     if (!termsAccepted) {
       setError("You must accept the terms and conditions");
       return;
@@ -99,7 +94,9 @@ const [subcategory, setSubcategory] = React.useState("");
       return;
     }
     if (wageType && !wageAmount) {
-      setError(`Please enter a ${wageType === "hourly" ? "hourly" : "per job"} wage`);
+      setError(
+        `Please enter a ${wageType === "hourly" ? "hourly" : "per job"} wage`
+      );
       return;
     }
 
@@ -112,13 +109,12 @@ const [subcategory, setSubcategory] = React.useState("");
       formData.append("email", email);
       formData.append("phoneNumber", phoneNumber);
       formData.append("address", address); // Include address
+      formData.append("city", city);
+      formData.append("province", province);
+      formData.append("zipCode", zipCode);
       formData.append("password", password);
-      formData.append("service", selectedService);
       formData.append("wageType", wageType); // Include wage type
       formData.append("wage", wageAmount); // Include wage amount
-      formData.append("city", city);
-formData.append("province", province);
-formData.append("zipCode", zipCode);
       if (certification) formData.append("certification", certification);
 
       const response = await fetch("/api/user/registerServiceProvider", {
@@ -197,8 +193,276 @@ formData.append("zipCode", zipCode);
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
+          <div className="mb-4">
+            <label
+              htmlFor="phoneNumber"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Phone Number
+            </label>
+            <div className="flex">
+              <select className="border border-gray-300 rounded-md py-2 px-3 mr-2 focus:outline-none focus:ring-2 focus:ring-primary">
+                <option value="+1">+1 (USA/Canada)</option>
+                <option value="+44">+44 (UK)</option>
+                <option value="+91">+91 (India)</option>
+                <option value="+61">+61 (Australia)</option>
+                <option value="+81">+81 (Japan)</option>
+                <option value="+49">+49 (Germany)</option>
+                <option value="+33">+33 (France)</option>
+                <option value="+86">+86 (China)</option>
+                <option value="+39">+39 (Italy)</option>
+                <option value="+55">+55 (Brazil)</option>
+                <option value="+34">+34 (Spain)</option>
+                <option value="+7">+7 (Russia)</option>
+                <option value="+27">+27 (South Africa)</option>
+                <option value="+64">+64 (New Zealand)</option>
+                <option value="+82">+82 (South Korea)</option>
+              </select>
 
-        <div className="mb-4">
+              <input
+                type="text"
+                id="phoneNumber"
+                name="phoneNumber"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+            </div>
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="address"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Address
+            </label>
+            <input
+              type="text"
+              id="address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+          </div>
+          <div className="mb-4 flex space-x-4">
+            <div className="w-1/2">
+              <label
+                htmlFor="city"
+                className="block text-gray-600 text-sm font-medium mb-1"
+              >
+                City
+              </label>
+              <input
+                type="text"
+                id="city"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+            </div>
+
+            <div className="w-1/2">
+              <label
+                htmlFor="zipCode"
+                className="block text-gray-600 text-sm font-medium mb-1"
+              >
+                Zip Code
+              </label>
+              <input
+                type="text"
+                id="zipCode"
+                value={zipCode}
+                onChange={(e) => setZipCode(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+            </div>
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="province"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Province
+            </label>
+            <select
+              id="province"
+              value={province}
+              onChange={(e) => setProvince(e.target.value)}
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            >
+              <option value="">Select a Province</option>
+              <option value="Alberta">Alberta</option>
+              <option value="British Columbia">British Columbia</option>
+              <option value="Manitoba">Manitoba</option>
+              <option value="New Brunswick">New Brunswick</option>
+              <option value="Newfoundland and Labrador">
+                Newfoundland and Labrador
+              </option>
+              <option value="Nova Scotia">Nova Scotia</option>
+              <option value="Ontario">Ontario</option>
+              <option value="Prince Edward Island">Prince Edward Island</option>
+              <option value="Quebec">Quebec</option>
+              <option value="Saskatchewan">Saskatchewan</option>
+            </select>
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="country"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Country
+            </label>
+            <input
+              type="text"
+              id="country"
+              value="Canada"
+              readOnly
+              className="w-full border border-gray-300 rounded-md py-2 px-3 bg-gray-100 cursor-not-allowed focus:outline-none"
+            />
+          </div>
+          {/* Category Section */}
+          <div className="mb-6 border-b pb-4">
+            <h2 className="text-lg font-semibold text-gray-700 mb-3">
+              Category
+            </h2>
+            <label
+              htmlFor="category"
+              className="block text-gray-700 text-sm font-medium mb-2"
+            >
+              Select Category
+            </label>
+            <select
+              id="category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+            >
+              <option value="">Select a category</option>
+              <option value="Cleaning">Cleaning</option>
+              <option value="Maintenance">Maintenance</option>
+              <option value="Delivery">Delivery</option>
+              <option value="Shopping">Shopping</option>
+            </select>
+          </div>
+
+          {/* Subcategory Section */}
+          {category && (
+            <div className="mb-6 border-b pb-4">
+              <h2 className="text-lg font-semibold text-gray-700 mb-3">
+                Subcategory
+              </h2>
+              <label
+                htmlFor="subcategory"
+                className="block text-gray-700 text-sm font-medium mb-2"
+              >
+                Select Subcategory
+              </label>
+              <select
+                id="subcategory"
+                value={subcategory}
+                onChange={(e) => setSubcategory(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+              >
+                <option value="">Select a subcategory</option>
+                {category === "Cleaning" && (
+                  <>
+                    <option value="Home Cleaning">Home Cleaning</option>
+                    <option value="Office Cleaning">Office Cleaning</option>
+                    <option value="Deep Cleaning">Deep Cleaning</option>
+                  </>
+                )}
+                {category === "Maintenance" && (
+                  <>
+                    <option value="Electrical">Electrical</option>
+                    <option value="Plumbing">Plumbing</option>
+                    <option value="HVAC">HVAC</option>
+                  </>
+                )}
+                {category === "Delivery" && (
+                  <>
+                    <option value="Food Delivery">Food Delivery</option>
+                    <option value="Parcel Delivery">Parcel Delivery</option>
+                    <option value="Grocery Delivery">Grocery Delivery</option>
+                  </>
+                )}
+                {category === "Shopping" && (
+                  <>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Groceries">Groceries</option>
+                  </>
+                )}
+              </select>
+            </div>
+          )}
+
+          <div className="mb-4">
+            <label
+              htmlFor="wageType"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Payment Type
+            </label>
+            <div className="flex space-x-4">
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="wageType"
+                  value="hourly"
+                  checked={wageType === "hourly"}
+                  onChange={() => setWageType("hourly")}
+                  className="form-radio"
+                />
+                <span className="ml-2">Hourly</span>
+              </label>
+              <label className="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="wageType"
+                  value="perJob"
+                  checked={wageType === "perJob"}
+                  onChange={() => setWageType("perJob")}
+                  className="form-radio"
+                />
+                <span className="ml-2">Per Job</span>
+              </label>
+            </div>
+          </div>
+
+          {wageType && (
+            <div className="mb-4">
+              <label
+                htmlFor="wageAmount"
+                className="block text-gray-600 text-sm font-medium mb-1"
+              >
+                Wage Amount ({wageType === "hourly" ? "per hour" : "per job"})
+              </label>
+              <input
+                type="number"
+                id="wageAmount"
+                value={wageAmount}
+                onChange={(e) => setWageAmount(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+            </div>
+          )}
+
+          <div className="mb-4">
+            <label
+              htmlFor="certification"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Upload Certification (required)
+            </label>
+            <input
+              type="file"
+              id="certification"
+              onChange={handleFileUpload}
+              required // Make the field required
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+          </div>
+          <div className="mb-4">
             <label
               htmlFor="password"
               className="block text-gray-600 text-sm font-medium mb-1"
@@ -253,271 +517,6 @@ formData.append("zipCode", zipCode);
               </button>
             </div>
           </div>
-          <div className="mb-4">
-            <label
-              htmlFor="phoneNumber"
-              className="block text-gray-600 text-sm font-medium mb-1"
-            >
-              Phone Number
-            </label>
-            <div className="flex">
-              <select className="border border-gray-300 rounded-md py-2 px-3 mr-2 focus:outline-none focus:ring-2 focus:ring-primary">
-                <option value="+1">+1 (USA/Canada)</option>
-                <option value="+44">+44 (UK)</option>
-                <option value="+91">+91 (India)</option>
-                <option value="+61">+61 (Australia)</option>
-                <option value="+81">+81 (Japan)</option>
-                <option value="+49">+49 (Germany)</option>
-                <option value="+33">+33 (France)</option>
-                <option value="+86">+86 (China)</option>
-                <option value="+39">+39 (Italy)</option>
-                <option value="+55">+55 (Brazil)</option>
-                <option value="+34">+34 (Spain)</option>
-                <option value="+7">+7 (Russia)</option>
-                <option value="+27">+27 (South Africa)</option>
-                <option value="+64">+64 (New Zealand)</option>
-                <option value="+82">+82 (South Korea)</option>
-              </select>
-
-              <input
-                type="text"
-                id="phoneNumber"
-                name="phoneNumber"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-            </div>
-          </div>
-          <div className="mb-4">
-  <label
-    htmlFor="country"
-    className="block text-gray-600 text-sm font-medium mb-1"
-  >
-    Country
-  </label>
-  <input
-    type="text"
-    id="country"
-    value="Canada"
-    readOnly
-    className="w-full border border-gray-300 rounded-md py-2 px-3 bg-gray-100 cursor-not-allowed focus:outline-none"
-  />
-</div>
-
-<div className="mb-4">
-  <label
-    htmlFor="province"
-    className="block text-gray-600 text-sm font-medium mb-1"
-  >
-    Province
-  </label>
-  <select
-    id="province"
-    value={province}
-    onChange={(e) => setProvince(e.target.value)}
-    className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-  >
-    <option value="">Select a Province</option>
-    <option value="Alberta">Alberta</option>
-    <option value="British Columbia">British Columbia</option>
-    <option value="Manitoba">Manitoba</option>
-    <option value="New Brunswick">New Brunswick</option>
-    <option value="Newfoundland and Labrador">Newfoundland and Labrador</option>
-    <option value="Nova Scotia">Nova Scotia</option>
-    <option value="Ontario">Ontario</option>
-    <option value="Prince Edward Island">Prince Edward Island</option>
-    <option value="Quebec">Quebec</option>
-    <option value="Saskatchewan">Saskatchewan</option>
-  </select>
-</div>
-<div className="mb-4 flex space-x-4">
-  <div className="w-1/2">
-    <label
-      htmlFor="city"
-      className="block text-gray-600 text-sm font-medium mb-1"
-    >
-      City
-    </label>
-    <input
-      type="text"
-      id="city"
-      value={city}
-      onChange={(e) => setCity(e.target.value)}
-      className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-    />
-  </div>
-
-  <div className="w-1/2">
-    <label
-      htmlFor="zipCode"
-      className="block text-gray-600 text-sm font-medium mb-1"
-    >
-      Zip Code
-    </label>
-    <input
-      type="text"
-      id="zipCode"
-      value={zipCode}
-      onChange={(e) => setZipCode(e.target.value)}
-      className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-    />
-  </div>
-</div>
-
-          <div className="mb-4">
-            <label
-              htmlFor="address"
-              className="block text-gray-600 text-sm font-medium mb-1"
-            >
-              Address
-            </label>
-            <input
-              type="text"
-              id="address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
-          </div>
-
-       
-        {/* Category Section */}
-<div className="mb-6 border-b pb-4">
-  <h2 className="text-lg font-semibold text-gray-700 mb-3">Category</h2>
-  <label htmlFor="category" className="block text-gray-700 text-sm font-medium mb-2">
-    Select Category
-  </label>
-  <select
-    id="category"
-    value={category}
-    onChange={(e) => setCategory(e.target.value)}
-    className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
-  >
-    <option value="">Select a category</option>
-    <option value="Cleaning">Cleaning</option>
-    <option value="Maintenance">Maintenance</option>
-    <option value="Delivery">Delivery</option>
-    <option value="Shopping">Shopping</option>
-  </select>
-</div>
-
-{/* Subcategory Section */}
-{category && (
-  <div className="mb-6 border-b pb-4">
-    <h2 className="text-lg font-semibold text-gray-700 mb-3">Subcategory</h2>
-    <label htmlFor="subcategory" className="block text-gray-700 text-sm font-medium mb-2">
-      Select Subcategory
-    </label>
-    <select
-      id="subcategory"
-      value={subcategory}
-      onChange={(e) => setSubcategory(e.target.value)}
-      className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
-    >
-      <option value="">Select a subcategory</option>
-      {category === "Cleaning" && (
-        <>
-          <option value="Home Cleaning">Home Cleaning</option>
-          <option value="Office Cleaning">Office Cleaning</option>
-          <option value="Deep Cleaning">Deep Cleaning</option>
-        </>
-      )}
-      {category === "Maintenance" && (
-        <>
-          <option value="Electrical">Electrical</option>
-          <option value="Plumbing">Plumbing</option>
-          <option value="HVAC">HVAC</option>
-        </>
-      )}
-      {category === "Delivery" && (
-        <>
-          <option value="Food Delivery">Food Delivery</option>
-          <option value="Parcel Delivery">Parcel Delivery</option>
-          <option value="Grocery Delivery">Grocery Delivery</option>
-        </>
-      )}
-      {category === "Shopping" && (
-        <>
-          <option value="Clothing">Clothing</option>
-          <option value="Electronics">Electronics</option>
-          <option value="Groceries">Groceries</option>
-        </>
-      )}
-    </select>
-  </div>
-)}
-
-          <div className="mb-4">
-            <label
-              htmlFor="wageType"
-              className="block text-gray-600 text-sm font-medium mb-1"
-            >
-              Payment Type
-            </label>
-            <div className="flex space-x-4">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="wageType"
-                  value="hourly"
-                  checked={wageType === "hourly"}
-                  onChange={() => setWageType("hourly")}
-                  className="form-radio"
-                />
-                <span className="ml-2">Hourly</span>
-              </label>
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="wageType"
-                  value="perJob"
-                  checked={wageType === "perJob"}
-                  onChange={() => setWageType("perJob")}
-                  className="form-radio"
-                />
-                <span className="ml-2">Per Job</span>
-              </label>
-            </div>
-          </div>
-
-          {wageType && (
-            <div className="mb-4">
-              <label
-                htmlFor="wageAmount"
-                className="block text-gray-600 text-sm font-medium mb-1"
-              >
-                Wage Amount ({wageType === "hourly" ? "per hour" : "per job"})
-              </label>
-              <input
-                type="number"
-                id="wageAmount"
-                value={wageAmount}
-                onChange={(e) => setWageAmount(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-            </div>
-          )}
-        
-
-         
-        <div className="mb-4">
-            <label
-              htmlFor="certification"
-              className="block text-gray-600 text-sm font-medium mb-1"
-            >
-              Upload Certification (required)
-            </label>
-            <input
-              type="file"
-              id="certification"
-              onChange={handleFileUpload}
-              required // Make the field required
-              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
-          </div>
-
-
 
           <div className="mb-4">
             <label className="text-gray-600 text-sm">
@@ -541,13 +540,10 @@ formData.append("zipCode", zipCode);
             </label>
           </div>
 
+          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
-          {error && (
-            <p className="text-red-500 text-sm mb-4">{error}</p>
-          )}
-
-           {/* Submit Button */}
-           <button
+          {/* Submit Button */}
+          <button
             type="submit"
             className={`bg-primary hover:bg-white hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer text-white font-semibold rounded-md py-3 px-4 w-full transition duration-200 ease-in-out ${
               isProcessing ? "opacity-50 cursor-not-allowed" : ""
@@ -562,7 +558,6 @@ formData.append("zipCode", zipCode);
             Already have an account? <b>Sign In</b>
           </Link>
         </div>
-
       </div>
     </div>
   );
