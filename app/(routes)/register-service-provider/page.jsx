@@ -42,7 +42,8 @@ const ServiceProviderSignUp = () => {
   const getCategoryList = async () => {
     try {
       const response = await fetch("/api/category");
-  
+        console.log("this is one");
+        console.log(response);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -138,9 +139,9 @@ const ServiceProviderSignUp = () => {
       return;
     }
 
-    if (!selectedService) {
-      setError("Please select a service you provide");
-      return;
+      if (!selectedService) {
+        setError("Please select a service you provide");
+        return;
     }
     if (!termsAccepted) {
       setError("You must accept the terms and conditions");
@@ -438,77 +439,71 @@ const ServiceProviderSignUp = () => {
             />
           </div>
   {/* Category Section */}
-<div className="mb-6 border-b pb-4">
-  <h2 className="text-lg font-semibold text-gray-700 mb-3">Category</h2>
-  <label
-    htmlFor="category"
-    className="block text-gray-700 text-sm font-medium mb-2"
-  >
-    Select Category
-  </label>
-  <select
-    id="category"
-    value={category}
-    onChange={(e) => {
-      const selectedCategory = e.target.value; // Correctly fetch the selected value
-      setCategory(selectedCategory);  
-      setSubcategory(""); // Reset subcategory selection
-      
-      if (selectedCategory) {
-        getSubcategoriesByCategory(selectedCategory); // Fetch subcategories based on selected category
-        console.log(selectedCategory);
-      } else {
-        console.log("No category selected");
-        setSubcategoryList([]); // Clear subcategory list if no category is selected
-      }
-    }}
-    className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
-  >
-    <option value="">Select a category</option>
-    {categoryList.length > 0 ? (
-      categoryList.map((cat) => (
-        <option key={cat.categoryId} value={cat.categoryId}>
-          {cat.categoryName}
-        </option>
-      ))
-    ) : (
-      <option value="no-category">No categories found</option>
-    )}
-  </select>
-</div>
-
-{/* Subcategory Section */}
-{category && (
-    
   <div className="mb-6 border-b pb-4">
-    <h2 className="text-lg font-semibold text-gray-700 mb-3">Subcategory</h2>
-    <label
-      htmlFor="subcategory"
-      className="block text-gray-700 text-sm font-medium mb-2"
-    >
-      Select Subcategory
-    </label>
-    <select
-      id="subcategory"
-      value={subcategory}
-      onChange={(e) => setSubcategory(e.target.value)}
-      className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
-    >
-      
-      <option value="">Select a subcategory</option>
-      {subcategoryList.length > 0 ? (
-        subcategoryList.map((subcat) => (
-          <option key={subcat.subcategoryId} value={subcat.subcategoryId}>
-            {subcat.subCategoryName}
-          </option>
-        ))
-      ) : (
-        <option value="no-subcategory">No subcategories found</option>
-      )}
-    </select>
-  </div>
-)}
+        <h2 className="text-lg font-semibold text-gray-700 mb-3">Category</h2>
+        <label
+          htmlFor="category"
+          className="block text-gray-700 text-sm font-medium mb-2"
+        >
+          Select Category
+        </label>
+        <select
+          id="category"
+          value={category}
+          onChange={(e) => {
+            const selectedCategory = e.target.value;
+            setCategory(selectedCategory);
+            setSubcategory(""); // Reset subcategory
+            if (selectedCategory) {
+              getSubcategoriesByCategory(selectedCategory);
+            } else {
+              setSubcategoryList([]); // Clear subcategory list
+            }
+          }}
+          className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+        >
+          <option value="">Select a category</option>
+          {categoryList.length > 0 ? (
+            categoryList.map((cat) => (
+              <option key={cat._id} value={cat._id}>
+                {cat.categoryName}
+              </option>
+            ))
+          ) : (
+            <option value="no-category">No categories found</option>
+          )}
+        </select>
+      </div>
 
+      {/* Subcategory Section */}
+      {category && (
+        <div className="mb-6 border-b pb-4">
+          <h2 className="text-lg font-semibold text-gray-700 mb-3">Subcategory</h2>
+          <label
+            htmlFor="subcategory"
+            className="block text-gray-700 text-sm font-medium mb-2"
+          >
+            Select Subcategory
+          </label>
+          <select
+            id="subcategory"
+            value={subcategory}
+            onChange={(e) => setSubcategory(e.target.value)}
+            className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+          >
+            <option value="">Select a subcategory</option>
+            {subcategoryList.length > 0 ? (
+              subcategoryList.map((subcat) => (
+                <option key={subcat._id} value={subcat._id}>
+                  {subcat.subCategoryName}
+                </option>
+              ))
+            ) : (
+              <option value="no-subcategory">No subcategories found</option>
+            )}
+          </select>
+        </div>
+      )}
           <div className="mb-4">
             <label
               htmlFor="wageType"
