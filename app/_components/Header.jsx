@@ -35,10 +35,10 @@ function Header() {
           {user && (
             <div className="flex items-center gap-6">
               <span className="text-black">
-                Welcome, <span className="text-primary">{user.firstname}!</span>
+                Welcome, <Link href="/profile"><span className="text-primary">{user.firstname}!</span></Link>
               </span>
               <Button
-                className="hover:bg-primary bg-white hover:scale-105 border border-primary text-primary hover:text-white border-2 cursor-pointer"
+                className="hover:bg-primary bg-white hover:scale-105  border-primary text-primary hover:text-white border-2 cursor-pointer"
                 onClick={signOut}
               >
                 Logout
