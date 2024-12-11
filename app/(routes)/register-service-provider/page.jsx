@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, use } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { FaPlus } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 const ServiceProviderSignUp = () => {
@@ -14,7 +15,6 @@ const ServiceProviderSignUp = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [province, setProvince] = useState("");
   const [city, setCity] = useState("");
-  // const [country] = "Canada";
   const [zipCode, setZipCode] = useState("");
   const [address, setAddress] = useState("");
   const [category, setCategory] = useState("");
@@ -30,6 +30,7 @@ const ServiceProviderSignUp = () => {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
 
   // Fetch category list on initial render
   useEffect(() => {
@@ -59,9 +60,8 @@ const ServiceProviderSignUp = () => {
     }
   };
 
-  /**
-   * Fetches subcategories based on the selected category
-   */
+  //  Fetches subcategories based on the selected category
+
   const getSubcategoriesByCategory = async (categoryId) => {
     try {
       const response = await fetch(`/api/subcategory/${categoryId}`);
@@ -86,7 +86,12 @@ const ServiceProviderSignUp = () => {
     setDocument(e.target.files[0]);
   };
   const handleImageUpload = (e) => {
-    setImage(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      const previewUrl = URL.createObjectURL(file);
+      setPreviewImage(previewUrl);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -218,6 +223,51 @@ const ServiceProviderSignUp = () => {
           Service Provider Registration
         </h1>
         <form onSubmit={handleSubmit}>
+          <div className="mb-6">
+            <label
+              htmlFor="profile-image"
+              className="block text-gray-700 text-sm font-semibold mb-2"
+            >
+              Upload Your Profile Image
+            </label>
+            <div className="flex flex-col items-center space-y-4">
+              {/* Placeholder for profile image */}
+              <div className="w-40 h-40 bg-gray-200 border-2 border-gray-300 rounded-full flex items-center justify-center overflow-hidden relative">
+                {/* Display uploaded image or fallback icon */}
+                {previewImage ? (
+                  <img
+                    src={previewImage}
+                    alt="Profile Preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <FaPlus className="text-gray-500 text-5xl" />
+                )}
+                <label
+                  htmlFor="profile-image"
+                  className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white text-sm font-semibold rounded-full cursor-pointer opacity-0 hover:opacity-100 transition-opacity"
+                >
+                  <FaPlus className="text-white text-xl" />
+                </label>
+              </div>
+
+              {/* File input */}
+              <div>
+                <input
+                  type="file"
+                  id="profile-image"
+                  onChange={handleImageUpload}
+                  accept="image/*"
+                  required
+                  className="hidden"
+                />
+                <p className="mt-1 text-xs text-gray-500 text-center">
+                  Click the circle to upload a new image.
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div className="mb-4">
             <label
               htmlFor="firstName"
@@ -568,12 +618,12 @@ const ServiceProviderSignUp = () => {
                 <input
                   type="radio"
                   name="wageType"
-                  value="perJob"
-                  checked={wageType === "perJob"}
-                  onChange={() => setWageType("perJob")}
+                  value="fixed"
+                  checked={wageType === "fixed"}
+                  onChange={() => setWageType("fixed")}
                   className="form-radio"
                 />
-                <span className="ml-2">Per Job</span>
+                <span className="ml-2">Fixed</span>
               </label>
             </div>
           </div>
@@ -633,23 +683,8 @@ const ServiceProviderSignUp = () => {
               .
             </label>
           </div>
-
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-          <div className="mb-4">
-            <label
-              htmlFor="image"
-              className="block text-gray-600 text-sm font-medium mb-1"
-            >
-              Image (required)
-            </label>
-            <input
-              type="file"
-              id="image"
-              onChange={handleImageUpload}
-              required // Make the field required
-              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
-          </div>
+
           {/* Submit Button */}
           <button
             type="submit"
