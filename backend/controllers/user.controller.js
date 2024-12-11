@@ -151,6 +151,7 @@ export const registerServiceProvider = (req, res) => {
                 wage,
                 categoryId,
                 subCategoryId,
+                role: "serviceProvider",
                 imageURL: imageFile, // Store image as buffer or reference
             });
 
