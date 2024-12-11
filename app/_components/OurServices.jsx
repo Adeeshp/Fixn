@@ -80,7 +80,7 @@ function OurServices({ categoryList }) {
                             >
                               {subcat.subCategoryName}
                             </div>
-                          ))
+                          ))  
                         )}
                       </div>
                     </div>

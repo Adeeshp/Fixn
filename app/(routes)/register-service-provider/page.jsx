@@ -1,41 +1,99 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, use } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-
 const ServiceProviderSignUp = () => {
   const router = useRouter();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [gender, setGender] = useState("");
   const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [zipCode, setZipCode] = useState("");
-  const [city, setCity] = useState("");
-  const [province, setProvince] = useState("");
-  const [category, setCategory] = React.useState("");
-  const [subcategory, setSubcategory] = React.useState("");
-  const [address, setAddress] = useState(""); // Add this state for the address
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [province, setProvince] = useState("");
+  const [city, setCity] = useState("");
+  // const [country] = "Canada";
+  const [zipCode, setZipCode] = useState("");
+  const [address, setAddress] = useState("");
+  const [category, setCategory] = useState("");
+  const [subcategory, setSubcategory] = useState("");
+  const [wageType, setWageType] = useState("");
+  const [wageAmount, setWageAmount] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [certification, setCertification] = useState(null);
-  const [error, setError] = useState("");
+  const [image, setImage] = useState(null);
+  const [document, setDocument] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [categoryList, setCategoryList] = useState([]);
+  const [subcategoryList, setSubcategoryList] = useState([]);
+  const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [wageType, setWageType] = useState(""); // For "hourly" or "perJob"
-  const [wageAmount, setWageAmount] = useState(""); // For the wage amount
+
+  // Fetch category list on initial render
+  useEffect(() => {
+    getCategoryList();
+  }, []);
+
+  // Fetches category list from the backend API
+
+  const getCategoryList = async () => {
+    try {
+      const response = await fetch("/api/category");
+      console.log("this is one");
+      console.log(response);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        setCategoryList(data.data);
+      } else {
+        console.error("Error fetching categories:", data.message);
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
+  };
+
+  /**
+   * Fetches subcategories based on the selected category
+   */
+  const getSubcategoriesByCategory = async (categoryId) => {
+    try {
+      const response = await fetch(`/api/subcategory/${categoryId}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSubcategoryList(data.data);
+      } else {
+        console.error("Error fetching subcategories:", data.message);
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
+  };
 
   const handleFileUpload = (e) => {
-    setCertification(e.target.files[0]);
+    setDocument(e.target.files[0]);
+  };
+  const handleImageUpload = (e) => {
+    setImage(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
+    // Validation checks
     if (firstName === "") {
       setError("Please enter your First Name");
       return;
@@ -100,22 +158,36 @@ const ServiceProviderSignUp = () => {
       return;
     }
 
+    if (!image) {
+      setError("Please upload an image");
+      return;
+    }
+    if (!document) {
+      setError("Please upload a document");
+      return;
+    }
+
     setIsProcessing(true);
 
     try {
       const formData = new FormData();
-      formData.append("firstName", firstName);
-      formData.append("lastName", lastName);
+      formData.append("firstname", firstName);
+      formData.append("lastname", lastName);
       formData.append("email", email);
-      formData.append("phoneNumber", phoneNumber);
-      formData.append("address", address); // Include address
+      formData.append("phoneNo", phoneNumber);
+      formData.append("address", address);
+      formData.append("password", password);
       formData.append("city", city);
       formData.append("province", province);
       formData.append("zipCode", zipCode);
-      formData.append("password", password);
-      formData.append("wageType", wageType); // Include wage type
-      formData.append("wage", wageAmount); // Include wage amount
-      if (certification) formData.append("certification", certification);
+      formData.append("country", "Canada");
+      formData.append("wage", wageAmount);
+      formData.append("wageType", wageType);
+      formData.append("categoryId", category);
+      formData.append("subCategoryId", subcategory);
+      formData.append("gender", gender);
+      formData.append("image", image);
+      formData.append("document", document);
 
       const response = await fetch("/api/user/registerServiceProvider", {
         method: "POST",
@@ -177,6 +249,35 @@ const ServiceProviderSignUp = () => {
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
+          <div className="mb-4">
+            <label className="block text-gray-600 text-sm font-medium mb-1">
+              Gender
+            </label>
+            <div className="flex items-center space-x-4">
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name="gender"
+                  value="male"
+                  checked={gender === "male"}
+                  onChange={(e) => setGender(e.target.value)}
+                  className="form-radio text-primary focus:ring-primary"
+                />
+                <span className="ml-2 text-gray-600">Male</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name="gender"
+                  value="female"
+                  checked={gender === "female"}
+                  onChange={(e) => setGender(e.target.value)}
+                  className="form-radio text-primary focus:ring-primary"
+                />
+                <span className="ml-2 text-gray-600">Female</span>
+              </label>
+            </div>
+          </div>
 
           <div className="mb-4">
             <label
@@ -192,6 +293,58 @@ const ServiceProviderSignUp = () => {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
+          </div>
+
+          {/* Password */}
+          <div className="mb-4">
+            <label
+              htmlFor="password"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
+
+          {/* Confirm Password */}
+          <div className="mb-4">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Confirm Password
+            </label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+              >
+                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
           <div className="mb-4">
             <label
@@ -231,18 +384,47 @@ const ServiceProviderSignUp = () => {
           </div>
           <div className="mb-4">
             <label
-              htmlFor="address"
+              htmlFor="country"
               className="block text-gray-600 text-sm font-medium mb-1"
             >
-              Address
+              Country
             </label>
             <input
               type="text"
-              id="address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              id="country"
+              value="Canada"
+              readOnly
+              className="w-full border border-gray-300 rounded-md py-2 px-3 bg-gray-100 cursor-not-allowed focus:outline-none"
             />
+          </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="province"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Province
+            </label>
+            <select
+              id="province"
+              value={province}
+              onChange={(e) => setProvince(e.target.value)}
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            >
+              <option value="">Select a Province</option>
+              <option value="Alberta">Alberta</option>
+              <option value="British Columbia">British Columbia</option>
+              <option value="Manitoba">Manitoba</option>
+              <option value="New Brunswick">New Brunswick</option>
+              <option value="Newfoundland and Labrador">
+                Newfoundland and Labrador
+              </option>
+              <option value="Nova Scotia">Nova Scotia</option>
+              <option value="Ontario">Ontario</option>
+              <option value="Prince Edward Island">Prince Edward Island</option>
+              <option value="Quebec">Quebec</option>
+              <option value="Saskatchewan">Saskatchewan</option>
+            </select>
           </div>
           <div className="mb-4 flex space-x-4">
             <div className="w-1/2">
@@ -277,47 +459,20 @@ const ServiceProviderSignUp = () => {
               />
             </div>
           </div>
+
           <div className="mb-4">
             <label
-              htmlFor="province"
+              htmlFor="address"
               className="block text-gray-600 text-sm font-medium mb-1"
             >
-              Province
-            </label>
-            <select
-              id="province"
-              value={province}
-              onChange={(e) => setProvince(e.target.value)}
-              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            >
-              <option value="">Select a Province</option>
-              <option value="Alberta">Alberta</option>
-              <option value="British Columbia">British Columbia</option>
-              <option value="Manitoba">Manitoba</option>
-              <option value="New Brunswick">New Brunswick</option>
-              <option value="Newfoundland and Labrador">
-                Newfoundland and Labrador
-              </option>
-              <option value="Nova Scotia">Nova Scotia</option>
-              <option value="Ontario">Ontario</option>
-              <option value="Prince Edward Island">Prince Edward Island</option>
-              <option value="Quebec">Quebec</option>
-              <option value="Saskatchewan">Saskatchewan</option>
-            </select>
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="country"
-              className="block text-gray-600 text-sm font-medium mb-1"
-            >
-              Country
+              Address
             </label>
             <input
               type="text"
-              id="country"
-              value="Canada"
-              readOnly
-              className="w-full border border-gray-300 rounded-md py-2 px-3 bg-gray-100 cursor-not-allowed focus:outline-none"
+              id="address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
           {/* Category Section */}
@@ -334,14 +489,28 @@ const ServiceProviderSignUp = () => {
             <select
               id="category"
               value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              onChange={(e) => {
+                const selectedCategory = e.target.value;
+                setCategory(selectedCategory);
+                setSubcategory(""); // Reset subcategory
+                if (selectedCategory) {
+                  getSubcategoriesByCategory(selectedCategory);
+                } else {
+                  setSubcategoryList([]); // Clear subcategory list
+                }
+              }}
               className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
             >
               <option value="">Select a category</option>
-              <option value="Cleaning">Cleaning</option>
-              <option value="Maintenance">Maintenance</option>
-              <option value="Delivery">Delivery</option>
-              <option value="Shopping">Shopping</option>
+              {categoryList.length > 0 ? (
+                categoryList.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.categoryName}
+                  </option>
+                ))
+              ) : (
+                <option value="no-category">No categories found</option>
+              )}
             </select>
           </div>
 
@@ -364,38 +533,18 @@ const ServiceProviderSignUp = () => {
                 className="w-full border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
               >
                 <option value="">Select a subcategory</option>
-                {category === "Cleaning" && (
-                  <>
-                    <option value="Home Cleaning">Home Cleaning</option>
-                    <option value="Office Cleaning">Office Cleaning</option>
-                    <option value="Deep Cleaning">Deep Cleaning</option>
-                  </>
-                )}
-                {category === "Maintenance" && (
-                  <>
-                    <option value="Electrical">Electrical</option>
-                    <option value="Plumbing">Plumbing</option>
-                    <option value="HVAC">HVAC</option>
-                  </>
-                )}
-                {category === "Delivery" && (
-                  <>
-                    <option value="Food Delivery">Food Delivery</option>
-                    <option value="Parcel Delivery">Parcel Delivery</option>
-                    <option value="Grocery Delivery">Grocery Delivery</option>
-                  </>
-                )}
-                {category === "Shopping" && (
-                  <>
-                    <option value="Clothing">Clothing</option>
-                    <option value="Electronics">Electronics</option>
-                    <option value="Groceries">Groceries</option>
-                  </>
+                {subcategoryList.length > 0 ? (
+                  subcategoryList.map((subcat) => (
+                    <option key={subcat._id} value={subcat._id}>
+                      {subcat.subCategoryName}
+                    </option>
+                  ))
+                ) : (
+                  <option value="no-subcategory">No subcategories found</option>
                 )}
               </select>
             </div>
           )}
-
           <div className="mb-4">
             <label
               htmlFor="wageType"
@@ -456,66 +605,11 @@ const ServiceProviderSignUp = () => {
             </label>
             <input
               type="file"
-              id="certification"
+              id="document"
               onChange={handleFileUpload}
               required // Make the field required
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="password"
-              className="block text-gray-600 text-sm font-medium mb-1"
-            >
-              Password
-            </label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
-              >
-                <FontAwesomeIcon
-                  icon={showPassword ? faEyeSlash : faEye}
-                  size="sm"
-                />
-              </button>
-            </div>
-          </div>
-
-          <div className="mb-4">
-            <label
-              htmlFor="confirmPassword"
-              className="block text-gray-600 text-sm font-medium mb-1"
-            >
-              Confirm Password
-            </label>
-            <div className="relative">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
-              >
-                <FontAwesomeIcon
-                  icon={showConfirmPassword ? faEyeSlash : faEye}
-                  size="sm"
-                />
-              </button>
-            </div>
           </div>
 
           <div className="mb-4">
@@ -541,7 +635,21 @@ const ServiceProviderSignUp = () => {
           </div>
 
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
+          <div className="mb-4">
+            <label
+              htmlFor="image"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Image (required)
+            </label>
+            <input
+              type="file"
+              id="image"
+              onChange={handleImageUpload}
+              required // Make the field required
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+          </div>
           {/* Submit Button */}
           <button
             type="submit"
