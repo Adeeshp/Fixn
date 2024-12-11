@@ -11,13 +11,15 @@ const ServiceProviderSignUp = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [zipCode, setZipCode] = useState("");
   const [city, setCity] = useState("");
+  const[country, setCountry] = useState("");
+  const[gender, setGender]= useState("");
   const [province, setProvince] = useState("");
   const [address, setAddress] = useState(""); // Add this state for the address
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   // const [selectedService] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [certification, setCertification] = useState(null);
+  const [document, setCertification] = useState(null);
   const [error, setError] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -161,19 +163,32 @@ const ServiceProviderSignUp = () => {
 
     try {
       const formData = new FormData();
-      formData.append("firstName", firstName);
-      formData.append("lastName", lastName);
+      formData.append("firstname", firstName);
+      formData.append("lastname", lastName);
+      
       formData.append("email", email);
-      formData.append("phoneNumber", phoneNumber);
+      formData.append("phoneNo", phoneNumber);
+      
       formData.append("address", address); // Include address
       formData.append("password", password);
-      formData.append("wageType", wageType); // Include wage type
-      formData.append("wage", wageAmount); // Include wage amount
       formData.append("city", city);
       formData.append("province", province);
       formData.append("zipCode", zipCode);
-      if (certification) formData.append("certification", certification);
-
+      formData.append("country",country);
+      formData.append("wage", wageAmount); 
+      formData.append("wageType", wageType);
+      formData.append("categoryId", category);
+      formData.append("subCategoryId", subcategory);
+      formData.append("gender", gender)
+      if (document) formData.append("document", document);
+      for (let [key, value] of formData.entries()) {
+        if (value instanceof File) {
+          console.log(`${key}: ${value.name} (${value.size} bytes)`);
+        } else {
+          console.log(`${key}: ${value}`);
+        }
+      }
+      
       const response = await fetch("/api/user/registerServiceProvider", {
         method: "POST",
         body: formData,
@@ -234,6 +249,35 @@ const ServiceProviderSignUp = () => {
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
           </div>
+          <div className="mb-4">
+  <label className="block text-gray-600 text-sm font-medium mb-1">
+    Gender
+  </label>
+  <div className="flex items-center space-x-4">
+    <label className="flex items-center">
+      <input
+        type="radio"
+        name="gender"
+        value="male"
+        checked={gender === "male"}
+        onChange={(e) => setGender(e.target.value)}
+        className="form-radio text-primary focus:ring-primary"
+      />
+      <span className="ml-2 text-gray-600">Male</span>
+    </label>
+    <label className="flex items-center">
+      <input
+        type="radio"
+        name="gender"
+        value="female"
+        checked={gender === "female"}
+        onChange={(e) => setGender(e.target.value)}
+        className="form-radio text-primary focus:ring-primary"
+      />
+      <span className="ml-2 text-gray-600">Female</span>
+    </label>
+  </div>
+</div>
 
           <div className="mb-4">
             <label
@@ -557,7 +601,7 @@ const ServiceProviderSignUp = () => {
             </label>
             <input
               type="file"
-              id="certification"
+              id="document"
               onChange={handleFileUpload}
               required // Make the field required
               className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
