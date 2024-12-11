@@ -15,7 +15,7 @@ const ServiceProviderSignUp = () => {
   const [address, setAddress] = useState(""); // Add this state for the address
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [selectedService, setSelectedService] = useState("");
+  // const [selectedService] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [certification, setCertification] = useState(null);
   const [error, setError] = useState("");
@@ -34,9 +34,9 @@ const ServiceProviderSignUp = () => {
     getCategoryList();
   }, []);
   
-  /**
-   * Fetches category list from the backend API
-   */
+
+    // Fetches category list from the backend API
+
   const getCategoryList = async () => {
     try {
       const response = await fetch("/api/category");
@@ -137,10 +137,10 @@ const ServiceProviderSignUp = () => {
       return;
     }
 
-      if (!selectedService) {
-        setError("Please select a service you provide");
-        return;
-    }
+    //   if (!selectedService) {
+    //     setError("Please select a service you provide");
+    //     return;
+    // }
     if (!termsAccepted) {
       setError("You must accept the terms and conditions");
       return;
@@ -167,7 +167,6 @@ const ServiceProviderSignUp = () => {
       formData.append("phoneNumber", phoneNumber);
       formData.append("address", address); // Include address
       formData.append("password", password);
-      formData.append("service", selectedService);
       formData.append("wageType", wageType); // Include wage type
       formData.append("wage", wageAmount); // Include wage amount
       formData.append("city", city);
