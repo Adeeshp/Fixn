@@ -42,7 +42,7 @@ function OurServices({ categoryList }) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-5">
         {categoryList.length > 0
           ? categoryList.map((category, index) => (
-              index < 4 ? (
+              index < 7 ? (
                 <div
                   key={index}
                   className={`shadow-md rounded-lg bg-gray-50 hover:shadow-lg transition-all ease-in-out cursor-pointer ${
@@ -80,7 +80,7 @@ function OurServices({ categoryList }) {
                             >
                               {subcat.subCategoryName}
                             </div>
-                          ))
+                          ))  
                         )}
                       </div>
                     </div>
@@ -90,11 +90,16 @@ function OurServices({ categoryList }) {
                 <div key={index}></div>
               )
             ))
-          : [1, 2, 3, 4].map((item, index) => (
-              <div
-                key={index}
-                className="w-full h-[300px] bg-slate-200 rounded-lg animate-pulse"
-              ></div>
+          : [1, 2, 3, 4, 5, 6].map((item, index) => (
+              <div key={index} className="w-full h-[315px] bg-slate-200 rounded-lg animate-pulse flex items-center justify-center">
+                <Image
+                  src="/fixn.svg"
+                  alt="fixn-logo"
+                  width={60}
+                  height={60}
+                  className="filter grayscale"
+                />
+              </div>
             ))}
       </div>
     </div>

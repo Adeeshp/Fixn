@@ -9,7 +9,7 @@ function Header() {
   const { user, signOut } = useContext(UserContext);
 
   return (
-    <div className="fixed w-full z-10 shadow-sm bg-white">
+    <div className="sticky w-full z-10 shadow-sm bg-white">
       <div className="mx-6 md:mx-20 py-5 flex justify-between">
         <div className="flex items-center">
           <Link href="/">
@@ -38,20 +38,18 @@ function Header() {
                 Welcome, <span className="text-primary">{user.firstname}!</span>
               </span>
               <Button
-                className="hover:bg-primary bg-white hover:scale-105 border border-primary text-primary hover:text-white border-2 cursor-pointer"
-                onClick={signOut}
+                className="hover:bg-primary bg-white hover:scale-105 border border-primary text-primary hover:text-white cursor-pointer"
+                onClick={handleSignOut}
               >
                 Logout
               </Button>
             </div>
           )}
-          {(!user || user.role !== "serviceProvider") && (
-            <Link href="/register">
-              <Button className="bg-primary text-white hover:bg-white hover:scale-105 hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer">
-                Become a Fixer
-              </Button>
-            </Link>
-          )}
+          <Link href="/register-service-provider">
+            <Button className="bg-primary text-white hover:bg-white hover:scale-105 hover:border-primary hover:text-primary border-2 border-transparent cursor-pointer">
+              Become a Fixer
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
