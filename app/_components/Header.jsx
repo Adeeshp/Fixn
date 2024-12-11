@@ -39,7 +39,7 @@ function Header() {
               </span>
               <Button
                 className="hover:bg-primary bg-white hover:scale-105 border border-primary text-primary hover:text-white cursor-pointer"
-                onClick={handleSignOut}
+                onClick={signOut}
               >
                 Logout
               </Button>

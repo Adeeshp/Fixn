@@ -1,4 +1,4 @@
-import { Calendar, MapPin, User } from "lucide-react";
+import { FileText, Calendar, MapPin, User } from "lucide-react";
 import Image from "next/image";
 import React, { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
@@ -31,19 +31,22 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
           src={imageUrl}
           alt="Job Image"
           width={150}
+          maxwidth={150}
           height={160}
           className="rounded-lg object-cover"
         />
         <div className="w-full flex flex-col gap-2">
-          <div className="flex justify-between">
-            <h2 className="font-bold">
-              {job.categoryId?.categoryName || "Loading category..."},
-              {job.subCategoryId?.subCategoryName || "Loading SubCategory..."}
-            </h2>
+          {/* <div className="flex justify-between"> */}
+            <h4 className="font-bold text-[20px]">
+              {job.categoryId?.categoryName || "Loading Category..."}
+            </h4>
+            <h5 className="text-gray-500">
+              {job.subCategoryId?.subCategoryName || "Loading Sub-Category..."}
+            </h5>
             <h4 className="text-gray-500 text-sm">
               Posted {calculateTimeAgo(job.createdAt)}
             </h4>
-          </div>
+          {/* </div> */}
           {isServiceProvider && !isMyJob && (
             <a href="./profile">
               <h2 className="flex gap-2 text-primary hover:font-bold">
@@ -53,18 +56,21 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
           )}
           <div className="flex flex-row gap-4">
             <h2 className="flex gap-2 text-gray-500">
-              <MapPin className="text-primary" />
+              <MapPin className="text-primary w-5 h-5" />
               {`${job.address}, ${job.city}, ${job.country}, ${job.zipcode}`}
             </h2>
             <h2 className="flex gap-2 text-gray-500">
-              <Calendar className="text-primary" />
+              <Calendar className="text-primary w-5 h-5" />
               <DateFormatter formatter="MMM d, yyyy" isoDate={job.createdAt} />
             </h2>
             <h2 className="flex gap-2 text-gray-500">
               Proposals: {job.requestId?.length || 0}
             </h2>
           </div>
-          <p className="text-gray-500 text-sm">{job.description}</p>
+          <h2 className="flex gap-2 text-gray-500 text-sm">
+            <FileText className="text-primary w-5 h-5" />
+            {job.description}
+          </h2>
           {isServiceProvider && isApplied && (
             <h2 className="text-primary font-bold">Applied</h2>
           )}
@@ -104,7 +110,7 @@ function JobPostingList({ taskList = [], loading, error }) {
                 isServiceProvider={false}
               />
             ) : (
-              user.city?.trim().toLowerCase() ===
+              user?.city?.trim().toLowerCase() ===
                 job.city?.trim().toLowerCase() && (
                 <JobPostingCard
                   key={job._id}
