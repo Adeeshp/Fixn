@@ -1,45 +1,39 @@
 "use client";
+
 import React, { useEffect, useState, useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BookingHistoryList from "@/app/_components/BookingHistoryList";
 import JobPostingList from "@/app/_components/JobPostingList";
-// import GlobalApi from '@/app/_services/GlobalApi';
-// import { useSession } from 'next-auth/react';
-// import moment from 'moment';
 
 function MyBooking() {
   const { user } = useContext(UserContext);
-  const [createTaskList, setCreateTaskList] = useState([]); // State for tasks
+  const [createTaskList, setCreateTaskList] = useState([]); // State for all tasks
   const [ongoingTasks, setOngoingTasks] = useState([]);
   const [completedOrCancelledTasks, setCompletedOrCancelledTasks] = useState([]);
   const [upcomingTasks, setUpcomingTasks] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
-  
+
 
   useEffect(() => {
-    if (user && user.role === "normal") {
-      getTaskByUserId();
-    } else {
-      getTaskList();
+    if (user) {
+      if (user.role === "normal") {
+        fetchTasksByUserId();
+      } else {
+        fetchAllTasks();
+      }
     }
-  }, []);
+  }, [user]);
 
-  const getTaskByUserId = async () => {
+  const fetchTasksByUserId = async () => {
     try {
       const response = await fetch(`/api/task/${user._id}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
       const data = await response.json();
+
       if (data.success) {
-        // console.log(data.data);
-        setCreateTaskList(data.data); // Assuming the task array is in `data.data`
-        setOngoingTasks(data.data.filter(task => task.status === "ongoing"));
-        setCompletedOrCancelledTasks(data.data.filter(task => task.status === "completed" || task.status === "cancelled"));
-        setUpcomingTasks(data.data.filter(task => task.status === "upcoming"));
-        
+        updateTaskLists(data.data);
       } else {
         setError(data.message || "Unable to fetch tasks");
       }
@@ -47,24 +41,18 @@ function MyBooking() {
       console.error("Fetch error:", err);
       setError(err.message);
     } finally {
-      setLoading(false); // Ensure loading is stopped
+      setLoading(false);
     }
   };
 
-  const getTaskList = async () => {
+  const fetchAllTasks = async () => {
     try {
       const response = await fetch("/api/tasks");
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
       const data = await response.json();
-      if (data.success) {
-        // console.log(data.data);
-        setCreateTaskList(data.data); // Assuming the task array is in `data.data`
-        setOngoingTasks(data.data.filter(task => task.status === "ongoing"));
-        setCompletedOrCancelledTasks(data.data.filter(task => task.status === "completed" || task.status === "cancelled"));
-        setUpcomingTasks(data.data.filter(task => task.status === "upcoming"));
 
+      if (data.success) {
+        updateTaskLists(data.data);
       } else {
         setError(data.message || "Unable to fetch tasks");
       }
@@ -72,8 +60,15 @@ function MyBooking() {
       console.error("Fetch error:", err);
       setError(err.message);
     } finally {
-      setLoading(false); // Ensure loading is stopped
+      setLoading(false);
     }
+  };
+
+  const updateTaskLists = (tasks) => {
+    setCreateTaskList(tasks);
+    setOngoingTasks(tasks.filter((task) => task.status === "ongoing"));
+    setCompletedOrCancelledTasks(tasks.filter((task) => ["completed", "cancelled"].includes(task.status)));
+    setUpcomingTasks(tasks.filter((task) => task.status === "upcoming"));
   };
 
   return (
@@ -86,33 +81,18 @@ function MyBooking() {
         <h2 className="font-bold text-[20px] my-2">My Bookings</h2>
         <Tabs defaultValue="upcoming" className="w-full">
           <TabsList className="w-full justify-start h-11">
-            <TabsTrigger
-              value="upcoming"
-              className="flex items-center justify-center w-full px-0 py-2 text-sm mb-0 transition-all ease-in-out data-[state=active]:border-l-4 data-[state=active]:border-primary data-[state=active]:text-primary rounded-md cursor-pointer text-slate-600 bg-inherit"
-            >
-              Upcoming
-            </TabsTrigger>
-            <TabsTrigger
-              value="ongoing"
-              className="flex items-center justify-center w-full px-0 py-2 text-sm mb-0 transition-all ease-in-out data-[state=active]:border-l-4 data-[state=active]:border-primary data-[state=active]:text-primary rounded-md cursor-pointer text-slate-600 bg-inherit"
-            >
-              Ongoing
-            </TabsTrigger>
-            <TabsTrigger
-              value="completed"
-              className="flex items-center justify-center w-full px-0 py-2 text-sm mb-0 transition-all ease-in-out data-[state=active]:border-l-4 data-[state=active]:border-primary data-[state=active]:text-primary rounded-md cursor-pointer text-slate-600 bg-inherit"
-            >
-              Completed
-            </TabsTrigger>
+            <TabsTrigger value="upcoming" className="tabs-trigger">Upcoming</TabsTrigger>
+            <TabsTrigger value="ongoing" className="tabs-trigger">Ongoing</TabsTrigger>
+            <TabsTrigger value="completed" className="tabs-trigger">Completed</TabsTrigger>
           </TabsList>
           <TabsContent value="upcoming">
-            <BookingHistoryList taskList={upcomingTasks}  loading={loading} error={error} />
+            <BookingHistoryList taskList={upcomingTasks} loading={loading} error={error} />
           </TabsContent>
           <TabsContent value="ongoing">
-            <BookingHistoryList taskList={ongoingTasks}  loading={loading} error={error} />
+            <BookingHistoryList taskList={ongoingTasks} loading={loading} error={error} />
           </TabsContent>
           <TabsContent value="completed">
-            <BookingHistoryList taskList={completedOrCancelledTasks}  loading={loading} error={error} />
+            <BookingHistoryList taskList={completedOrCancelledTasks} loading={loading} error={error} />
           </TabsContent>
         </Tabs>
       </div>

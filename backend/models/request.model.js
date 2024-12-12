@@ -26,6 +26,9 @@ const requestSchema = new mongoose.Schema(
       enum: ["Requested", "Accepted", "Rejected"],
       default: "Requested", // Optional: Set default status
     },
+    description: {
+      type: String,
+    },
   },
   {
     timestamps: true, // Automatically adds createdAt and updatedAt fields

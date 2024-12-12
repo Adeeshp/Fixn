@@ -110,6 +110,31 @@ export const getTaskByUserId = async (req, res) => {
     }
 };
 
+export const getTaskByTaskId = async (req, res) => {
+    const { taskId } = req.params; // Extract taskId from the request parameters
+    try {
+        const task = await Task.findById(taskId)
+            .populate('userId') // Populate userId field
+            .populate('categoryId') // Populate categoryId field
+            .populate('subCategoryId') // Populate subCategoryId field
+            .populate({
+                path: 'requestId', // Populate requestId field
+                populate: { path: 'userId' }, // Populate userId within requestId
+            }) // Populate requestId field (which is now an array)
+            .populate('appointmentId') // Populate appointmentId field
+            .populate('receiptId') // Populate receiptId field
+            .populate('reviewId'); // Populate reviewId field
+
+        if (!task) {
+            return res.status(404).json({ success: false, message: 'Task not found' });
+        }
+
+        res.status(200).json({ success: true, data: task });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 
 
 // Update task
