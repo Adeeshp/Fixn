@@ -110,10 +110,11 @@ const TaskForm = () => {
       return;
     }
 
-    if(!vehicleRequired){
-      setError("vehicleRequired is required");
-      return;
-    }
+    // if(vehicleRequired != true || vehicleRequired != false){
+    //   console.log(vehicleRequired)
+    //   setError("vehicleRequired is required");
+    //   return;
+    // }
     
     if (description.trim() === "") {
       setError("Description is required");
