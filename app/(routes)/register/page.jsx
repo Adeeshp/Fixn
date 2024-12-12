@@ -2,19 +2,20 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import {Eye, EyeOff} from "lucide-react";
 
 const SignUp = () => {
   const router = useRouter();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState(''); // New confirm password state
-  const [role, setRole] = useState('normal'); // Default role
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState(""); // New confirm password state
+  const [role] = useState("normal"); // Default role
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [province, setProvince] = useState("");
+  const [city, setCity] = useState("");
   const [error, setError] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPassword, setShowPassword] = useState(false); // State for password visibility
@@ -26,12 +27,12 @@ const SignUp = () => {
 
     // Empty first name validation
     if (firstName.trim() === "") {
-      setError('Please enter First Name');
+      setError("Please enter First Name");
       return;
     }
     // Empty last name validation
     if (lastName.trim() === "") {
-      setError('Please enter Last Name');
+      setError("Please enter Last Name");
       return;
     }
     // Email validation
@@ -50,16 +51,22 @@ const SignUp = () => {
 
     // Password validation (minimum 6 characters)
     if (password.length < 6) {
-      setError('Password must be at least 6 characters long');
+      setError("Password must be at least 6 characters long");
       return;
     }
 
     // Confirm password validation (match passwords)
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
-
+    if (city === "") {
+      setError("Please enter your city");
+      return;
+    }
+    if (province === "") {
+      setError("Please select your province");
+      return;}
     if (!termsAccepted) {
       setError("You must accept the terms and conditions");
       return;
@@ -79,8 +86,11 @@ const SignUp = () => {
           lastname: lastName,
           email,
           phoneNo: phoneNumber,
+          city: city,
+          province: province,
+          country :"Canada",
           password,
-          role, // Include the role in the request 
+          role, // Include the role in the request
         }),
       });
 
@@ -102,7 +112,6 @@ const SignUp = () => {
       setIsProcessing(false);
     }
   };
-
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50">
       <div className="lg:w-2/5 md:w-2/5 w-full bg-white rounded-lg shadow-lg my-28 p-8">
@@ -200,6 +209,67 @@ const SignUp = () => {
 
           <div className="mb-4">
             <label
+              htmlFor="country"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Country
+            </label>
+            <input
+              type="text"
+              id="country"
+              value="Canada"
+              readOnly
+              className="w-full border border-gray-300 rounded-md py-2 px-3 bg-gray-100 cursor-not-allowed focus:outline-none"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="province"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Province
+            </label>
+            <select
+              id="province"
+              value={province}
+              onChange={(e) => setProvince(e.target.value)}
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            >
+              <option value="">Select a Province</option>
+              <option value="Alberta">Alberta</option>
+              <option value="British Columbia">British Columbia</option>
+              <option value="Manitoba">Manitoba</option>
+              <option value="New Brunswick">New Brunswick</option>
+              <option value="Newfoundland and Labrador">
+                Newfoundland and Labrador
+              </option>
+              <option value="Nova Scotia">Nova Scotia</option>
+              <option value="Ontario">Ontario</option>
+              <option value="Prince Edward Island">Prince Edward Island</option>
+              <option value="Quebec">Quebec</option>
+              <option value="Saskatchewan">Saskatchewan</option>
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="city"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              City
+            </label>
+            <input
+              type="text"
+              id="city"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label
               htmlFor="password"
               className="block text-gray-600 text-sm font-medium mb-1"
             >
@@ -207,7 +277,7 @@ const SignUp = () => {
             </label>
             <div className="relative">
               <input
-                type={showPassword ? "text" : "password"} // Toggle password visibility
+                type={showPassword ? "text" : "password"}
                 id="password"
                 name="password"
                 value={password}
@@ -216,55 +286,49 @@ const SignUp = () => {
               />
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)} // Toggle showPassword state
+                onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
               >
-                <FontAwesomeIcon
-                  icon={showPassword ? faEyeSlash : faEye}
-                  size="sm"
-                />
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
           </div>
-          <div className="mb-4">
-  <label
-    htmlFor="confirmPassword"
-    className="block text-gray-600 text-sm font-medium mb-1"
-  >
-    Confirm Password
-  </label>
-  <div className="relative">
-    <input
-      type={showConfirmPassword ? "text" : "password"} // Toggle confirm password visibility
-      id="confirmPassword"
-      name="confirmPassword"
-      value={confirmPassword}
-      onChange={(e) => setConfirmPassword(e.target.value)}
-      className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-    />
-    <button
-      type="button"
-      onClick={() => setShowConfirmPassword(!showConfirmPassword)} // Toggle showConfirmPassword state
-      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
-    >
-      <FontAwesomeIcon
-        icon={showConfirmPassword ? faEyeSlash : faEye}
-        size="sm"
-      />
-    </button>
-  </div>
-</div>
-
 
           <div className="mb-4">
-            <label className="inline-flex items-center">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Confirm Password
+            </label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                id="confirmPassword"
+                name="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+              >
+                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label className="text-gray-600 text-sm">
               <input
                 type="checkbox"
                 id="terms"
                 name="terms"
                 checked={termsAccepted}
                 onChange={(e) => setTermsAccepted(e.target.checked)}
-                className="mr-2 "
+                className="mr-2"
               />
               I agree to the{" "}
               <Link href="#" className="text-primary hover:underline">
@@ -301,5 +365,4 @@ const SignUp = () => {
     </div>
   );
 };
-
 export default SignUp;
