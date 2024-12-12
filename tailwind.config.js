@@ -23,6 +23,10 @@ module.exports =  {
   				DEFAULT: '#0D7A5F',
   				foreground: 'hsl(var(--primary-foreground))'
   			},
+  			lgreen: {
+  				DEFAULT: '#63C1AB',
+  				foreground: 'hsl(var(--primary-foreground))'
+  			},
 			xanthous: {
 				DEFAULT: '#E6AF2E',
 				foreground: 'hsl(var(--xanthous-foreground))'
