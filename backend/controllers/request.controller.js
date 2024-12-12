@@ -68,14 +68,19 @@ export const getRequestById = async (req, res) => {
 };
 
 // User accepts a request
+// Updated acceptRequest handler
 export const acceptRequest = async (req, res) => {
-  const { requestId } = req.params;
-  const { appointmentDate, appointmentTime } = req.body;
+  const { requestId, appointmentDate, appointmentTime } = req.body;  // Extract from the body
 
   try {
-    // Find the request by ID
-    const request = await Request.findById(requestId).populate('taskId').populate('userId');
-    if (!request) return res.status(404).json({ success: false, message: 'Request not found' });
+    // Find the request by ID and populate necessary fields
+    const request = await Request.findById(requestId)
+      .populate('taskId')
+      .populate('userId');
+      
+    if (!request) {
+      return res.status(404).json({ success: false, message: 'Request not found' });
+    }
 
     // Check if the request has already been processed
     if (request.requested_Status !== 'Requested') {
@@ -89,7 +94,7 @@ export const acceptRequest = async (req, res) => {
     // Create an appointment entry
     const appointment = new Appointment({
       taskId: request.taskId,
-      serviceProviderId: request.userId,
+      userId: request.userId,
       appointmentDate,
       appointmentTime,
     });
@@ -101,9 +106,12 @@ export const acceptRequest = async (req, res) => {
       { requested_Status: 'Rejected' }
     );
 
+    // Update the task status to "Upcoming"
+    await Task.findByIdAndUpdate(request.taskId, { status: 'upcoming' });
+
     res.status(201).json({
       success: true,
-      message: 'Request accepted and appointment created successfully',
+      message: 'Request accepted, appointment created, and task status updated to Upcoming',
       data: appointment,
     });
   } catch (error) {
@@ -111,9 +119,11 @@ export const acceptRequest = async (req, res) => {
   }
 };
 
+
 // User rejects a request
+// Updated rejectRequest handler
 export const rejectRequest = async (req, res) => {
-  const { requestId } = req.params;
+  const { requestId } = req.body;  // Extract from the body
 
   try {
     const request = await Request.findById(requestId);

@@ -89,16 +89,19 @@ export const getTaskByUserId = async (req, res) => {
     const { userId } = req.params;
     try {
         const tasks = await Task.find({ userId })
-            .populate('userId') // Populate userId field
-            .populate('categoryId') // Populate categoryId field
-            .populate('subCategoryId') // Populate subCategoryId field
-            .populate({
-                path: 'requestId', // Populate requestId field
-                populate: { path: 'userId' }, // Populate userId within requestId
-            }) // Populate requestId field (which is now an array)
-            .populate('appointmentId') // Populate appointmentId field
-            .populate('receiptId') // Populate receiptId field
-            .populate('reviewId'); // Populate reviewId field
+        .populate('userId') // Populate userId field
+        .populate('categoryId') // Populate categoryId field
+        .populate('subCategoryId') // Populate subCategoryId field
+        .populate({
+            path: 'requestId', // Populate requestId field
+            populate: { path: 'userId', 
+                populate: {
+                    path: 'reviewId', // Populate the reviewId field under userId
+                }
+            }, // Populate userId within requestId
+        }) // Populate requestId field (which is now an array)
+        .populate('appointmentId') // Populate appointmentId field
+        .populate('receiptId') // Populate receiptId field
 
         if (tasks.length === 0) {
             return res.status(200).json({ success: true, message: 'No tasks found for this user', data: [] });
@@ -119,11 +122,14 @@ export const getTaskByTaskId = async (req, res) => {
             .populate('subCategoryId') // Populate subCategoryId field
             .populate({
                 path: 'requestId', // Populate requestId field
-                populate: { path: 'userId' }, // Populate userId within requestId
+                populate: { path: 'userId', 
+                    populate: {
+                        path: 'reviewId', // Populate the reviewId field under userId
+                    }
+                }, // Populate userId within requestId
             }) // Populate requestId field (which is now an array)
             .populate('appointmentId') // Populate appointmentId field
             .populate('receiptId') // Populate receiptId field
-            .populate('reviewId'); // Populate reviewId field
 
         if (!task) {
             return res.status(404).json({ success: false, message: 'Task not found' });
