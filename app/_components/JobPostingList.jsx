@@ -4,10 +4,10 @@ import React, { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 import DateFormatter from "./DateFormatter";
 import { calculateTimeAgo } from "./calculateTimeAgo";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import Link from 'next/link';
 
-const JobPostingCard = ({ job, user, isServiceProvider }) => {
+const JobPostingCard = ({ job, user, isServiceProvider, router }) => {
   // const imageUrl = job.image
   //   ? URL.createObjectURL(new Blob([job.image.buffer]))
   //   : "/default-image.jpg"; // Placeholder for missing images
@@ -25,6 +25,11 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
         return request.userId?._id === user._id;
       });
   }
+
+
+  // const handleClick = () => {
+  //   router.push('/task-detail', undefined, { state: { job } });
+  // };
 
   return (
     <div className="border drop-shadow bg-white rounded-lg p-4 mb-5 hover:scale-[101%] hover: transition-all ease-in-out ">
@@ -61,7 +66,8 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
               </h4>
               {/* Sub-Category */}
               <h5 className="text-gray-500">
-                {job.subCategoryId?.subCategoryName || "Loading Sub-Category..."}
+                {job.subCategoryId?.subCategoryName ||
+                  "Loading Sub-Category..."}
               </h5>
             </div>
             <div className="flex gap-2">
@@ -72,34 +78,40 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
                 {/* Applied Badge */}
                 {isServiceProvider && !isMyJob && isApplied && (
                   <h2 className="text-white bg-primary py-[7px] px-4 rounded-[20px] inline-block leading-none">
-                    Applied 
+                    Applied
                   </h2>
                 )}
               </div>
             </div>
           </div>
-          
+
           {/* Middle Section */}
           <div className="w-full flex pt-5 flex-col gap-1">
             {/* User Name */}
             {isServiceProvider && !isMyJob ? (
               <a href="./profile">
                 <h2 className="flex text-primary hover:font-bold">
-                  <User className="py-1 ml-[-5px]"/> 
+                  <User className="py-1 ml-[-5px]" />
                   {job.userId.firstname} {job.userId.lastname}
                 </h2>
               </a>
             ) : (
               <a href="./profile">
                 <h2 className="flex text-secondary hover:font-bold">
-                  <User className="py-1 ml-[-5px]"/> 
+                  <User className="py-1 ml-[-5px]" />
                   Posted by you
                 </h2>
               </a>
             )}
 
             <h2 className="flex text-gray-500">
-              <MapPin className={`${isServiceProvider && !isMyJob ? 'text-primary' : 'text-secondary'} py-1 ml-[-5px]`} />
+              <MapPin
+                className={`${
+                  isServiceProvider && !isMyJob
+                    ? "text-primary"
+                    : "text-secondary"
+                } py-1 ml-[-5px]`}
+              />
               {`${job.address}, ${job.city}, ${job.country}, ${job.zipcode}`}
             </h2>
 
@@ -118,12 +130,12 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
               )}
               <h2 className="flex gap-2 items-center text-[14px] text-gray-700 font-bold bg-gray-100 px-2 py-1 rounded">
                 {/* Proposals */}
-                  <FileText className="w-4 h-4" />
-                  {job.requestId?.length || 0} Proposals 
+                <FileText className="w-4 h-4" />
+                {job.requestId?.length || 0} Proposals
               </h2>
-            </div> 
+            </div>
           </div>
-          
+
           {/* Last Section */}
           <div></div>
           <div className="flex flex-row gap-2 justify-between">
@@ -132,21 +144,26 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
               {job.description}
             </p>
             <div className="flex flex-col justify-end">
-              <Link href="/postings" className="">
-                <Button className={`${isServiceProvider && !isMyJob ? 'bg-primary drop-shadow-[0_2px_3px_rgba(13,122,95,0.5)] hover:drop-shadow-[0_3px_3px_rgba(13,122,95,0.75)]' : 'bg-secondary hover:bg-secondary/90 drop-shadow-[0_2px_3px_rgba(61,52,139,0.5)] hover:drop-shadow-[0_3px_3px_rgba(61,52,139,0.75)]'}  px-5 py-2 text-white rounded-[10px] text-center inline-block`}>
+            <Link href={`/task-detail`} state={{ job }}>
+                <Button
+                  className={`${
+                    isServiceProvider && !isMyJob
+                      ? "bg-primary drop-shadow-[0_2px_3px_rgba(13,122,95,0.5)] hover:drop-shadow-[0_3px_3px_rgba(13,122,95,0.75)]"
+                      : "bg-secondary hover:bg-secondary/90 drop-shadow-[0_2px_3px_rgba(61,52,139,0.5)] hover:drop-shadow-[0_3px_3px_rgba(61,52,139,0.75)]"
+                  }  px-5 py-2 text-white rounded-[10px] text-center inline-block`}
+                >
                   View Details
                 </Button>
-              </Link>
+            </Link>
             </div>
           </div>
-          
         </div>
       </div>
     </div>
   );
 };
 
-function JobPostingList({ taskList = [], loading, error }) {
+function JobPostingList({ taskList = [], loading, error, router}) {
   const { user } = useContext(UserContext);
 
   if (loading) {
@@ -171,6 +188,7 @@ function JobPostingList({ taskList = [], loading, error }) {
                 job={job}
                 user={user}
                 isServiceProvider={false}
+                router={router}
               />
             ) : (
               user?.city?.trim().toLowerCase() ===

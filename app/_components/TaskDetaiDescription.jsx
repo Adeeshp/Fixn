@@ -1,6 +1,6 @@
 import { Calendar, MapPin, User } from "lucide-react";
 import Image from "next/image";
-import React, { useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 import DateFormatter from "./DateFormatter";
 import { calculateTimeAgo } from "./calculateTimeAgo";
@@ -126,8 +126,35 @@ const TaskDetailDescriptionCard = ({ job, user, isServiceProvider }) => {
     )
 }
 
-function TaskDetailDescription({ taskList = [], loading, error }) {
+function TaskDetailDescription() {
+  const { user } = useContext(UserContext);
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
 
+
+
+  // useEffect(() => {
+  //   if (job) {
+  //     // Perform any additional logic if necessary
+  //     setLoading(false);
+  //   } else {
+  //     setError("Task data not available.");
+  //     setLoading(false);
+  //   }
+  // }, [job]);
+
+  if (loading) return <div>Loading task details...</div>;
+  if (error) return <div>{error}</div>;
+
+  return (
+    <div>
+      {/* <h1>{job.title}</h1>
+      <p>{job.description}</p>
+      <p>Location: {job.location}</p>
+      <p>Total Proposals: {job.totalProposals}</p> */}
+      {/* Render other job details here */}
+    </div>
+  );
 }
 
 export default TaskDetailDescription;
