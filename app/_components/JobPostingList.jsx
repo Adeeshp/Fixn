@@ -7,7 +7,7 @@ import { calculateTimeAgo } from "./calculateTimeAgo";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 
-const JobPostingCard = ({ job, user, isServiceProvider, router }) => {
+const JobPostingCard = ({ job, user, isServiceProvider }) => {
   // const imageUrl = job.image
   //   ? URL.createObjectURL(new Blob([job.image.buffer]))
   //   : "/default-image.jpg"; // Placeholder for missing images
@@ -25,12 +25,6 @@ const JobPostingCard = ({ job, user, isServiceProvider, router }) => {
         return request.userId?._id === user._id;
       });
   }
-
-
-  // const handleClick = () => {
-  //   router.push('/task-detail', undefined, { state: { job } });
-  // };
-
   return (
     <div className="border drop-shadow bg-white rounded-lg p-4 mb-5 hover:scale-[101%] hover: transition-all ease-in-out ">
       <div className="flex gap-4">
@@ -144,8 +138,20 @@ const JobPostingCard = ({ job, user, isServiceProvider, router }) => {
               {job.description}
             </p>
             <div className="flex flex-col justify-end">
-            <Link href={`/task-detail`} state={{ job }}>
-                <Button
+            <Link 
+            href={{
+              pathname:"/task-detail",
+              query:{
+                job: job._id,
+              } 
+            }}
+            className={`${
+              isServiceProvider && !isMyJob
+                ? "bg-primary drop-shadow-[0_2px_3px_rgba(13,122,95,0.5)] hover:drop-shadow-[0_3px_3px_rgba(13,122,95,0.75)]"
+                : "bg-secondary hover:bg-secondary/90 drop-shadow-[0_2px_3px_rgba(61,52,139,0.5)] hover:drop-shadow-[0_3px_3px_rgba(61,52,139,0.75)]"
+            }  px-5 py-2 text-white rounded-[10px] text-center inline-block`}>
+              
+                {/* <Button
                   className={`${
                     isServiceProvider && !isMyJob
                       ? "bg-primary drop-shadow-[0_2px_3px_rgba(13,122,95,0.5)] hover:drop-shadow-[0_3px_3px_rgba(13,122,95,0.75)]"
@@ -153,7 +159,8 @@ const JobPostingCard = ({ job, user, isServiceProvider, router }) => {
                   }  px-5 py-2 text-white rounded-[10px] text-center inline-block`}
                 >
                   View Details
-                </Button>
+                </Button> */}
+                View Details
             </Link>
             </div>
           </div>
@@ -163,7 +170,7 @@ const JobPostingCard = ({ job, user, isServiceProvider, router }) => {
   );
 };
 
-function JobPostingList({ taskList = [], loading, error, router}) {
+function JobPostingList({ taskList = [], loading, error}) {
   const { user } = useContext(UserContext);
 
   if (loading) {
@@ -188,7 +195,6 @@ function JobPostingList({ taskList = [], loading, error, router}) {
                 job={job}
                 user={user}
                 isServiceProvider={false}
-                router={router}
               />
             ) : (
               user?.city?.trim().toLowerCase() ===

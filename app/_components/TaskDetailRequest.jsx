@@ -5,8 +5,8 @@ import { UserContext } from "../contexts/UserContext";
 import DateFormatter from "./DateFormatter";
 import { calculateTimeAgo } from "./calculateTimeAgo";
 
-const TaskDetailRequestCard = ({ job, user, isServiceProvider }) => {
-
+const TaskDetailRequestCard = ({ job }) => {
+    const requestObj = job.requestId;
     return (
         <div className="md:w-1/2 w-full bg-gray-50 p-6">
         <h2 className="text-3xl font-bold text-gray-800 mb-6">
@@ -72,8 +72,22 @@ const TaskDetailRequestCard = ({ job, user, isServiceProvider }) => {
     )
 }
 
-function TaskDetailRequest({ taskList = [], loading, error }) {
-    
+function TaskDetailRequest({ taskList, loading, error }) {
+  const { user } = useContext(UserContext);
+
+  if (loading) {
+    return <div>Loading tasks...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  return (
+    <div>
+      <TaskDetailRequestCard job={taskList} />
+    </div>
+  );
 }
 
 export default TaskDetailRequest;

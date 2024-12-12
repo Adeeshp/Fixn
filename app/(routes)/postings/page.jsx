@@ -5,7 +5,6 @@ import { UserContext } from "../../contexts/UserContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BookingHistoryList from "@/app/_components/BookingHistoryList";
 import JobPostingList from "@/app/_components/JobPostingList";
-import { useRouter } from "next/router";
 
 function MyBooking() {
   const { user } = useContext(UserContext);
@@ -15,13 +14,9 @@ function MyBooking() {
   const [upcomingTasks, setUpcomingTasks] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
-  // const router = typeof window !== "undefined" ? useRouter() : null;
+
 
   useEffect(() => {
-    // if (typeof window === "undefined") {
-    //   return; // Prevent execution during SSR
-    // }
-
     if (user) {
       if (user.role === "normal") {
         fetchTasksByUserId();
@@ -75,8 +70,6 @@ function MyBooking() {
     setCompletedOrCancelledTasks(tasks.filter((task) => ["completed", "cancelled"].includes(task.status)));
     setUpcomingTasks(tasks.filter((task) => task.status === "upcoming"));
   };
-
-  // if (!router) return <div>Loading...</div>; // Ensure router is mounted before rendering
 
   return (
     <div className="pt-[2vw] pb-20 mx-20 flex flex-row">
