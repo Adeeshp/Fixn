@@ -230,7 +230,7 @@ const ServiceProviderSignUp = () => {
             </label>
             <div className="flex flex-col items-center space-y-4">
               {/* Placeholder for profile image */}
-              <div className="w-40 h-40 bg-gray-200 border-2 border-gray-300 rounded-full flex items-center justify-center overflow-hidden relative">
+              <div className="w-60 h-60 bg-gray-200 border-2 border-gray-300 rounded-full flex items-center justify-center overflow-hidden relative">
                 {/* Display uploaded image or fallback icon */}
                 {previewImage ? (
                   <img
@@ -245,7 +245,7 @@ const ServiceProviderSignUp = () => {
                   htmlFor="profile-image"
                   className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white text-sm font-semibold rounded-full cursor-pointer opacity-0 hover:opacity-100 transition-opacity"
                 >
-                  <FaPlus className="text-white text-xl" />
+                  <FaPlus className="text-white text-5xl" />
                 </label>
               </div>
 
