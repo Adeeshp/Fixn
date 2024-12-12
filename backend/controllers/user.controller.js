@@ -223,19 +223,22 @@ export const authenticateToken = (req, res, next) => {
 // Get User Profile
 export const getUserProfile = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id).select("-password");
+        const { userId } = req.params; // Extract userId from the request parameters
+        const user = await User.findById(userId).select("-password"); // Use userId to find the user
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found" });
         }
 
         res.status(200).json({
             success: true,
-            user,
+            data: user,
         });
     } catch (error) {
         res.status(500).json({ success: false, message: "Server error", error: error.message });
     }
 };
+
+
 
 // Forgot Password
 export const forgotPassword = async (req, res) => {

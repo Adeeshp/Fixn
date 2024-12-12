@@ -10,7 +10,8 @@ router.post("/user/register", registerUser);
 
 router.post('/user/registerServiceProvider', registerServiceProvider);
 
-router.get('/user/profile', authenticateToken, getUserProfile);
+// Route with userId parameter
+router.get('/user/profile/:userId', authenticateToken, getUserProfile);
 
 // Forgot Password API
 router.post('/user/forgot_password', forgotPassword);
