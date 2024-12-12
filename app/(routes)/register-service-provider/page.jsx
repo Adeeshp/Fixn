@@ -169,7 +169,18 @@ const ServiceProviderSignUp = () => {
       setError("Please upload a document");
       return;
     }
-
+    if (!category) {
+      setError("Please select a category");
+      return;
+    }
+    if (!subcategory) {
+      setError("Please select a subcategory");
+      return;
+    }
+    if (!gender) {
+      setError("Please select a gender");
+      return;
+    }
     setIsProcessing(true);
 
     try {
@@ -239,13 +250,13 @@ const ServiceProviderSignUp = () => {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <FaPlus className="text-gray-500 text-5xl" />
+                  <FaPlus className="text-gray-500 text-3xl" />
                 )}
                 <label
                   htmlFor="profile-image"
                   className="absolute inset-0 flex items-center justify-center bg-opacity-50 text-white text-sm font-semibold rounded-full cursor-pointer opacity-0 hover:opacity-100 transition-opacity"
                 >
-                  <FaPlus className="text-primary text-5xl " />
+                  <FaPlus className="text-primary text-3xl " />
                 </label>
               </div>
 
@@ -343,57 +354,7 @@ const ServiceProviderSignUp = () => {
             </div>
           </div>
 
-          {/* Password */}
-          <div className="mb-4">
-            <label
-              htmlFor="password"
-              className="block text-gray-600 text-sm font-medium mb-1"
-            >
-              Password
-            </label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
-          </div>
-
-          {/* Confirm Password */}
-          <div className="mb-4">
-            <label
-              htmlFor="confirmPassword"
-              className="block text-gray-600 text-sm font-medium mb-1"
-            >
-              Confirm Password
-            </label>
-            <div className="relative">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
-              >
-                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
-          </div>
+      
           <div className="mb-4">
             <label
               htmlFor="phoneNumber"
@@ -643,7 +604,57 @@ const ServiceProviderSignUp = () => {
               />
             </div>
           )}
+    {/* Password */}
+    <div className="mb-4">
+            <label
+              htmlFor="password"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
 
+          {/* Confirm Password */}
+          <div className="mb-4">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-gray-600 text-sm font-medium mb-1"
+            >
+              Confirm Password
+            </label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+              >
+                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
           <div className="mb-4">
             <label
               htmlFor="certification"

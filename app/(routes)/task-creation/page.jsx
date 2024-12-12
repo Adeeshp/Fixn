@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 
 const TaskForm = () => {
-
   const [estimatedTime, setEstimatedTime] = useState("");
   const [taskStartTime, setTaskStartTime] = useState("");
   const [taskEndTime, setTaskEndTime] = useState("");
@@ -84,13 +83,55 @@ const TaskForm = () => {
       setError("Address is required");
       return;
     }
+    if(!province){
+      setError("Province is required");
+      return;
+    }
+    if(!city){
+      setError("city is required");
+      return;
+    }
+    if(!zipCode){
+      setError("zipCode is required");
+      return;
+    }
+    const zipPattern = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+    if (!zipPattern.test(zipCode)) {
+      setError("Please enter a valid Canadian zip code (e.g., A1A 1A1)");
+      return;
+    }
 
+    if(!category){
+      setError("category is required");
+      return;
+    }
+    if(!subcategory){
+      setError("subcategory is required");
+      return;
+    }
 
+    if(!vehicleRequired){
+      setError("vehicleRequired is required");
+      return;
+    }
+    
     if (description.trim() === "") {
       setError("Description is required");
       return;
     }
-
+    if(!estimatedTime){
+      setError("estimatedTime is required");
+      return;
+    }
+    if(!taskStartTime){
+      setError("taskStartTime is required");
+      return;
+    }
+    if(!taskEndTime){
+      setError("taskEndTime is required");
+      return;
+    }
+    
     if (!image) {
       setError("An image is required");
       return;
@@ -118,9 +159,9 @@ const TaskForm = () => {
         method: "POST",
         body: formData,
       });
-        console.log("this is the api",response);
+      console.log("this is the api", response);
       const data = await response.json();
-      console.log("this is the data",data);
+      console.log("this is the data", data);
       if (response.ok) {
         // Handle successful task creation
         console.log("Task created successfully:", data);
@@ -342,39 +383,39 @@ const TaskForm = () => {
               />
             </div>
           </div>
-{/* Vehicle Requirement Section */}
-<div className="mb-6 border-b pb-4">
-  <h2 className="text-lg font-semibold text-gray-700 mb-3">
-    Vehicle Requirement
-  </h2>
-  <label className="block text-gray-700 text-sm font-medium mb-2">
-    Is a Vehicle Required?
-  </label>
-  <div className="space-y-3">
-    <label className="flex items-center cursor-pointer">
-      <input
-        type="radio"
-        name="vehicle-required"
-        value="Yes"
-        checked={vehicleRequired === true}
-        onChange={() => setVehicleRequired(true)}
-        className="form-radio text-primary mr-3"
-      />
-      <span className="text-gray-700">Yes</span>
-    </label>
-    <label className="flex items-center cursor-pointer">
-      <input
-        type="radio"
-        name="vehicle-required"
-        value="No"
-        checked={vehicleRequired === false}
-        onChange={() => setVehicleRequired(false)}
-        className="form-radio text-primary mr-3"
-      />
-      <span className="text-gray-700">No</span>
-    </label>
-  </div>
-</div>
+          {/* Vehicle Requirement Section */}
+          <div className="mb-6 border-b pb-4">
+            <h2 className="text-lg font-semibold text-gray-700 mb-3">
+              Vehicle Requirement
+            </h2>
+            <label className="block text-gray-700 text-sm font-medium mb-2">
+              Is a Vehicle Required?
+            </label>
+            <div className=" flex gap-5">
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="vehicle-required"
+                  value="Yes"
+                  checked={vehicleRequired === true}
+                  onChange={() => setVehicleRequired(true)}
+                  className="form-radio text-primary mr-3"
+                />
+                <span className="text-gray-700">Yes</span>
+              </label>
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="radio"
+                  name="vehicle-required"
+                  value="No"
+                  checked={vehicleRequired === false}
+                  onChange={() => setVehicleRequired(false)}
+                  className="form-radio text-primary mr-3"
+                />
+                <span className="text-gray-700">No</span>
+              </label>
+            </div>
+          </div>
           {/* Task Description Section */}
           <div className="mb-6 border-b pb-4">
             <h2 className="text-lg font-semibold text-gray-700 mb-3">
@@ -424,7 +465,7 @@ const TaskForm = () => {
             </div>
           </div>
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-        
+
           {/* Submit Button */}
           <button
             type="submit"
