@@ -1,5 +1,4 @@
-
-import { Clock, Calendar, MapPin, User, FileText } from "lucide-react";
+import { Hourglass, Calendar, MapPin, User, FileText } from "lucide-react";
 import Image from "next/image";
 import React, { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
@@ -28,16 +27,8 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
   }
 
   return (
-    <div className="border rounded-lg p-4 mb-5 hover:scale-[101%] hover: transition-all ease-in-out ">
+    <div className="border drop-shadow bg-white rounded-lg p-4 mb-5 hover:scale-[101%] hover: transition-all ease-in-out ">
       <div className="flex gap-4">
-        {/* <Image
-          src={imageUrl}
-          alt="Job Image"
-          width={200}
-          height={240}
-          className="rounded-lg object-cover"
-        /> */}
-
         {job.image ? (
           <div className="w-[240px] aspect-[3/4] relative rounded-lg overflow-hidden">
             <Image
@@ -116,12 +107,12 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
               <h2 className="flex gap-2 items-center text-[14px] text-gray-500 bg-gray-100 px-2 py-1 rounded">
                 {/* Date */}
                 <Calendar className="w-4 h-4" />
-                <DateFormatter formatter="MMM d, yyyy" isoDate={job.createdAt} />
+                <DateFormatter formatter="MMM d, yyyy" isoDate={job.taskStartTime} />
               </h2>
               {job.estimatedTime && (
                 <h2 className="flex gap-2 items-center text-[14px] text-gray-500 bg-gray-100 px-2 py-1 rounded">
                   {/* Time */}
-                  <Clock className="w-4 h-4" />
+                  <Hourglass className="w-4 h-4" />
                   {`Estimated Time : ${job.estimatedTime}`}
                 </h2>
               )}

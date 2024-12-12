@@ -77,12 +77,12 @@ function MyBooking() {
   };
 
   return (
-    <div className="pt-24 pb-20 mx-20 flex flex-row">
-      <div className="pr-5 row w-8/12">
+    <div className="pt-[2vw] pb-20 mx-20 flex flex-row">
+      <div className="min-h-[735px] overflow-hidden top-[2%] pr-5 row w-8/12 ">
         <h2 className="font-bold text-[20px] my-2">Job Postings</h2>
         <JobPostingList taskList={createTaskList} loading={loading} error={error} />
       </div>
-      <div className="pl-5 w-4/12 border-l-2 border-primary">
+      <div className="sticky h-[12vh] min-h-[735px] overflow-auto top-[2%] pl-5 w-4/12">
         <h2 className="font-bold text-[20px] my-2">My Bookings</h2>
         <Tabs defaultValue="upcoming" className="w-full">
           <TabsList className="w-full justify-start h-11">
