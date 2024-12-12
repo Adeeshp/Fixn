@@ -152,6 +152,7 @@ export const getRequestsByTaskId = async (req, res) => {
       // .populate('taskId') // Populate task data
       .populate('userId'); // Populate user data
 
+
     if (requests.length === 0) {
       return res.status(404).json({ success: false, message: 'No requests found for this task' });
     }
@@ -161,5 +162,3 @@ export const getRequestsByTaskId = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
-
