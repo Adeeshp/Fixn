@@ -35,9 +35,6 @@ const BookingHistoryCard = ({ job, user, isServiceProvider }) => {
                   "Loading Sub-Category..."}
               </h5>
             </div>
-            {/* <h4 className="text-gray-500 text-sm">
-                                Posted {calculateTimeAgo(job.createdAt)}
-                            </h4> */}
             <div className="flex flex-col justify-start">
               <Link
                 href="/task-detail"
@@ -92,20 +89,20 @@ const BookingHistoryCard = ({ job, user, isServiceProvider }) => {
 
           <div className="flex flex-row gap-2 pt-1">
             <h2 className="flex gap-2 items-center text-[14px] text-gray-500 bg-gray-100 px-2 py-1 rounded">
-            {/* Date */}
-            <Calendar className="w-4 h-4" />
-            <DateFormatter formatter="MMM d, yyyy" isoDate={job.taskStartTime} />
+                {/* Date */}
+                <Calendar className="w-4 h-4" />
+                <DateFormatter formatter="MMM d, yyyy" isoDate={job.taskStartTime} />
             </h2>
             <h2 className="flex gap-2 items-center text-[14px] text-gray-500 bg-gray-100 px-2 py-1 rounded">
                 {/* Time */}
                 <Clock className="w-4 h-4" />
-                {`Start : ${job.estimatedTime}`}
+                <DateFormatter formatter="h:mm a" isoDate={job.taskStartTime} />
             </h2>
             {job.estimatedTime && (
             <h2 className="flex gap-2 items-center text-[14px] text-gray-500 bg-gray-100 px-2 py-1 rounded">
                 {/* Time */}
                 <Hourglass className="w-4 h-4" />
-                {`Time : ${job.estimatedTime}`}
+                {job.estimatedTime}
             </h2>
             )}  
           </div> 
@@ -120,7 +117,7 @@ function BookingHistoryList({ taskList = [], loading, error }) {
   const { user } = useContext(UserContext);
 
   if (loading) {
-    return <div>Loading tasks...</div>;
+    return <div className="p-10 text-primary font-semibold text-xl text-center animate-pulse bg-gray-100 rounded-lg shadow-lg">Loading Tasks...</div>;
   }
 
   if (error) {

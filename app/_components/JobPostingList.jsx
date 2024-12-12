@@ -128,7 +128,7 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
               <h2 className="flex gap-2 items-center text-[14px] text-gray-700 font-bold bg-gray-100 px-2 py-1 rounded">
                 {/* Proposals */}
                 <FileText className="w-4 h-4" />
-                {job.requestId?.length || 0} Proposals
+                {job.requestId?.length || 0} Proposal{job.requestId?.length > 1 && `s`}
               </h2>
             </div>
           </div>
@@ -168,7 +168,7 @@ function JobPostingList({ taskList = [], loading, error }) {
   const { user } = useContext(UserContext);
 
   if (loading) {
-    return <div>Loading tasks...</div>;
+    return <div className="p-10 text-primary font-semibold text-xl text-center animate-pulse bg-gray-100 rounded-lg shadow-lg">Loading Tasks...</div>;
   }
 
   if (error) {
