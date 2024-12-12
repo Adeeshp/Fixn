@@ -2,10 +2,6 @@ import mongoose from "mongoose";
 
 const reviewSchema = new mongoose.Schema(
   {
-    reviewId: {
-      type: mongoose.Schema.Types.ObjectId,
-      auto: true,
-    },
     taskId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Task",
@@ -21,7 +17,7 @@ const reviewSchema = new mongoose.Schema(
       max: 5,
       required: true,
     },
-    sUserId: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,

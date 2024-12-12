@@ -136,6 +136,10 @@ function TaskDetailRequest({ taskList, loading, error }) {
     return <div>Error: {error}</div>;
   }
 
+  if (taskList.length === 0) {
+    return <div>No tasks available.</div>;
+  }
+
   return (
     <div>
       <TaskDetailRequestCard job={taskList} />
