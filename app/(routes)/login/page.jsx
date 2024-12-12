@@ -3,8 +3,7 @@ import React, { useState, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import { UserContext } from '@/app/contexts/UserContext';
 import Link from 'next/link';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import {AiFillEye , AiFillEyeInvisible} from 'react-icons/ai';
 
 const Login = () => {
   const { setUser } = useContext(UserContext);  // Access setUser from UserContext
@@ -113,11 +112,11 @@ const Login = () => {
               className="absolute right-3 py-3"
               onClick={() => setShowPassword(!showPassword)}
             >
-              <FontAwesomeIcon
-                icon={showPassword ? faEyeSlash : faEye}
-                className="text-gray-500"
-                size="sm"
-              />
+              {showPassword ? (
+                <AiFillEyeInvisible className="text-gray-500 text-xl" />
+              ) : (
+                <AiFillEye className="text-gray-500 text-xl" />
+              )}
             </button>
           </div>
 
