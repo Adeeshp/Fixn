@@ -5,7 +5,7 @@ import Appointment from '../models/appointment.model.js';
 
 // Create a new request by Service Provider
 export const createRequest = async (req, res) => {
-  const { taskId, userId, wageType, wage, requested_Status } = req.body;
+  const { taskId, userId, wageType, wage, requested_Status, description } = req.body;
 
   try {
     // Find the task by taskId
@@ -23,6 +23,7 @@ export const createRequest = async (req, res) => {
       wageType,
       wage,
       requested_Status,
+      description
     });
 
     // Save the new request

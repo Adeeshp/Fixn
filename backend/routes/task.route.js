@@ -4,7 +4,8 @@ import {
     getAllTasks,
     getTaskByUserId,
     updateTask,
-    deleteTask
+    deleteTask,
+    getTaskByTaskId
 } from '../controllers/task.controller.js';
 
 const router = express.Router();
@@ -23,5 +24,7 @@ router.put('/task/:taskId', updateTask); // Update details of a specific task by
 
 // **DELETE /api/task/:taskId**
 router.delete('/task/:taskId', deleteTask); // Delete a task by its ID
+
+router.get('/tasks/:taskId', getTaskByTaskId)
 
 export default router;

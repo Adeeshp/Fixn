@@ -21,6 +21,11 @@ const reviewSchema = new mongoose.Schema(
       max: 5,
       required: true,
     },
+    sUserId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
   {
     timestamps: true,
