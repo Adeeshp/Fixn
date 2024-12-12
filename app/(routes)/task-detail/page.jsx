@@ -50,7 +50,7 @@ export default function TaskDetails({ searchParams }) {
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row pt-24 md:pb-20 md:mx-20 mx-5">
+      <div className="flex flex-col md:flex-row pt-24 md:pb-10 md:px-20 px-5 bg-gray-50 ">
         {/* Left Panel: Task Details */}
         <div className="flex-1 md:basis-1/2 p-4">
           <TaskDetailDescription

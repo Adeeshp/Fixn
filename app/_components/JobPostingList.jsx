@@ -168,7 +168,7 @@ function JobPostingList({ taskList = [], loading, error }) {
   const { user } = useContext(UserContext);
 
   if (loading) {
-    return <div>Loading tasks...</div>;
+    return <div className="p-10 text-primary font-semibold text-xl text-center animate-pulse bg-gray-100 rounded-lg shadow-lg">Loading Tasks...</div>;
   }
 
   if (error) {
