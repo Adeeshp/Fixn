@@ -5,14 +5,14 @@ import { UserContext } from "../contexts/UserContext";
 import DateFormatter from "./DateFormatter";
 import { calculateTimeAgo } from "./calculateTimeAgo";
 import { Button } from "@/components/ui/button";
-import Link from 'next/link';
+import Link from "next/link";
 
 const JobPostingCard = ({ job, user, isServiceProvider }) => {
   // const imageUrl = job.image
   //   ? URL.createObjectURL(new Blob([job.image.buffer]))
   //   : "/default-image.jpg"; // Placeholder for missing images
 
-  //   console.log(imageUrl);  
+  //   console.log(imageUrl);
 
   //Check if job is posted by the same user
   const isMyJob = job.userId._id === user._id;
@@ -113,7 +113,10 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
               <h2 className="flex gap-2 items-center text-[14px] text-gray-500 bg-gray-100 px-2 py-1 rounded">
                 {/* Date */}
                 <Calendar className="w-4 h-4" />
-                <DateFormatter formatter="MMM d, yyyy" isoDate={job.taskStartTime} />
+                <DateFormatter
+                  formatter="MMM d, yyyy"
+                  isoDate={job.taskStartTime}
+                />
               </h2>
               {job.estimatedTime && (
                 <h2 className="flex gap-2 items-center text-[14px] text-gray-500 bg-gray-100 px-2 py-1 rounded">
@@ -134,34 +137,25 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
           <div></div>
           <div className="flex flex-row gap-2 justify-between">
             {/* Description */}
-            <p className="text-gray-500 py-2 rounded text-sm w-[80%]">
+            <p className="text-gray-500 py-2 rounded text-sm w-[75%]">
               {job.description}
             </p>
             <div className="flex flex-col justify-end">
-            <Link 
-            href={{
-              pathname:"/task-detail",
-              query:{
-                job: job._id,
-              } 
-            }}
-            className={`${
-              isServiceProvider && !isMyJob
-                ? "bg-primary drop-shadow-[0_2px_3px_rgba(13,122,95,0.5)] hover:drop-shadow-[0_3px_3px_rgba(13,122,95,0.75)]"
-                : "bg-secondary hover:bg-secondary/90 drop-shadow-[0_2px_3px_rgba(61,52,139,0.5)] hover:drop-shadow-[0_3px_3px_rgba(61,52,139,0.75)]"
-            }  px-5 py-2 text-white rounded-[10px] text-center inline-block`}>
-              
-                {/* <Button
-                  className={`${
-                    isServiceProvider && !isMyJob
-                      ? "bg-primary drop-shadow-[0_2px_3px_rgba(13,122,95,0.5)] hover:drop-shadow-[0_3px_3px_rgba(13,122,95,0.75)]"
-                      : "bg-secondary hover:bg-secondary/90 drop-shadow-[0_2px_3px_rgba(61,52,139,0.5)] hover:drop-shadow-[0_3px_3px_rgba(61,52,139,0.75)]"
-                  }  px-5 py-2 text-white rounded-[10px] text-center inline-block`}
-                >
-                  View Details
-                </Button> */}
+              <Link
+                href={{
+                  pathname: "/task-detail",
+                  query: {
+                    job: job._id,
+                  },
+                }}
+                className={`${
+                  isServiceProvider && !isMyJob
+                    ? "bg-primary drop-shadow-[0_2px_3px_rgba(13,122,95,0.5)] hover:drop-shadow-[0_3px_3px_rgba(13,122,95,0.75)]"
+                    : "bg-secondary hover:bg-secondary/90 drop-shadow-[0_2px_3px_rgba(61,52,139,0.5)] hover:drop-shadow-[0_3px_3px_rgba(61,52,139,0.75)]"
+                }  px-5 py-2 text-white rounded-[10px] text-center inline-block`}
+              >
                 View Details
-            </Link>
+              </Link>
             </div>
           </div>
         </div>
@@ -170,7 +164,7 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
   );
 };
 
-function JobPostingList({ taskList = [], loading, error}) {
+function JobPostingList({ taskList = [], loading, error }) {
   const { user } = useContext(UserContext);
 
   if (loading) {
@@ -190,23 +184,23 @@ function JobPostingList({ taskList = [], loading, error}) {
       {taskList.map((job) => (
         <div key={job._id}>
           {user?.role === "normal" ? (
+            <JobPostingCard
+              key={job._id}
+              job={job}
+              user={user}
+              isServiceProvider={false}
+            />
+          ) : (
+            user?.city?.trim().toLowerCase() ===
+              job.city?.trim().toLowerCase() && (
               <JobPostingCard
                 key={job._id}
                 job={job}
                 user={user}
-                isServiceProvider={false}
+                isServiceProvider={true}
               />
-            ) : (
-              user?.city?.trim().toLowerCase() ===
-                job.city?.trim().toLowerCase() && (
-                <JobPostingCard
-                  key={job._id}
-                  job={job}
-                  user={user}
-                  isServiceProvider={true}
-                />
-              )
-            )}
+            )
+          )}
         </div>
       ))}
     </div>

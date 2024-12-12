@@ -5,23 +5,23 @@ import { UserContext } from "../contexts/UserContext";
 import DateFormatter from "./DateFormatter";
 import { calculateTimeAgo } from "./calculateTimeAgo";
 
-const TaskDetailProposalCard = ({ job, user, isServiceProvider }) => {
-
+const TaskDetailProposalCard = ({ job }) => {
+    const arrRequest = job.requestId
     return (
         <div className="md:w-1/2 w-full bg-gray-50 p-6 overflow-auto">
         <h2 className="text-3xl font-bold text-gray-800 mb-6">
           Proposals
         </h2>
-        {serviceProviders.map((provider) => (
+        {arrRequest.map((provider) => (
           <div
-            key={provider.id}
+            key={provider._id}
             className="border rounded-lg p-6 mb-6 bg-white shadow transition-transform transform hover:scale-105"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <img
                   src={provider.avatar}
-                  alt={provider.name}
+                  alt={provider.userId.firstname}
                   className="w-12 h-12 rounded-full object-cover"
                 />
                 <div>
@@ -29,16 +29,16 @@ const TaskDetailProposalCard = ({ job, user, isServiceProvider }) => {
                     className="text-lg font-semibold text-primary cursor-pointer hover:underline"
                     onClick={() => navigate(`/profile/${provider.id}`)}
                   >
-                    {provider.name}
+                    {provider.userId.firstname} {" "} {provider.userId.lastname}
                   </h3>
                   <p className="text-gray-500 text-sm">
-                    <strong>Date & Time:</strong> {provider.dateTime}
+                    <strong>Date & Time:</strong> {provider.createdAt}
                   </p>
                   <p className="text-gray-500 text-sm">
-                    <strong>Status:</strong> {provider.status}
+                    <strong>Status:</strong> {provider.requested_Status}
                   </p>
                   <p className="text-gray-500 text-sm">
-                    <strong>Price:</strong> {provider.price}
+                    <strong>Price:</strong> {provider.wage}
                   </p>
                   <p className="flex items-center text-sm">
                     <strong>Rating:</strong>
@@ -78,8 +78,22 @@ const TaskDetailProposalCard = ({ job, user, isServiceProvider }) => {
     )
 }
 
-function TaskDetailProposal({ taskList = [], loading, error }) {
-    
+function TaskDetailProposal({ taskList, loading, error }) {
+  const { user } = useContext(UserContext);
+
+  if (loading) {
+    return <div>Loading tasks...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  return (
+    <div>
+      <TaskDetailProposalCard job={taskList} />
+    </div>
+  );
 }
 
 export default TaskDetailProposal;

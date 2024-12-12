@@ -72,7 +72,7 @@ function MyBooking() {
   };
 
   return (
-    <div className="pt-[2vw] pb-20 mx-20 flex flex-row">
+    <div className="pt-24 pb-20 mx-20 flex flex-row">
       <div className="min-h-[735px] overflow-hidden top-[2%] pr-5 row w-8/12 ">
         <h2 className="font-bold text-[20px] my-2">Job Postings</h2>
         <JobPostingList taskList={createTaskList} loading={loading} error={error} />
