@@ -13,7 +13,7 @@ const ServiceProviderProfile = ({ userId }) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`/api/user/${userId}`);
+        const response = await fetch(`/api/user/profile`);
         console.log("API Response:", response); // Debugging log
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
@@ -46,7 +46,7 @@ const ServiceProviderProfile = ({ userId }) => {
 
   const handleSave = async () => {
     try {
-      const response = await fetch(`/api/user/${userId}`, {
+      const response = await fetch(`/api/user/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -68,7 +68,7 @@ const ServiceProviderProfile = ({ userId }) => {
   if (error) return <p>{error}</p>;
 
   const { userType, ...formData } = userData;
-
+ console.log(formData);
   return (
     <div className="pt-20 pb-20 mx-20 flex flex-row">
       <div className="lg:w-3/3 md:w-4/4 w-full bg-white rounded-lg shadow-lg p-6">
