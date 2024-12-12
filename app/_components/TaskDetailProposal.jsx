@@ -8,7 +8,7 @@ import { calculateTimeAgo } from "./calculateTimeAgo";
 const TaskDetailProposalCard = ({ job }) => {
     const arrRequest = job.requestId
     return (
-        <div className="md:w-1/2 w-full bg-gray-50 p-6 overflow-auto">
+        <div className="w-full bg-gray-50 p-6 overflow-auto">
         <h2 className="text-3xl font-bold text-gray-800 mb-6">
           Proposals
         </h2>

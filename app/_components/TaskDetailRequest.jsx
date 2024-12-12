@@ -51,7 +51,7 @@ const TaskDetailRequestCard = ({ job }) => {
   };
 
   return (
-    <div className="md:w-1/2 w-full bg-gray-50 p-6">
+    <div className="w-full bg-gray-50 p-6">
       <h2 className="text-3xl font-bold text-gray-800 mb-6">
         Submit Your Proposal
       </h2>
@@ -63,7 +63,7 @@ const TaskDetailRequestCard = ({ job }) => {
           <button
             className={`py-2 px-4 rounded-md font-medium ${
               priceType === "hourly"
-                ? "bg-blue-500 text-white"
+                ? "bg-secondary text-white"
                 : "bg-gray-200 text-gray-700"
             }`}
             onClick={() => setPriceType("hourly")}
@@ -73,7 +73,7 @@ const TaskDetailRequestCard = ({ job }) => {
           <button
             className={`py-2 px-4 rounded-md font-medium ${
               priceType === "fixed"
-                ? "bg-blue-500 text-white"
+                ? "bg-secondary text-white"
                 : "bg-gray-200 text-gray-700"
             }`}
             onClick={() => setPriceType("fixed")}
@@ -89,7 +89,7 @@ const TaskDetailRequestCard = ({ job }) => {
           type="number"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
-          className="w-full border-gray-300 rounded-md p-3 mb-4"
+          className="shadow-inner w-full border-gray-300 rounded-md p-3 mb-4"
           placeholder={`Enter ${
             priceType === "hourly" ? "hourly rate" : "fixed price"
           }`}
@@ -101,7 +101,7 @@ const TaskDetailRequestCard = ({ job }) => {
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className="w-full border-gray-300 rounded-md p-3 mb-6"
+          className="shadow-inner w-full border-gray-300 rounded-md p-3 mb-6"
           rows="4"
           placeholder="Write a message explaining your proposal..."
         ></textarea>

@@ -72,19 +72,21 @@ function MyBooking() {
   };
 
   return (
-    <div className="pt-24 pb-20 mx-20 flex flex-row">
-      <div className="min-h-[735px] overflow-hidden top-[2%] pr-5 row w-8/12 ">
+    <div className="pt-24 pb-20 md:mx-20 mx-5 flex flex-col md:flex-row">
+      <div className="md:min-h-[735px] overflow-hidden top-[2%] md:pr-5 row md:w-8/12 ">
         <h2 className="font-bold text-[20px] my-2">Job Postings</h2>
         <JobPostingList taskList={createTaskList} loading={loading} error={error} />
       </div>
-      <div className="sticky h-[12vh] min-h-[735px] overflow-auto top-[2%] pl-5 w-4/12">
+      <div className="sticky md:h-[12vh] md:min-h-[735px] overflow-auto top-[2%] md:pl-5 md:w-4/12">
         <h2 className="font-bold text-[20px] my-2">My Bookings</h2>
         <Tabs defaultValue="upcoming" className="w-full">
-          <TabsList className="w-full justify-start h-11">
-            <TabsTrigger value="upcoming" className="tabs-trigger">Upcoming</TabsTrigger>
-            <TabsTrigger value="ongoing" className="tabs-trigger">Ongoing</TabsTrigger>
-            <TabsTrigger value="completed" className="tabs-trigger">Completed</TabsTrigger>
+          <TabsList className="w-full bg-primary/80 text-white justify-evenly h-11">
+            <TabsTrigger value="upcoming" className="w-full tabs-trigger">Upcoming</TabsTrigger>
+            <TabsTrigger value="ongoing" className="tabs-trigger w-full">Ongoing</TabsTrigger>
+            <TabsTrigger value="completed" className="tabs-trigger w-full">Completed</TabsTrigger>
           </TabsList>
+          <hr className="bg-primary/40 h-[4px] rounded mt-1 mb-[5px]"/>
+
           <TabsContent value="upcoming">
             <BookingHistoryList taskList={upcomingTasks} loading={loading} error={error} />
           </TabsContent>

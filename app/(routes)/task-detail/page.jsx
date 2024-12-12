@@ -50,27 +50,32 @@ export default function TaskDetails({ searchParams }) {
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row h-screen bg-gray-100 m-6">
+      <div className="flex flex-col md:flex-row pt-24 md:pb-20 md:mx-20 mx-5">
         {/* Left Panel: Task Details */}
-        {console.log("API Response12:", taskList)}
-        <TaskDetailDescription
-          taskList={taskList}
-          loading={loading}
-          error={error}
-        />
-        {user?.role === "normal" ? (
-          <TaskDetailProposal
+        <div className="flex-1 md:basis-1/2 p-4">
+          <TaskDetailDescription
             taskList={taskList}
             loading={loading}
             error={error}
           />
-        ) : (
-          <TaskDetailRequest
-            taskList={taskList}
-            loading={loading}
-            error={error}
-          />
-        )}
+        </div>
+
+        {/* Right Panel: Conditional Component */}
+        <div className="flex-1 md:basis-1/2 p-4">
+          {user?.role === "normal" ? (
+            <TaskDetailProposal
+              taskList={taskList}
+              loading={loading}
+              error={error}
+            />
+          ) : (
+            <TaskDetailRequest
+              taskList={taskList}
+              loading={loading}
+              error={error}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
