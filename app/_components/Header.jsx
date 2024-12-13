@@ -35,7 +35,7 @@ function Header() {
           {user && (
             <div className="flex items-center gap-6">
               <span className="text-black">
-                Welcome, <Link href="/profile?userId=${user.id}"><span className="text-primary">{user.firstname}!</span></Link>
+                Welcome, <Link href="/profile"><span className="text-primary">{user.firstname}!</span></Link>
               </span>
               <Button
                 className="hover:bg-primary bg-white hover:scale-105  border-primary text-primary hover:text-white border-2 cursor-pointer"
