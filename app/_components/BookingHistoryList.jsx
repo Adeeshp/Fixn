@@ -36,12 +36,17 @@ const BookingHistoryCard = ({ job, user, isServiceProvider }) => {
               </h5>
             </div>
             <div className="flex flex-col justify-start">
-              <Link
-                href="/task-detail"
-                className="rounded-[10px] border border- bg-white text-sm flex hover:drop-shadow-[0_0_3px_rgba(0,0,0,0.25)] text-primary p-2"
-              >
-                View <ChevronRight className="w-5 h-5" />
-              </Link>
+                <Link
+                    href={{
+                    pathname: "/task-detail",
+                    query: {
+                        job: job._id,
+                    },
+                    }}
+                    className="rounded-[10px] border border- bg-white text-sm flex hover:drop-shadow-[0_0_3px_rgba(0,0,0,0.25)] text-primary p-2"
+                >
+                  View <ChevronRight className="w-5 h-5" />
+                </Link> 
             </div>
           </div>
 
