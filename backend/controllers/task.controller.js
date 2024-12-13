@@ -215,24 +215,8 @@ export const updateTask = async (req, res) => {
             success: false,
             message: error.message,
         });
->>>>>>> cef346812dc0d22288b38fe771a13e84325dde2e
     }
- 
-    // Return the updated task
-    return res.status(200).json({
-      success: true,
-      data: updatedTask,
-    });
-  } catch (error) {
-    console.error('Error updating task:', error.message);
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
 };
-
-
 
 // Update task status
 export const updateTaskStatus = (req, res) => {
