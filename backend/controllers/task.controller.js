@@ -148,41 +148,6 @@ export const getTaskByTaskId = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
-// Update task
-// export const updateTask = async (req, res) => {
-//   const { taskId } = req.params;
-//   try {
-//     const updatedTask = await Task.findByIdAndUpdate(taskId, req.body, {
-//       new: true,
-//       runValidators: true,
-//     });
-//     if (!updatedTask)
-//       return res
-//         .status(404)
-//         .json({ success: false, message: "Task not found" });
-//     res.status(200).json({ success: true, data: updatedTask });
-//   } catch (error) {
-//     res.status(500).json({ success: false, message: error.message });
-//   }
-// };
-export const updateTask = async (req, res) => {
-  const { taskId } = req.params;
- 
-  try {
-    // Update the task with the provided fields from req.body
-    const updatedTask = await Task.findByIdAndUpdate(taskId, req.body, {
-      new: true, // Return the updated task
-      runValidators: true, // Ensure validations are run for the updated fields
-    });
- 
-    // If the task is not found
-    if (!updatedTask) {
-      return res.status(404).json({
-        success: false,
-        message: 'Task not found',
-      });
-=======
 
 
 
