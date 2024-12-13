@@ -21,11 +21,13 @@ const UserProfile = () => {
         const userData = response.data.user;
 
         // Decode binary image if available
-        if (userData.imageURL) {
-          userData.profilePicture = `data:image/jpeg;base64,${btoa(
-            String.fromCharCode(...new Uint8Array(userData.imageURL.data))
-          )}`;
-        }
+        if (userData.imageURL && userData.imageURL.data) {
+            const binaryData = new Uint8Array(userData.imageURL.data); // Ensure binary data is a Uint8Array
+            const binaryString = Array.from(binaryData)
+              .map((byte) => String.fromCharCode(byte))
+              .join("");
+            userData.profilePicture = `data:image/jpeg;base64,${btoa(binaryString)}`;
+          }
 
 
         
@@ -105,7 +107,8 @@ const UserProfile = () => {
                   <img
                   src={
                     isValidBase64Image(user.profilePicture)
-                      ? user.profilePicture
+                      ?
+                       user.profilePicture
                       : "/images/male_avatar.jpg" // Use fallback if invalid or no profile picture
                   }
                   alt={`${user.firstname} ${user.lastname}`}
