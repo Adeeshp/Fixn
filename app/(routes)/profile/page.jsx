@@ -18,8 +18,22 @@ const UserProfile = () => {
           },
         });
 
+        const userData = response.data.user;
+
+        // Decode binary image if available
+        if (userData.imageURL) {
+          userData.profilePicture = `data:image/jpeg;base64,${btoa(
+            String.fromCharCode(...new Uint8Array(userData.imageURL.data))
+          )}`;
+        }
+
+
+        
         setUser(response.data.user);
+        
+        
         setLoading(false);
+        console.log(response.data.user);
       } catch (err) {
         setError(err.response?.data?.message || "An error occurred");
         setLoading(false);
@@ -29,6 +43,10 @@ const UserProfile = () => {
     fetchUserProfile();
   }, []);
 
+  
+  const isValidBase64Image = (base64) => {
+    return base64.startsWith("data:image/") && base64.includes("base64,");
+  };
   const toggleEditMode = () => {
     setIsEditing((prev) => !prev);
   };
@@ -81,16 +99,21 @@ const UserProfile = () => {
       <div className="lg:w-7/12 w-full pr-6 border-r border-gray-200">
         <div className="flex justify-center items-center mb-6">
           <div className="relative w-32 h-32 mb-6">
+          {console.log(user.profilePicture)}  
             {/* Display user profile image */}
             {user ? (
-               <img
-               src={user.profilePicture ? user.profilePicture : '/images/male_avatar.jpg'} // Use a fallback image if no profile picture
-               alt={`${user.firstname} ${user.lastname}`}
-               className="w-full h-full rounded-full object-cover"
-             />
-            ) : (
-              <p>Loading...</p>
-            )}
+                  <img
+                  src={
+                    isValidBase64Image(user.profilePicture)
+                      ? user.profilePicture
+                      : "/images/male_avatar.jpg" // Use fallback if invalid or no profile picture
+                  }
+                  alt={`${user.firstname} ${user.lastname}`}
+                  className="w-full h-full rounded-full object-cover"
+                />
+                ) : (
+                  <p>Loading...</p>
+                )}
 
             {/* Image upload button */}
             {isEditing && (
