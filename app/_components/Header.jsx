@@ -9,8 +9,8 @@ function Header() {
   const { user, signOut } = useContext(UserContext);
 
   return (
-    <div className="fixed w-full z-10 shadow-sm bg-white">
-      <div className="mx-6 md:mx-20 py-5 flex justify-between">
+    <div className="sticky w-full z-10 shadow-sm bg-white">
+      <div className="mx-6 md:mx-20 py-5 flex justify-between sticky">
         <div className="flex items-center">
           <Link href="/">
             <Image src="/fixn.svg" alt="logo" width={100} height={100} />
