@@ -52,75 +52,193 @@ const TaskDetailRequestCard = ({ job }) => {
     }
   };
 
+  const updateTask = async (taskId, updateFields) => {
+    try {
+      const response = await fetch(`/api/task/updateTask/${taskId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateFields), // Send as an object
+      });
+   
+      const data = await response.json();
+   
+      if (response.ok && data.success) {
+        alert("Task updated successfully!");
+      } else {
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      console.error('Error calling updateTask API:', error);
+      alert('An error occurred while updating the task status.');
+    }
+  };
+
   return (
     <div className="w-full bg-gray-50">
       <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-3xl text-center font-bold text-gray-700 mb-6">
-          Submit Your Proposal
-        </h2>
-        <label className="block text-gray-700 font-medium mb-2">
-          Price Type:
-        </label>
-        <div className="flex items-center space-x-4 mb-4">
-          <button
-            className={`py-2 px-4 rounded-md font-medium w-full ${
-              priceType === "hourly"
-                ? "bg-gray-700 text-white"
-                : "bg-gray-200 text-gray-700"
-            }`}
-            onClick={() => setPriceType("hourly")}
-          >
-            Hourly Rate
-          </button>
-          <button
-            className={`py-2 px-4 rounded-md font-medium w-full ${
-              priceType === "fixed"
-                ? "bg-gray-700 text-white"
-                : "bg-gray-200 text-gray-700"
-            }`}
-            onClick={() => setPriceType("fixed")}
-          >
-            Fixed Price
-          </button>
-        </div>
+        {job.paymentStatus === "pending"? (
+          <div>
+            <h2 className="text-3xl text-center font-bold text-gray-700 mb-6">
+              Submit Your Proposal
+            </h2>
+            <label className="block text-gray-700 font-medium mb-2">
+              Price Type:
+            </label>
+            <div className="flex items-center space-x-4 mb-4">
+              <button
+                className={`py-2 px-4 rounded-md font-medium w-full ${
+                  priceType === "hourly"
+                    ? "bg-gray-700 text-white"
+                    : "bg-gray-200 text-gray-700"
+                }`}
+                onClick={() => setPriceType("hourly")}
+              >
+                Hourly Rate
+              </button>
+              <button
+                className={`py-2 px-4 rounded-md font-medium w-full ${
+                  priceType === "fixed"
+                    ? "bg-gray-700 text-white"
+                    : "bg-gray-200 text-gray-700"
+                }`}
+                onClick={() => setPriceType("fixed")}
+              >
+                Fixed Price
+              </button>
+            </div>
 
-        <label className="block text-gray-700 font-medium mb-2">
-          {priceType === "hourly" ? "Hourly Rate ($):" : "Fixed Price ($):"}
-        </label>
-        <input
-          type="number"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          className="shadow-inner w-full border-gray-300 rounded-md p-3 mb-2"
-          placeholder={`Enter ${
-            priceType === "hourly" ? "hourly rate" : "fixed price"
-          }`}
-        />
-        {priceError && (
-          <p className="text-red-500 text-sm mb-2">{priceError}</p>
+            <label className="block text-gray-700 font-medium mb-2">
+              {priceType === "hourly" ? "Hourly Rate ($):" : "Fixed Price ($):"}
+            </label>
+            <input
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              className="shadow-inner w-full border-gray-300 rounded-md p-3 mb-2"
+              placeholder={`Enter ${
+                priceType === "hourly" ? "hourly rate" : "fixed price"
+              }`}
+            />
+            {priceError && (
+              <p className="text-red-500 text-sm mb-2">{priceError}</p>
+            )}
+
+            <label className="block text-gray-700 font-medium mb-2">
+              Message to Client (Optional):
+            </label>
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="shadow-inner w-full border-gray-300 rounded-md p-3 mb-6"
+              rows="4"
+              placeholder="Write a message explaining your proposal..."
+            ></textarea>
+
+            <button
+              className="bg-primary text-white py-3 px-6 rounded-md w-full font-semibold shadow-md transition-transform duration-200 hover:scale-[101%] hover:bg-white hover:border-primary hover:text-primary hover:border-2 "
+              onClick={submitProposal}
+              disabled={loading}
+            >
+              {loading ? "Submitting..." : "Submit Proposal"}
+            </button>
+          </div>
+        ) : (
+          <div>
+            <h2 className="text-3xl text-center font-bold text-gray-700 mb-6">
+              Submitted Proposal 
+            </h2>
+            <label className="block text-gray-700 font-medium mb-2">
+              Price Type:
+            </label>
+            <div className="space-x-4 mb-4">
+              {job.requestId.map((provider) => (
+                provider.userId?._id === user?._id && (
+                  provider.wageType === "hourly" ? (
+                    <div>
+                      <div className="flex gap-2 mb-2">
+                        <div className="py-2 px-4 rounded-md font-medium w-full bg-gray-700 text-white">
+                          Hourly Rate
+                        </div>
+                        <div className="py-2 px-4 rounded-md font-medium w-full bg-gray-200 text-gray-700">
+                          Fixed Price
+                        </div>
+                      </div>
+
+                      <label className="block text-gray-700 font-medium mb-2">Hourly Rate ($):</label>
+                      <input
+                        disabled
+                        type="number"
+                        value={price}
+                        className="shadow-inner w-full border-gray-300 rounded-md p-3 mb-2"
+                        placeholder={`$ ${provider.wage}`} 
+                      />
+                      <label className="block text-gray-700 font-medium mb-2">
+                        Message to Client (Optional):
+                      </label>
+                      <textarea disabled
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        className="shadow-inner w-full border-gray-300 overflow-auto rounded-md p-3 mb-6"
+                        rows="4"
+                      >
+                      {provider.description}
+                      </textarea>
+                    </div>
+
+                  ) : (
+                    <div> 
+                      <div className="flex gap-2 mb-2">
+                        <div className="py-2 px-4 rounded-md font-medium w-full bg-gray-200 text-gray-700">
+                          Hourly Rate
+                        </div>
+                        <div className="py-2 px-4 rounded-md font-medium w-full bg-gray-700 text-white">
+                          Fixed Price
+                        </div>
+                      </div>
+                      <label className="block text-gray-700 font-medium mb-2">Fixed Price ($):</label>
+                      <input
+                        disabled
+                        type="number"
+                        value={price}
+                        className="shadow-inner w-full border-gray-300 rounded-md p-3 mb-2"
+                        placeholder={`$ ${provider.wage}`}
+                      />
+                      <label className="block text-gray-700 font-medium mb-2">
+                        Message to Client (Optional):
+                      </label>
+                      <textarea disabled
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        className="shadow-inner w-full border-gray-300 overflow-auto rounded-md p-3 mb-6"
+                        rows="4"
+                      >
+                      {provider.description}
+                      </textarea>
+                    </div>
+
+                  )
+                )
+              ))}
+            </div>
+
+            <button
+              className="bg-primary text-white py-3 px-6 rounded-md w-full font-semibold shadow-md transition-transform duration-200 hover:scale-[101%] hover:bg-white hover:border-primary hover:text-primary hover:border-2 "
+              onClick={() => 
+                updateTask(job._id, { status : "completed", paymentStatus: "paid" })
+              }
+              disabled={loading}
+            >
+              {loading ? "Updating..." : "Payment Received"}
+            </button>
+          </div>
         )}
-
-        <label className="block text-gray-700 font-medium mb-2">
-          Message to Client (Optional):
-        </label>
-        <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          className="shadow-inner w-full border-gray-300 rounded-md p-3 mb-6"
-          rows="4"
-          placeholder="Write a message explaining your proposal..."
-        ></textarea>
-
-        <button
-          className="bg-primary text-white py-3 px-6 rounded-md w-full font-semibold shadow-md transition-transform duration-200 hover:scale-[101%] hover:bg-white hover:border-primary hover:text-primary hover:border-2 "
-          onClick={submitProposal}
-          disabled={loading}
-        >
-          {loading ? "Submitting..." : "Submit Proposal"}
-        </button>
+        
 
         {error && <div className="text-red-500 mt-4">{error}</div>}
       </div>
+
     </div>
   );
 };
