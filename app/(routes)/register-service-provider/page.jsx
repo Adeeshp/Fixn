@@ -43,7 +43,7 @@ const ServiceProviderSignUp = () => {
     try {
       const response = await fetch("/api/category");
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        `throw new Error(HTTP error! Status: ${response.status})`;
       }
 
       const data = await response.json();
@@ -65,7 +65,7 @@ const ServiceProviderSignUp = () => {
       const response = await fetch(`/api/subcategory/${categoryId}`);
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        `throw new Error(HTTP error! Status: ${response.status})`;
       }
 
       const data = await response.json();
