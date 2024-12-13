@@ -119,19 +119,13 @@ const TaskDetailDescriptionCard = ({ job }) => {
       {showReceipt && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-            <h3 className="text-xl font-bold mb-4">Invoice Receipt</h3>
+            <h3 className="text-xl text-center font-bold mb-4">Invoice Receipt</h3>
             <table className="table-auto w-full text-sm">
               <tbody>
                 <tr>
                   <td className="border px-4 py-2">Task Title</td>
                   <td className="border px-4 py-2 text-right">
                     {job.categoryId?.categoryName}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border px-4 py-2">Location</td>
-                  <td className="border px-4 py-2 text-right">
-                  {`${job.address}, ${job.city}, ${job.country}, ${job.zipcode}`}
                   </td>
                 </tr>
                 <tr>
@@ -148,11 +142,7 @@ const TaskDetailDescriptionCard = ({ job }) => {
                   <td className="border px-4 py-2 text-right">$100</td>
                 </tr>
                 <tr>
-                  <td className="border px-4 py-2">Transport Charge</td>
-                  <td className="border px-4 py-2 text-right">$20</td>
-                </tr>
-                <tr>
-                  <td className="border px-4 py-2">Tax (10%)</td>
+                  <td className="border px-4 py-2">Tax (13%)</td>
                   <td className="border px-4 py-2 text-right">$12</td>
                 </tr>
                 <tr>

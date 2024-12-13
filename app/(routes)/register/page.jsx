@@ -342,6 +342,7 @@ const SignUp = () => {
             </label>
           </div>
 
+          {/* Error Message */}
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
           <button
