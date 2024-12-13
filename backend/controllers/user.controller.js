@@ -224,9 +224,6 @@ export const authenticateToken = (req, res, next) => {
 export const getUserProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select("-password")
-        .populate('categoryId')  // Populate category
-        .populate('subCategoryId')  // Populate subcategory
-        .exec();
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found" });
             

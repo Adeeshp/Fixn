@@ -236,7 +236,7 @@ useEffect(() => {
             ))}
           
           {/* Category and Subcategories */}
-          {/* <div className="mb-6">
+          <div className="mb-6">
                   <label className="block text-gray-600 text-sm">Category</label>
                   {isEditing ? (
                     <input
@@ -287,20 +287,20 @@ useEffect(() => {
                   )) || <p>No subcategories available</p>}
                 </ul>
               )}
-            </div> */}
+            </div>
 
               {/* Category Section */}
-            <div className="mb-6 border-b pb-4">
+            {/* <div className="mb-6 border-b pb-4">
               <h2 className="text-lg font-semibold text-gray-700 mb-3">Category</h2>
               {selectedCategory ? (
                 <p className="text-gray-800">{categoryList.find((cat) => cat._id === selectedCategory)?.categoryName || "N/A"}</p>
               ) : (
                 <p className="text-gray-800">No category selected</p>
               )}
-            </div>
+            </div> */}
 
             {/* Subcategory Section */}
-            {selectedCategory && (
+            {/* {selectedCategory && (
               <div className="mb-6 border-b pb-4">
                 <h2 className="text-lg font-semibold text-gray-700 mb-3">Subcategory</h2>
                 {selectedSubcategory ? (
@@ -312,7 +312,7 @@ useEffect(() => {
                 )}
               </div>
             )}
-          </div>
+          </div> */}
 
 
 
@@ -395,7 +395,7 @@ useEffect(() => {
           </div>
             </div>
           </div>
-
+          </div>
   );
 };
 
