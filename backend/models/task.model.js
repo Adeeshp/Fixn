@@ -32,10 +32,6 @@ const taskSchema = new mongoose.Schema(
     image: {
       type: String,
     },
-    reviewId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Review",
-    },
     status: {
       type: String,
       enum: ["ongoing", "completed", "upcoming", "cancelled", "created"],

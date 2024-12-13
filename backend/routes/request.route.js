@@ -24,11 +24,11 @@ router.get('/request/:requestId', getRequestById); // Get details of a specific 
 
 
 // **PUT /api/request/:requestId/accept**
-router.put('/request/:requestId/accept', acceptRequest); // Accept a request (used by task owner)
+router.post('/request/accept', acceptRequest); // Accept a request (used by task owner)
 
 
 // **PUT /api/request/:requestId/reject**
-router.put('/request/:requestId/reject', rejectRequest);  // Reject a request (used by task owner)
+router.post('/request/reject', rejectRequest);  // Reject a request (used by task owner)
 
 
 // **DELETE /api/request/:requestId**
