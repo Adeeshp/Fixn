@@ -14,6 +14,8 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
 
   //   console.log(imageUrl);
 
+  const isPdf = job.image?.startsWith("%PDF");
+
   const decodeBinaryImage = (binaryString) => {
     if (!binaryString) return null;
     return `data:image/jpeg;base64,${btoa(
@@ -26,7 +28,7 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
 
   const imageUrl = job.image
     ? decodeBinaryImage(job.image)
-    : "/default-image.jpg"; 
+    : "./../default-image.jpg"; 
 
   //Check if job is posted by the same user
   const isMyJob = job.userId._id === user._id;
@@ -53,11 +55,11 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
             /> */}
 
 <Image
-            src={imageUrl}
-            alt="Job Image"
-            fill
-            className="object-cover"
-          />
+              src={job.image ? URL.createObjectURL(new Blob([job.image])) : "/default-image.jpg"}
+              alt="Job Content"
+              fill
+              className="object-cover"
+            />
           </div>
         ) : (
           <div className="w-[240px] aspect-[3/4] bg-slate-200 rounded-lg animate-pulse flex items-center justify-center">

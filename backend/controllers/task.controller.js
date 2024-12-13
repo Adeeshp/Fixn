@@ -158,6 +158,41 @@ export const updateTask = async (req, res) => {
     }
 };
 
+// Update task status
+export const updateTaskStatus = (req, res) => {
+    upload.fields([])(req, res, async (err) => {
+        if (err) {
+            console.error("Multer Error:", err);
+            return res.status(400).json({ success: false, message: err.message });
+        }
+
+        const { taskId } = req.params; // Extract taskId from the request parameters
+        const { status } = req.body; // Extract status from the form-data
+
+        if (!status) {
+            return res.status(400).json({ success: false, message: "Status is required" });
+        }
+
+        try {
+            // Find the task by ID and update its status
+            const updatedTask = await Task.findByIdAndUpdate(
+                taskId,
+                { status },
+                { new: true, runValidators: true } // Return the updated task and validate the input
+            );
+
+            if (!updatedTask) {
+                return res.status(404).json({ success: false, message: "Task not found" });
+            }
+
+            res.status(200).json({ success: true, message: "Task status updated successfully", data: updatedTask });
+        } catch (error) {
+            res.status(500).json({ success: false, message: error.message });
+        }
+    });
+};
+
+
 // Delete task
 export const deleteTask = async (req, res) => {
     const { taskId } = req.params;

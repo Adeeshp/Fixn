@@ -22,7 +22,7 @@ const UserProfile = () => {
 
         // Decode binary image if available
         if (userData.imageURL && userData.imageURL.data) {
-            const binaryData = new Uint8Array(userData.imageURL.data); // Ensure binary data is a Uint8Array
+            const binaryData = new Uint8Array(userData.imageURL); // Ensure binary data is a Uint8Array
             const binaryString = Array.from(binaryData)
               .map((byte) => String.fromCharCode(byte))
               .join("");
@@ -35,7 +35,6 @@ const UserProfile = () => {
         
         
         setLoading(false);
-        console.log(response.data.user);
       } catch (err) {
         setError(err.response?.data?.message || "An error occurred");
         setLoading(false);
