@@ -11,13 +11,6 @@ function Hero() {
             <span className='text-primary'> Service/Repair</span>
             <br></br> Near You</h2>
         <h2 className='text-xl text-gray-400'>Explore Best Home Service & Repair Near You</h2>
-        <div className='mt-4 flex gap-4 items-center'>
-            <Input placeholder='Search'
-            className="rounded-full md:w-[350px]" />
-            <Button className="rounded-full h-[46px]">
-                <Search className='h-4 w-4'/>
-            </Button>
-        </div>
     </div>
   )
 }
