@@ -99,8 +99,8 @@ export const getTaskByUserId = async (req, res) => {
         }, // Populate userId within requestId
       }) // Populate requestId field (which is now an array)
       .populate("appointmentId") // Populate appointmentId field
-      .populate("receiptId"); // Populate receiptId field
-
+      .populate("receiptId") // Populate receiptId field
+      .populate("reviewId");
     if (tasks.length === 0) {
       return res
         .status(200)
@@ -134,7 +134,8 @@ export const getTaskByTaskId = async (req, res) => {
         }, // Populate userId within requestId
       }) // Populate requestId field (which is now an array)
       .populate("appointmentId") // Populate appointmentId field
-      .populate("receiptId"); // Populate receiptId field
+      .populate("receiptId") // Populate receiptId field
+      .populate("reviewId");
 
     if (!task) {
       return res
@@ -148,23 +149,6 @@ export const getTaskByTaskId = async (req, res) => {
   }
 };
 
-// Update task
-// export const updateTask = async (req, res) => {
-//   const { taskId } = req.params;
-//   try {
-//     const updatedTask = await Task.findByIdAndUpdate(taskId, req.body, {
-//       new: true,
-//       runValidators: true,
-//     });
-//     if (!updatedTask)
-//       return res
-//         .status(404)
-//         .json({ success: false, message: "Task not found" });
-//     res.status(200).json({ success: true, data: updatedTask });
-//   } catch (error) {
-//     res.status(500).json({ success: false, message: error.message });
-//   }
-// };
 export const updateTask = async (req, res) => {
   const { taskId } = req.params;
  
