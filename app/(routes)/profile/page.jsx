@@ -67,6 +67,21 @@ const UserProfile = () => {
     }));
   };
 
+  const handleSave = async () => {
+    try {
+      const response = await axios.post(`/api/user/updateUser/${user._id}`, user, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      // Handle success, maybe display a success message
+      console.log("User updated:", response.data);
+      setIsEditing(false); // Exit edit mode after saving
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to update profile");
+    }
+  };
+
   if (loading) {
     return <div className="flex justify-center items-center h-screen text-xl">Loading...</div>;
   }
@@ -227,13 +242,26 @@ const UserProfile = () => {
             )}
           </div>
 
-          {/* Right: Past Jobs
+          {/* Right: Past Jobs */}
           {user.role === "serviceProvider" && (
-          <div className="pl-5 w-4/12 border-l-2 border-primary">
-            <h2 className="font-bold text-[20px] my-2">Past Jobs</h2>
-            <BookingHistoryList />
-          </div>)} */}
+            <div className="pl-5 w-4/12 border-l-2 border-primary">
+              <h2 className="font-bold text-[20px] my-2">Past Jobs</h2>
+              <BookingHistoryList />
+            </div>
+          )}
         </div>
+
+        {/* Save Button */}
+        {isEditing && (
+          <div className="flex justify-end mt-6">
+            <button
+              onClick={handleSave}
+              className="px-6 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition"
+            >
+              Save Changes
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
