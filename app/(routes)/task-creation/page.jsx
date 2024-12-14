@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useContext} from "react";
 import { Plus } from "lucide-react";
 import { UserContext } from "../../contexts/UserContext";
+import Link from "next/link";
 
 const TaskForm = () => {
   const { user } = useContext(UserContext);
@@ -168,7 +169,9 @@ const TaskForm = () => {
       console.log("this is the data", data);
       if (response.ok) {
         // Handle successful task creation
-        console.log("Task created successfully:", data);
+        // console.log("Task created successfully:", data);
+        alert("Task created successfully");
+        <Link href="/posting"/>
       } else {
         setError(data.message || "Task creation failed. Please try again.");
       }

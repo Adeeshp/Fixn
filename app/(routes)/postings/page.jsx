@@ -5,6 +5,7 @@ import { UserContext } from "../../contexts/UserContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BookingHistoryList from "@/app/_components/BookingHistoryList";
 import JobPostingList from "@/app/_components/JobPostingList";
+import axios from "axios";
 
 function MyBooking() {
   const { user } = useContext(UserContext);
@@ -33,7 +34,26 @@ function MyBooking() {
       const data = await response.json();
 
       if (data.success) {
-        updateTaskLists(data.data);
+        
+        const taskValue = data.data;
+        // Decode binary image if available
+        taskValue.map((task) => {
+          if (task.image?.data) {
+            const binaryData = new Uint8Array(task.image.data);
+            const binaryString = Array.from(binaryData)
+              .map((byte) => String.fromCharCode(byte))
+              .join(""); // Convert binary data to string
+            task.taskImage = `data:image/jpeg;base64,${btoa(binaryString)}`;
+            
+            // Log the image data for debugging
+            console.log(`Task Image for ${task.id}: data:image/jpeg;base64,${btoa(binaryString)}`);
+          } else {
+            task.taskImage = "/images/male_avatar.jpg"; // Fallback image
+          }
+        });
+
+        updateTaskLists(taskValue);
+
       } else {
         setError(data.message || "Unable to fetch tasks");
       }
@@ -52,7 +72,26 @@ function MyBooking() {
       const data = await response.json();
 
       if (data.success) {
-        updateTaskLists(data.data);
+        // updateTaskLists(data.data);
+
+        const taskValue = data.data;
+        // Decode binary image if available
+        taskValue.map((task) => {
+          if (task.image?.data) {
+            const binaryData = new Uint8Array(task.image.data);
+            const binaryString = Array.from(binaryData)
+              .map((byte) => String.fromCharCode(byte))
+              .join(""); // Convert binary data to string
+            task.taskImage = `data:image/jpeg;base64,${btoa(binaryString)}`;
+            
+            // Log the image data for debugging
+            console.log(`Task Image for ${task.id}: data:image/jpeg;base64,${btoa(binaryString)}`);
+          } else {
+            task.taskImage = "/images/male_avatar.jpg"; // Fallback image
+          }
+        });
+
+        updateTaskLists(taskValue);
       } else {
         setError(data.message || "Unable to fetch tasks");
       }
