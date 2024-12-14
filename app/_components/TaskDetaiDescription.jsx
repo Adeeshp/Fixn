@@ -8,31 +8,32 @@ import Link from "next/link";
 
 const TaskDetailDescriptionCard = ({ job }) => {
   const [showReceipt, setShowReceipt] = useState(false);
+
+  if (job.image?.data) {
+    const binaryData = new Uint8Array(job.image.data);
+    const binaryString = Array.from(binaryData)
+      .map((byte) => String.fromCharCode(byte))
+      .join(""); // Convert binary data to string
+      job.taskImage = `data:image/jpeg;base64,${btoa(binaryString)}`;
+    
+    // Log the image data for debugging
+    console.log(`Task Image for ${job.id}: data:image/jpeg;base64,${btoa(binaryString)}`);
+  } else {
+    job.taskImage = "/images/male_avatar.jpg"; // Fallback image
+  }
+
   return (
     <div className="relative w-full bg-gray-700 p-8 shadow-lg rounded-lg">
       <div className="flex flex-row mb-5">
 
-        {!job.image ? (
-          <div className="w-[140px] height-[120px] relative rounded-lg overflow-hidden">
+        <div className="w-[140px] height-[120px] relative rounded-lg overflow-hidden">
             <Image
-              src={URL.createObjectURL(new Blob([job.image.buffer]))}
+              src={job?.taskImage}
               alt="Job Image"
               fill
               className="object-cover"
             />
           </div>
-        ) : (
-          <div className="w-[140px] height-[120px] bg-slate-200 rounded-lg animate-pulse flex items-center justify-center">
-            <div className="relative w-1/3 h-1/3">
-              <Image
-                src="/fixn.svg"
-                alt="fixn-logo"
-                fill
-                className="object-contain filter grayscale"
-              />
-            </div>
-          </div>
-        )}
 
         <div className="pl-6">
           {/* <h1 className="text-4xl font-bold text-gray-800 mb-6">Task Details</h1> */}
@@ -108,12 +109,12 @@ const TaskDetailDescriptionCard = ({ job }) => {
             <strong className="text-gray-600">Transport Required : &nbsp;</strong>{" "}
             {job.transportRequired ? "Yes" : "No"}
           </p>
-          <button
+          {/* <button
             className="absolute bottom-4 right-4 bg-secondary hover:bg-blue-600 text-white p-3 rounded-full shadow-lg"
             onClick={() => setShowReceipt(true)}
           >
             <Receipt size={20} />
-          </button>
+          </button> */}
         </div>
       </div>
       {showReceipt && (

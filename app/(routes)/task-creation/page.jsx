@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useContext} from "react";
 import { Plus } from "lucide-react";
 import { UserContext } from "../../contexts/UserContext";
+import Link from "next/link";
 
 const TaskForm = () => {
   const { user } = useContext(UserContext);
@@ -168,7 +169,9 @@ const TaskForm = () => {
       console.log("this is the data", data);
       if (response.ok) {
         // Handle successful task creation
-        console.log("Task created successfully:", data);
+        // console.log("Task created successfully:", data);
+        alert("Task created successfully");
+        <Link href="/posting"/>
       } else {
         setError(data.message || "Task creation failed. Please try again.");
       }
@@ -181,89 +184,92 @@ const TaskForm = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-50 px-6 pt-40 pb-24 ">
-      <div className="lg:w-1/2 md:w-3/4 w-full bg-white rounded-lg shadow-lg p-10">
+    <div className="flex justify-center items-center min-h-screen bg-gray-50 px-6 py-10 ">
+      <div className="md:w-3/4 w-full bg-white rounded-lg shadow-lg p-10">
         <h1 className="text-3xl font-semibold text-center mb-8 text-gray-800">
-          Task Details
+          Create Your Task
         </h1>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label
-              htmlFor="address"
-              className="block text-gray-600 text-sm font-medium mb-1"
-            >
-              Address
-            </label>
-            <input
-              type="text"
-              id="address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label
-              htmlFor="province"
-              className="block text-gray-600 text-sm font-medium mb-1"
-            >
-              Province
-            </label>
-            <select
-              id="province"
-              value={province}
-              onChange={(e) => setProvince(e.target.value)}
-              className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            >
-              <option value="">Select a Province</option>
-              <option value="Alberta">Alberta</option>
-              <option value="British Columbia">British Columbia</option>
-              <option value="Manitoba">Manitoba</option>
-              <option value="New Brunswick">New Brunswick</option>
-              <option value="Newfoundland and Labrador">
-                Newfoundland and Labrador
-              </option>
-              <option value="Nova Scotia">Nova Scotia</option>
-              <option value="Ontario">Ontario</option>
-              <option value="Prince Edward Island">Prince Edward Island</option>
-              <option value="Quebec">Quebec</option>
-              <option value="Saskatchewan">Saskatchewan</option>
-            </select>
-          </div>
-          <div className="mb-4 flex space-x-4">
-            <div className="w-1/2">
+          <div className="shadow-inner rounded-xl bg-gray-700 p-10 ">
+            <div className="mb-4">
               <label
-                htmlFor="city"
-                className="block text-gray-600 text-sm font-medium mb-1"
+                htmlFor="address"
+                className="block text-white text-sm font-medium mb-1"
               >
-                City
+                Address
               </label>
               <input
                 type="text"
-                id="city"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
+                id="address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
                 className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
 
-            <div className="w-1/2">
+            <div className="mb-4">
               <label
-                htmlFor="zipCode"
-                className="block text-gray-600 text-sm font-medium mb-1"
+                htmlFor="province"
+                className="block text-white text-sm font-medium mb-1"
               >
-                Zip Code
+                Province
               </label>
-              <input
-                type="text"
-                id="zipCode"
-                value={zipCode}
-                onChange={(e) => setZipCode(e.target.value)}
-                className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-              />
+              <select
+                id="province"
+                value={province}
+                onChange={(e) => setProvince(e.target.value)}
+                className="w-full text-gray-700 border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              >
+                <option value="">Select a Province</option>
+                <option value="Alberta">Alberta</option>
+                <option value="British Columbia">British Columbia</option>
+                <option value="Manitoba">Manitoba</option>
+                <option value="New Brunswick">New Brunswick</option>
+                <option value="Newfoundland and Labrador">
+                  Newfoundland and Labrador
+                </option>
+                <option value="Nova Scotia">Nova Scotia</option>
+                <option value="Ontario">Ontario</option>
+                <option value="Prince Edward Island">Prince Edward Island</option>
+                <option value="Quebec">Quebec</option>
+                <option value="Saskatchewan">Saskatchewan</option>
+              </select>
             </div>
-          </div>
+
+            <div className="mb-4 flex space-x-4">
+              <div className="w-1/2">
+                <label
+                  htmlFor="city"
+                  className="block text-white text-sm font-medium mb-1"
+                >
+                  City
+                </label>
+                <input
+                  type="text"
+                  id="city"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+              </div>
+
+              <div className="w-1/2">
+                <label
+                  htmlFor="zipCode"
+                  className="block text-white text-sm font-medium mb-1"
+                >
+                  Zip Code
+                </label>
+                <input
+                  type="text"
+                  id="zipCode"
+                  value={zipCode}
+                  onChange={(e) => setZipCode(e.target.value)}
+                  className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                />
+              </div>
+            </div>
+          </div>  
 
           {/* Category Section */}
           <div className="mb-6 border-b pb-4">
