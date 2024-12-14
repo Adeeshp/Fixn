@@ -239,8 +239,7 @@ const TaskDetailProposalCard = ({ job }) => {
                     <button
                       className="bg-primary text-white py-1 px-3 rounded-md mr-2 hover:bg-white hover:border-primary hover:text-primary hover:border-2"
                       onClick={
-                        () =>
-                          updateTask(job._id, { paymentStatus: "requested" }) // Send with "paymentStatus" key
+                        () => updateTask(job._id, { paymentStatus: "requested" }) // Send with "paymentStatus" key
                       }
                     >
                       Make Payment
