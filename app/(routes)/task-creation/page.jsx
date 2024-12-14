@@ -1,8 +1,11 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext} from "react";
 import { Plus } from "lucide-react";
+import { UserContext } from "../../contexts/UserContext";
 
 const TaskForm = () => {
+  const { user } = useContext(UserContext);
+
   const [estimatedTime, setEstimatedTime] = useState("");
   const [taskStartTime, setTaskStartTime] = useState("");
   const [taskEndTime, setTaskEndTime] = useState("");
@@ -142,7 +145,7 @@ const TaskForm = () => {
 
     try {
       const formData = new FormData();
-      formData.append("userId", "675a026077fa4821ddbbe96b");
+      formData.append("userId", user._id);
       formData.append("categoryId", category);
       formData.append("subCategoryId", subcategory);
       formData.append("description", description);
