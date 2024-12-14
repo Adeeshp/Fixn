@@ -340,18 +340,28 @@ const UserProfile = () => {
 
   const handleSave = async () => {
     try {
-      const response = await axios.post(`/api/user/updateUser/${user._id}`, user, {
+      const payload = {
+        ...user,
+        categoryId: user.categoryId?._id || user.categoryId,
+        subCategoryId: user.subCategoryId?._id || user.subCategoryId,
+      };
+
+      console.log("Payload:", payload); // Debug the data being sent
+
+      const response = await axios.post(`/api/user/updateUser/${user._id}`, payload, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      // Handle success, maybe display a success message
-      console.log("User updated:", response.data);
+
+      console.log("User updated successfully:", response.data);
       setIsEditing(false); // Exit edit mode after saving
     } catch (err) {
+      console.error("Error updating profile:", err.response);
       setError(err.response?.data?.message || "Failed to update profile");
     }
   };
+
 
   if (loading) {
     return <div className="flex justify-center items-center h-screen text-xl">Loading...</div>;
