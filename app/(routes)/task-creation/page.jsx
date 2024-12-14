@@ -3,9 +3,20 @@ import React, { useState, useEffect, useContext} from "react";
 import { Plus } from "lucide-react";
 import { UserContext } from "../../contexts/UserContext";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const TaskForm = () => {
   const { user } = useContext(UserContext);
+
+  const router = useRouter(); // Initialize the router for redirection
+
+  // Redirect to login if user is not logged in
+  useEffect(() => {
+    if (!user) {
+      router.push("/login"); // Redirect to the login page
+    }
+  }, [user, router]);
 
   const [estimatedTime, setEstimatedTime] = useState("");
   const [taskStartTime, setTaskStartTime] = useState("");
@@ -169,9 +180,8 @@ const TaskForm = () => {
       console.log("this is the data", data);
       if (response.ok) {
         // Handle successful task creation
-        // console.log("Task created successfully:", data);
         alert("Task created successfully");
-        <Link href="/posting"/>
+        router.push('/posting');
       } else {
         setError(data.message || "Task creation failed. Please try again.");
       }
@@ -190,11 +200,11 @@ const TaskForm = () => {
           Create Your Task
         </h1>
         <form onSubmit={handleSubmit}>
-          <div className="shadow-inner rounded-xl bg-gray-700 p-10 ">
+          <div className="shadow-inner shadow-lg rounded-xl bg-gray-100 p-10 mb-10    ">
             <div className="mb-4">
               <label
                 htmlFor="address"
-                className="block text-white text-sm font-medium mb-1"
+                className="block text-gray-700 text-sm font-medium mb-1"
               >
                 Address
               </label>
@@ -210,7 +220,7 @@ const TaskForm = () => {
             <div className="mb-4">
               <label
                 htmlFor="province"
-                className="block text-white text-sm font-medium mb-1"
+                className="block text-gray-700 text-sm font-medium mb-1"
               >
                 Province
               </label>
@@ -240,7 +250,7 @@ const TaskForm = () => {
               <div className="w-1/2">
                 <label
                   htmlFor="city"
-                  className="block text-white text-sm font-medium mb-1"
+                  className="block text-gray-700 text-sm font-medium mb-1"
                 >
                   City
                 </label>
@@ -256,7 +266,7 @@ const TaskForm = () => {
               <div className="w-1/2">
                 <label
                   htmlFor="zipCode"
-                  className="block text-white text-sm font-medium mb-1"
+                  className="block text-gray-700 text-sm font-medium mb-1"
                 >
                   Zip Code
                 </label>
@@ -457,7 +467,7 @@ const TaskForm = () => {
               onClick={() => document.getElementById("fileInput")}
             >
               {imagePreview ? (
-                <img
+                <Image
                   src={imagePreview}
                   alt="Preview"
                   className="w-full h-full object-cover rounded-md"
@@ -484,7 +494,7 @@ const TaskForm = () => {
             }`}
             disabled={isProcessing}
           >
-            {isProcessing ? "Creating Task..." : "Continue"}
+            {isProcessing ? "Creating Task..." : "Create Task"}
           </button>
         </form>
       </div>

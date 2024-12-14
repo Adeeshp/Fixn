@@ -42,6 +42,7 @@ const TaskDetailRequestCard = ({ job }) => {
 
       if (response.ok) {
         alert("Proposal submitted successfully");
+        window.location.reload();
       } else {
         throw new Error(data.message || "Failed to submit proposal");
       }
