@@ -14,8 +14,25 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
 
   //   console.log(imageUrl);
 
+  const isPdf = job.image?.startsWith("%PDF");
+
+  const decodeBinaryImage = (binaryString) => {
+    if (!binaryString) return null;
+    return `data:image/jpeg;base64,${btoa(
+      binaryString
+        .split("")
+        .map((char) => String.fromCharCode(char.charCodeAt(0) & 0xff))
+        .join("")
+    )}`;
+  };
+
+  const imageUrl = job.image
+    ? decodeBinaryImage(job.image)
+    : "./../default-image.jpg"; 
+
   //Check if job is posted by the same user
   const isMyJob = job.userId._id === user._id;
+  console.log(job)
 
   let isApplied = false;
   if (isServiceProvider) {
@@ -30,9 +47,16 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
       <div className="flex gap-4">
         {job.image ? (
           <div className="w-[240px] aspect-[3/4] relative rounded-lg overflow-hidden">
-            <Image
+            {/* <Image
               src={URL.createObjectURL(new Blob([job.image.buffer]))}
               alt="Job Image"
+              fill
+              className="object-cover"
+            /> */}
+
+<Image
+              src={job.image ? URL.createObjectURL(new Blob([job.image])) : "/default-image.jpg"}
+              alt="Job Content"
               fill
               className="object-cover"
             />

@@ -150,36 +150,70 @@ export const getTaskByTaskId = async (req, res) => {
 };
 
 export const updateTask = async (req, res) => {
-  const { taskId } = req.params;
- 
-  try {
-    // Update the task with the provided fields from req.body
-    const updatedTask = await Task.findByIdAndUpdate(taskId, req.body, {
-      new: true, // Return the updated task
-      runValidators: true, // Ensure validations are run for the updated fields
-    });
- 
-    // If the task is not found
-    if (!updatedTask) {
-      return res.status(404).json({
-        success: false,
-        message: 'Task not found',
-      });
+    const { taskId } = req.params;
+
+    try {
+        // Update the task with the provided fields from req.body
+        const updatedTask = await Task.findByIdAndUpdate(taskId, req.body, {
+            new: true, // Return the updated task
+            runValidators: true, // Ensure validations are run for the updated fields
+        });
+
+        // If the task is not found
+        if (!updatedTask) {
+            return res.status(404).json({
+                success: false,
+                message: 'Task not found',
+            });
+        }
+
+        // Return the updated task
+        res.status(200).json({
+            success: true,
+            data: updatedTask,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
     }
- 
-    // Return the updated task
-    return res.status(200).json({
-      success: true,
-      data: updatedTask,
-    });
-  } catch (error) {
-    console.error('Error updating task:', error.message);
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
 };
+
+// Update task status
+export const updateTaskStatus = (req, res) => {
+    upload.fields([])(req, res, async (err) => {
+        if (err) {
+            console.error("Multer Error:", err);
+            return res.status(400).json({ success: false, message: err.message });
+        }
+
+        const { taskId } = req.params; // Extract taskId from the request parameters
+        const { status } = req.body; // Extract status from the form-data
+
+        if (!status) {
+            return res.status(400).json({ success: false, message: "Status is required" });
+        }
+
+        try {
+            // Find the task by ID and update its status
+            const updatedTask = await Task.findByIdAndUpdate(
+                taskId,
+                { status },
+                { new: true, runValidators: true } // Return the updated task and validate the input
+            );
+
+            if (!updatedTask) {
+                return res.status(404).json({ success: false, message: "Task not found" });
+            }
+
+            res.status(200).json({ success: true, message: "Task status updated successfully", data: updatedTask });
+        } catch (error) {
+            res.status(500).json({ success: false, message: error.message });
+        }
+    });
+};
+
 
 // Delete task
 export const deleteTask = async (req, res) => {
