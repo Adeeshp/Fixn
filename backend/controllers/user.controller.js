@@ -324,6 +324,116 @@ export const forgotPassword = async (req, res) => {
     }
 };
 
+// Update User
+// export const updateUser = (req, res) => {
+//     // Use multer to handle file uploads
+//     upload.fields([{ name: 'image', maxCount: 1 }, { name: 'document', maxCount: 1 }])(req, res, async (err) => {
+//         if (err) {
+//             console.error("Multer Error:", err);
+//             return res.status(400).json({ success: false, message: err.message });
+//         }
+
+//         try {
+//             const { userId } = req.params; // Extract user ID from request parameters
+//             const updates = req.body; // Extract updates from the request body
+
+//             // Find the user by ID
+//             const user = await User.findById(userId);
+//             if (!user) {
+//                 return res.status(404).json({ success: false, message: "User not found" });
+//             }
+
+//             // Dynamically update user fields based on the request body
+//             const fieldsToUpdate = [
+//                 'firstname',
+//                 'lastname',
+//                 'email',
+//                 'phoneNo',
+//                 'address',
+//                 'city',
+//                 'province',
+//                 'country',
+//                 'zipcode',
+//                 'gender',
+//                 'wageType',
+//                 'wage',
+//                 'categoryId',
+//                 'subCategoryId',
+//             ];
+
+//             fieldsToUpdate.forEach(field => {
+//                 if (updates[field]) {
+//                     user[field] = updates[field];
+//                 }
+//             });
+
+//             // Handle file uploads
+//             if (req.files["image"]) {
+//                 user.imageURL = req.files["image"][0].buffer;
+//             }
+
+//             if (req.files["document"]) {
+//                 const documentBuffer = req.files["document"][0].buffer;
+//                 const documentName = req.files["document"][0].originalname;
+
+//                 // Check if a document already exists for the user
+//                 const existingDocument = await Document.findOne({ userId: user._id });
+//                 if (existingDocument) {
+//                     existingDocument.documentData = documentBuffer;
+//                     existingDocument.name = documentName;
+//                     await existingDocument.save();
+//                 } else {
+//                     // Create a new document and associate it with the user
+//                     const newDocument = new Document({
+//                         name: documentName,
+//                         documentData: documentBuffer,
+//                         userId: user._id,
+//                     });
+//                     await newDocument.save();
+
+//                     user.documents.push(newDocument._id); // Link the new document to the user
+//                 }
+//             }
+
+//             // Save the updated user details
+//             const updatedUser = await user.save();
+
+//             // Populate the documents field for a complete response
+//             await updatedUser.populate('documents');
+
+//             res.status(200).json({
+//                 success: true,
+//                 message: "User updated successfully",
+//                 user: updatedUser,
+//             });
+//         } catch (error) {
+//             console.error("Error updating user:", error);
+//             res.status(500).json({ success: false, message: "Internal server error", error: error.message });
+//         }
+//     });
+// };
+
+// Example controller for updating user profile
+export const updateUser = async (req, res) => {
+    const userId = req.params.userId;
+    const updatedData = req.body;
+    console.log("uopdateeeeeeeeee")
+    console.log(req.body)
+  
+    try {
+      const user = await User.findByIdAndUpdate(userId, updatedData, { new: true });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+     return res.json({ message: "User updated successfully", user });
+    } catch (err) {
+     return res.status(500).json({ message: "Server error" });
+    }
+  };
+  
+
+
 export const resetPassword = async (req, res) => {
     const { token, newPassword } = req.body;
 
