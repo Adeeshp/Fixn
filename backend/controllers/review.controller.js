@@ -2,25 +2,25 @@ import Review from '../models/review.model.js';
 import Task from '../models/task.model.js';
 
 // Create a new review
-export const createReview = async (req, res) => {
-  const { taskId, review, rating } = req.body;
+// export const createReview = async (req, res) => {
+//   const { taskId, review, rating } = req.body;
 
-  try {
-    const task = await Task.findById(taskId);
-    if (!task) return res.status(404).json({ success: false, message: 'Task not found' });
+//   try {
+//     const task = await Task.findById(taskId);
+//     if (!task) return res.status(404).json({ success: false, message: 'Task not found' });
 
-    const newReview = new Review({
-      taskId,
-      review,
-      rating,
-    });
+//     const newReview = new Review({
+//       taskId,
+//       review,
+//       rating,
+//     });
 
-    await newReview.save();
-    res.status(201).json({ success: true, data: newReview });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
+//     await newReview.save();
+//     res.status(201).json({ success: true, data: newReview });
+//   } catch (error) {
+//     res.status(500).json({ success: false, message: error.message });
+//   }
+// };
 
 // Get all reviews
 export const getAllReviews = async (req, res) => {
@@ -31,6 +31,49 @@ export const getAllReviews = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+export const createReview = async (req, res) => {
+  const { taskId, userId, review, rating } = req.body;
+
+  try {
+    if (!taskId || !userId || !review || !rating) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required fields: taskId, userId, review, rating',
+      });
+    }
+
+    // Create and save the review
+    const newReview = new Review({
+      taskId,
+      userId,
+      review,
+      rating,
+    });
+
+    const savedReview = await newReview.save();
+    
+    // Update Task with reviewId
+    const task = await Task.findByIdAndUpdate(
+      taskId,
+      { reviewId: savedReview._id },
+      { new: true }
+    );
+    if (!task) {
+      return res.status(404).json({ success: false, message: 'Task not found' });
+    }
+
+    return res.status(201).json({
+      success: true,
+      data: savedReview,
+    });
+
+  } catch (error) {
+    console.error('Error while submitting review:', error);
+    res.status(500).json({ success: false, message: 'An error occurred, please try again later.' });
+  }
+};
+
 
 // Get review by ID
 export const getReviewById = async (req, res) => {

@@ -99,8 +99,8 @@ export const getTaskByUserId = async (req, res) => {
         }, // Populate userId within requestId
       }) // Populate requestId field (which is now an array)
       .populate("appointmentId") // Populate appointmentId field
-      .populate("receiptId"); // Populate receiptId field
-
+      .populate("receiptId") // Populate receiptId field
+      .populate("reviewId");
     if (tasks.length === 0) {
       return res
         .status(200)
@@ -134,7 +134,8 @@ export const getTaskByTaskId = async (req, res) => {
         }, // Populate userId within requestId
       }) // Populate requestId field (which is now an array)
       .populate("appointmentId") // Populate appointmentId field
-      .populate("receiptId"); // Populate receiptId field
+      .populate("receiptId") // Populate receiptId field
+      .populate("reviewId");
 
     if (!task) {
       return res
@@ -147,10 +148,6 @@ export const getTaskByTaskId = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
-
-
-
 
 export const updateTask = async (req, res) => {
     const { taskId } = req.params;

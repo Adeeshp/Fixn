@@ -11,89 +11,116 @@ const TaskDetailProposalCard = ({ job }) => {
   const [loading, setLoading] = useState(null); // Tracks which provider's button is loading
   const [disabled, setDisabled] = useState({}); // Tracks which provider's button is disabled
 
-  const handleProviderAction = async (providerId, startTime, action) => {
-    // Show confirmation alert for accepting the job
-    const appDate = convertDateToString(startTime, 'MMM d, yyyy');
-    const appTime = convertDateToString(startTime, 'hh:mm a');
+  // Handle Review Popup
+  const [showReviewPopup, setShowReviewPopup] = useState(false);
+  const [review, setReview] = useState('');
+  const [rating, setRating] = useState(0);
 
-    if (
-      action === "Accepted" &&
-      !window.confirm("Are you sure you want to accept this job?")
-    ) {
-      return; // Exit if the user cancels
-    }
+  const openReviewPopup = () => setShowReviewPopup(true);
+  const closeReviewPopup = () => setShowReviewPopup(false);
 
-    setLoading(providerId); // Start loading for the current provider
-    const requestId = providerId; // assuming `provider.id` corresponds to `requestId`
+  const submitReview = async (job) => {
+    await handleReviewSubmit(job, review, rating);
+    setShowReviewPopup(false); // Close popup after submission
+  };
 
+  const handleReviewSubmit = async (job, review, rating) => {
     try {
-      const endpoint =
-        action === "Accepted"
-          ? `/api/request/accept` // Accept request endpoint
-          : `/api/request/reject`; // Reject request endpoint
+        const userId = getCurrentUserId(job);
+        const taskId = job._id;
 
-      const requestBody = {
-        requestId: requestId, // Send requestId in the body
-        appointmentDate: (
-          appDate
-        ), // Format date if needed
-        appointmentTime: (
-          appTime
-        ), // Format time if needed
-      };
+        if (!userId) {
+            alert('User ID is missing or invalid.');
+            return;
+        }
 
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody), // Send the request body as a JSON string
-      });
+        const response = await fetch('/api/review', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ taskId, userId, review, rating }),
+        });
 
-      const data = await response.json(); // Parse the JSON response
+        const data = await response.json();
 
-      if (response.ok && data.success) {
-        // Disable the buttons for this provider after action
-        setDisabled((prev) => ({
-          ...prev,
-          [providerId]: true,
-        }));
-
-        // Optionally, refresh the page or update state
-        alert(data.message);
-      } else {
-        alert(data.message || "An error occurred");
-      }
+        if (response.ok && data.success) {
+            alert('Review submitted successfully!');
+            window.location.reload(); // Refresh the page
+        } else {
+            alert(`Error: ${data.message}`);
+        }
     } catch (error) {
-      console.error("Error handling provider action:", error);
-      alert("An error occurred, please try again.");
-    } finally {
-      setLoading(null); // End loading after the action is complete
+        console.error('Error submitting review:', error);
+        alert('An error occurred while submitting the review. Please try again.');
     }
   };
+
+  const getCurrentUserId = (job) => {
+    if (!job || !job.requestId) return null; // Safeguard against undefined or invalid job object
+    
+    const provider = job.requestId.find((provider) => provider.requested_Status === "Accepted");
+    return provider ? provider.userId?._id : null; // Return userId if found, otherwise null
+  };
+
+  const handleProviderAction = async (providerId, startTime, action) => {
+    setLoading(providerId);
+    const requestId = providerId;
+
+    try {
+        const endpoint = action === "Accepted"
+            ? `/api/request/accept`
+            : `/api/request/reject`;
+
+        const requestBody = {
+            requestId,
+            appointmentDate: convertDateToString(startTime, 'MMM d, yyyy'),
+            appointmentTime: convertDateToString(startTime, 'hh:mm a'),
+        };
+
+        const response = await fetch(endpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(requestBody),
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            setDisabled((prev) => ({ ...prev, [providerId]: true }));
+            alert(data.message);
+            window.location.reload(); // Refresh the page
+        } else {
+            alert(data.message || "An error occurred");
+        }
+    } catch (error) {
+        console.error("Error handling provider action:", error);
+        alert("An error occurred, please try again.");
+    } finally {
+        setLoading(null);
+    }
+  };
+
   const updateTask = async (taskId, updateFields) => {
     try {
-      const response = await fetch(`/api/task/updateTask/${taskId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updateFields), // Send as an object
-      });
-   
-      const data = await response.json();
-   
-      if (response.ok && data.success) {
-        alert("Task updated successfully!");
-      } else {
-        alert(`Error: ${data.message}`);
-      }
+        const response = await fetch(`/api/task/updateTask/${taskId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updateFields),
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            alert("Task updated successfully!");
+            window.location.reload(); // Refresh the page
+        } else {
+            alert(`Error: ${data.message}`);
+        }
     } catch (error) {
-      console.error('Error calling updateTask API:', error);
-      alert('An error occurred while updating the task status.');
+        console.error('Error calling updateTask API:', error);
+        alert('An error occurred while updating the task status.');
     }
   };
-  
+
   return (
     <div className="w-full bg-gray-50 px-6 overflow-auto">
       <h2 className="text-3xl font-bold text-gray-700 mb-6 drop-shadow">
@@ -202,26 +229,61 @@ const TaskDetailProposalCard = ({ job }) => {
                   ) : job.status === "completed" && (
                     <div>
                       <button className="bg-primary text-white py-1 px-3 rounded-md mr-2 hover:bg-white hover:border-primary hover:text-primary hover:border-2"
-                        // onClick={() =>
-                        //   addReview(
-                        //     job._id,
-                        //     ""
-                        //   )}
-                        >
-                        Submit Review 
+                         onClick={openReviewPopup}
+                      >
+                        Submit Review
                       </button>
                     </div>
                   )
                 ) : (
-                  // <div className="text-red-500">Proposal Rejected</div>
-                  <div>
-
-                  </div>
+                  <div className="text-red-500">Proposal Rejected</div>
                 )
               )}
           </div>
         </div >
       ))}
+
+      {/* Review Modal */}
+      {showReviewPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg p-6 shadow-lg w-96">
+            <h3 className="text-lg font-semibold mb-4">Submit Review</h3>
+            <textarea
+              className="w-full border p-2 rounded mb-4"
+              placeholder="Write your review..."
+              value={review}
+              onChange={(e) => setReview(e.target.value)}
+            ></textarea>
+            <div className="flex items-center mb-4">
+              <label className="mr-2">Rating:</label>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  onClick={() => setRating(star)}
+                  className={`text-2xl ${star <= rating ? 'text-yellow-400' : 'text-gray-300'}`}
+                >
+                  ★
+                </button>
+              ))}
+            </div>
+            <div className="flex justify-end space-x-2">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                onClick={closeReviewPopup}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark"
+                onClick={() => submitReview(job)}
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
     </div >
   );
 };
