@@ -10,22 +10,53 @@ const UserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
  
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await axios.get(`/api/user/profile/`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+//     const fetchUserProfile = async () => {
+//       try {
+//         const response = await axios.get(`/api/user/profile`, {
+//           headers: {
+//             Authorization: `Bearer ${localStorage.getItem("token")}`,
+//           },
+//         });
+//  console.log(response.data.user);
+//         setUser(response.data.user);
+//         setLoading(false);
+//       } catch (err) {
+//         setError(err.response?.data?.message || "An error occurred");
+//         setLoading(false);
+//       }
+//     };
  
-        setUser(response.data.user);
-        setLoading(false);
-      } catch (err) {
-        setError(err.response?.data?.message || "An error occurred");
-        setLoading(false);
-      }
-    };
- 
+const fetchUserProfile = async () => {
+  setLoading(true);
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("Authorization token is missing.");
+
+    const response = await fetch(`/api/user/profile`, {
+      method: "GET",
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      //   "Content-Type": "application/json",
+      // },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log("User data fetched:", data.user);
+    setUser(data.user);
+  } catch (err) {
+    console.error("Error fetching user profile:", err);
+    setError(err.message || "An unexpected error occurred.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
     fetchUserProfile();
   }, []);
  

@@ -233,6 +233,8 @@ export const getUserProfile = async (req, res) => {
             success: true,
             user,
         });
+
+        console.log(user)
         console.log("success");
     } catch (error) {
         res.status(500).json({ success: false, message: "Server error", error: error.message });
