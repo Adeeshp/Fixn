@@ -89,6 +89,28 @@ export const registerUser = async (req, res) => {
     }
 };
 
+
+export const getUserByUserId = async (req, res) => {
+  const { userId } = req.params; // Extract userId from the request parameters
+
+  try {
+    const user = await User.findById(userId)
+      .populate("categoryId") // Populate categoryId field
+      .populate("subCategoryId") // Populate subCategoryId field
+      .populate("documents") // Populate documents field
+      .populate("reviewId"); // Populate reviewId field
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    res.status(200).json({ success: true, data: user });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
 // Register Service Provider
 export const registerServiceProvider = (req, res) => {
     // First, ensure that multer has successfully handled the file uploads before proceeding
@@ -221,12 +243,42 @@ export const authenticateToken = (req, res, next) => {
 };
 
 // Get User Profile
+// export const getUserProfile = async (req, res) => {
+//     try {
+//         const user = await User.findById(req.user.id).select("-password")
+//         if (!user) {
+//             return res.status(404).json({ success: false, message: "User not found" });
+            
+//         }
+
+//         res.status(200).json({
+//             success: true,
+//             user,
+//         });
+//         console.log("success");
+//     } catch (error) {
+//         res.status(500).json({ success: false, message: "Server error", error: error.message });
+//         console.log("error");
+//     }
+// };
+
+// Get User Profile
 export const getUserProfile = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id).select("-password")
+        // Find user by ID and conditionally populate category and subCategory if role is 'serviceProvider'
+        const user = await User.findById(req.user.id)
+            .select("-password") // Exclude password from the response
+            .populate('categoryId') // Populate categoryId if role is serviceProvider
+            .populate('subCategoryId'); // Populate subCategoryId if role is serviceProvider
+        
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found" });
-            
+        }
+
+        // If the user's role is not 'serviceProvider', we can remove the populated fields (categoryId, subCategoryId)
+        if (user.role !== 'serviceProvider') {
+            user.categoryId = undefined;
+            user.subCategoryId = undefined;
         }
 
         res.status(200).json({
@@ -241,6 +293,7 @@ export const getUserProfile = async (req, res) => {
         console.log("error");
     }
 };
+
 
 // Forgot Password
 export const forgotPassword = async (req, res) => {
