@@ -30,7 +30,7 @@ const taskSchema = new mongoose.Schema(
       ref: "Appointment",
     },
     image: {
-      type: String,
+      type: Buffer,
     },
     status: {
       type: String,
