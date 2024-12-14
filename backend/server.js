@@ -6,6 +6,7 @@ import categoryRoutes from "./routes/category.route.js";
 import subCategoryRoutes from "./routes/subCategory.route.js";
 import taskRoutes from "./routes/task.route.js";
 import requestRoutes from "./routes/request.route.js";
+import reviewRoutes from "./routes/review.route.js";
 
 import bcrypt from 'bcryptjs';
 
@@ -14,7 +15,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-app.use("/api", userRoutes, categoryRoutes, subCategoryRoutes, taskRoutes, requestRoutes);
+app.use("/api", userRoutes, categoryRoutes, subCategoryRoutes, taskRoutes, requestRoutes, reviewRoutes);
 // app.use('/api', categoryRoutes);
 // app.use('/api', subCategoryRoutes); 
 // app.use("/api", taskRoutes);

@@ -77,7 +77,7 @@
         reviewId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Review",
-          },
+        },
     }, {
         timestamps: true // Automatically adds createdAt and updatedAt fields
     });
