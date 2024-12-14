@@ -49,8 +49,14 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
       <div className="flex gap-4">
         {job.image ? (
           <div className="w-[240px] aspect-[3/4] relative rounded-lg overflow-hidden">
+            {/* <Image
+              src={URL.createObjectURL(new Blob([job.image.buffer]))}
+              alt="Job Image"
+              fill
+              className="object-cover"
+            /> */}
             <Image
-              src={job.image ? URL.createObjectURL(new Blob([job.image])) : "/default-image.jpg"}
+              src={job?.taskImage }
               alt="Job Content"
               fill
               className="object-cover"
