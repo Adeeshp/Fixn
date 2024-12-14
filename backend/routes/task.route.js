@@ -20,7 +20,7 @@ router.get('/tasks', getAllTasks); // Get a list of all tasks (viewable by all s
 router.get('/task/:userId', getTaskByUserId); // Get details of a specific task by its User ID
 
 // **PUT /api/task/:taskId**
-router.post('/task/:taskId', updateTask); // Update details of a specific task by its ID
+router.post('/task/updateTask/:taskId', updateTask); // Update details of a specific task by its ID
 
 // **DELETE /api/task/:taskId**
 router.delete('/task/:taskId', deleteTask); // Delete a task by its ID
