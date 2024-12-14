@@ -726,12 +726,12 @@ const UserProfile = () => {
             )}
           </div>
 
-          {/* Right: Past Jobs */}
+          {/* Right: Past Jobs
           {user.role === "serviceProvider" && (
           <div className="pl-5 w-4/12 border-l-2 border-primary">
             <h2 className="font-bold text-[20px] my-2">Past Jobs</h2>
             <BookingHistoryList />
-          </div>)}
+          </div>)} */}
         </div>
       </div>
     </div>
