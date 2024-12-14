@@ -14,24 +14,26 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
 
   //   console.log(imageUrl);
 
-  const isPdf = job.image?.startsWith("%PDF");
+  // const isPdf = job.image?.startsWith("%PDF");
 
-  const decodeBinaryImage = (binaryString) => {
-    if (!binaryString) return null;
-    return `data:image/jpeg;base64,${btoa(
-      binaryString
-        .split("")
-        .map((char) => String.fromCharCode(char.charCodeAt(0) & 0xff))
-        .join("")
-    )}`;
-  };
+  // const decodeBinaryImage = (binaryString) => {
+  //   if (!binaryString) return null;
+  //   return `data:image/jpeg;base64,${btoa(
+  //     binaryString
+  //       .split("")
+  //       .map((char) => String.fromCharCode(char.charCodeAt(0) & 0xff))
+  //       .join("")
+  //   )}`;
+  // };
 
-  const imageUrl = job.image
-    ? decodeBinaryImage(job.image)
-    : "./../default-image.jpg"; 
+  // const imageUrl = job.image
+  //   ? decodeBinaryImage(job.image)
+  //   : "./../default-image.jpg"; 
 
   //Check if job is posted by the same user
   const isMyJob = job.userId._id === user._id;
+  // {console.log("job.taskImage")}
+  // {console.log(job.taskImage)}
   console.log(job)
 
   let isApplied = false;
