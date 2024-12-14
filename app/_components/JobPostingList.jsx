@@ -108,19 +108,31 @@ const JobPostingCard = ({ job, user, isServiceProvider }) => {
           <div className="w-full flex pt-5 flex-col gap-1">
             {/* User Name */}
             {isServiceProvider && !isMyJob ? (
-              <a href="./profile">
+               <Link
+               href={{
+                 pathname: "/profile",
+                 query: {
+                   job: job.userId,
+                 },
+               }}>
                 <h2 className="flex text-primary hover:font-bold">
                   <User className="py-1 ml-[-5px]" />
                   {job.userId.firstname} {job.userId.lastname}
                 </h2>
-              </a>
+              </Link>
             ) : (
-              <a href="./profile">
-                <h2 className="flex text-secondary hover:font-bold">
-                  <User className="py-1 ml-[-5px]" />
-                  Posted by you
-                </h2>
-              </a>
+              <Link
+               href={{
+                 pathname: "/profile",
+                 query: {
+                   job: job.userId,
+                 },
+               }}>
+                  <h2 className="flex text-secondary hover:font-bold">
+                    <User className="py-1 ml-[-5px]" />
+                    Posted by you
+                  </h2>
+               </Link>
             )}
 
             <h2 className="flex text-gray-500">
