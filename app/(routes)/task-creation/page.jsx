@@ -180,8 +180,9 @@ const TaskForm = () => {
       console.log("this is the data", data);
       if (response.ok) {
         // Handle successful task creation
+        // console.log("Task created successfully:", data);
         alert("Task created successfully");
-        router.push('/posting');
+        <Link href="/posting"/>
       } else {
         setError(data.message || "Task creation failed. Please try again.");
       }
@@ -470,6 +471,8 @@ const TaskForm = () => {
                 <Image
                   src={imagePreview}
                   alt="Preview"
+                  width={300}
+                  height={300}
                   className="w-full h-full object-cover rounded-md"
                 />
               ) : (
