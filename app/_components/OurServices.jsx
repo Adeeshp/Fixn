@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 function OurServices({ categoryList }) {
   const [expandedIndex, setExpandedIndex] = useState(null); // Track expanded card index
@@ -41,12 +42,14 @@ function OurServices({ categoryList }) {
       <h2 className="font-bold text-[32px] text-primary">Popular Services</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-5">
         {categoryList.length > 0
-          ? categoryList.map((category, index) => (
-              index < 4 ? (
+          ? categoryList.map((category, index) =>
+              index < 7 ? (
                 <div
                   key={index}
                   className={`shadow-md rounded-lg bg-gray-50 hover:shadow-lg transition-all ease-in-out cursor-pointer ${
-                    expandedIndex === index ? "expanded-card h-full" : "lg:h-[310px]"
+                    expandedIndex === index
+                      ? "expanded-card h-full"
+                      : "lg:h-[310px]"
                   }`}
                 >
                   <Image
@@ -57,7 +60,9 @@ function OurServices({ categoryList }) {
                     className="h-[150px] md:h-[200px] object-cover rounded-lg"
                   />
                   <div className="flex flex-col items-baseline p-3 gap-1">
-                    <h2 className="font-bold text-lg">{category.categoryName}</h2>
+                    <h2 className="font-bold text-lg">
+                      {category.categoryName}
+                    </h2>
                     <Button
                       className="w-full border-2 border-primary bg-white text-primary hover:text-white rounded-lg mt-3"
                       onClick={() => toggleExpand(index, category._id)} // Use index and category ID to expand only one
@@ -74,12 +79,18 @@ function OurServices({ categoryList }) {
                           <div>Loading...</div>
                         ) : (
                           subcategories.map((subcat, subIndex) => (
-                            <div
-                              key={subIndex}
-                              className="m-[4px] text-center text-white bg-primary/90 shadow-md text-[14px] p-1 rounded-lg px-2"
+                            <Link
+                              href={{
+                                pathname: "/task-creation",
+                              }}
                             >
-                              {subcat.subCategoryName}
-                            </div>
+                              <div
+                                key={subIndex}
+                                className="m-[4px] text-center text-white bg-primary/90 shadow-md text-[14px] p-1 rounded-lg px-2"
+                              >
+                                {subcat.subCategoryName}
+                              </div>
+                            </Link>
                           ))
                         )}
                       </div>
@@ -89,12 +100,20 @@ function OurServices({ categoryList }) {
               ) : (
                 <div key={index}></div>
               )
-            ))
-          : [1, 2, 3, 4].map((item, index) => (
+            )
+          : [1, 2, 3, 4, 5, 6].map((item, index) => (
               <div
                 key={index}
-                className="w-full h-[300px] bg-slate-200 rounded-lg animate-pulse"
-              ></div>
+                className="w-full h-[315px] bg-slate-200 rounded-lg animate-pulse flex items-center justify-center"
+              >
+                <Image
+                  src="/fixn.svg"
+                  alt="fixn-logo"
+                  width={60}
+                  height={60}
+                  className="filter grayscale"
+                />
+              </div>
             ))}
       </div>
     </div>
