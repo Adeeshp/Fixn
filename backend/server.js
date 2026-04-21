@@ -1,6 +1,13 @@
 import express, { request } from 'express';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { connectDB } from './config/db.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 import userRoutes from "./routes/user.route.js";
 import categoryRoutes from "./routes/category.route.js";
 import subCategoryRoutes from "./routes/subCategory.route.js";
@@ -10,7 +17,7 @@ import reviewRoutes from "./routes/review.route.js";
 
 import bcrypt from 'bcryptjs';
 
-dotenv.config();
+// console.log('MONGO_URI:', process.env.MONGO_URI);
 
 const app = express();
 app.use(express.json());
